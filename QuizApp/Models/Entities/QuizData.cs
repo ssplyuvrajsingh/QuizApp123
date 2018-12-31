@@ -20,16 +20,18 @@ namespace QuizApp.Models.Entities
             this.QuizQuestions = new HashSet<QuizQuestion>();
         }
     
-        public string QuizID { get; set; }
+        public System.Guid QuizID { get; set; }
         public string QuizTitle { get; set; }
         public string PlayingDescriptionImg { get; set; }
-        public System.DateTime CreatedDate { get; set; }
         public Nullable<System.DateTime> QuizDate { get; set; }
         public string QuizBannerImage { get; set; }
         public Nullable<double> MaxPoint { get; set; }
         public Nullable<double> MinPoint { get; set; }
         public double WinPrecentage { get; set; }
         public Nullable<int> NoOfQuestion { get; set; }
+        public Nullable<bool> isActive { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public System.DateTime CreatedDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<QuizQuestion> QuizQuestions { get; set; }

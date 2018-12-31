@@ -16,9 +16,11 @@
         <EntityTypeShape EntityType="QuizAppModel.MobileOTP" Width="1.5" PointX="5.125" PointY="6.25" />
         <EntityTypeShape EntityType="QuizAppModel.User" Width="1.5" PointX="5" PointY="8.5" />
         <AssociationConnector Association="QuizAppModel.FK_UserID_UserID1" />
-        <EntityTypeShape EntityType="QuizAppModel.QuizQuestion" Width="1.5" PointX="7.375" PointY="0.75" />
-        <EntityTypeShape EntityType="QuizAppModel.QuizData" Width="1.5" PointX="5.125" PointY="14" />
-        <AssociationConnector Association="QuizAppModel.FK_QuizQuestion_Quizs" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizData" Width="1.5" PointX="7.375" PointY="1" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizQuestion" Width="1.5" PointX="9.625" PointY="1" />
+        <EntityTypeShape EntityType="QuizAppModel.RefreshToken" Width="1.5" PointX="5.25" PointY="14.375" />
+        <AssociationConnector Association="QuizAppModel.FK_RefreshToken_AspNetUsers" />
+        <AssociationConnector Association="QuizAppModel.FK_QuizQuestion_QuizData" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

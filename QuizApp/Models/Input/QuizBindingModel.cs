@@ -16,11 +16,12 @@ namespace QuizApp.Models.Input
         public float MinPoint { get; set; }
         public float WinPrecentage { get; set; }
         public int NoOfQuestion { get; set; }
+        public bool isActive { get; set; }
+        public DateTime StartDate { get; set; }
     }
 
     public class QuizQuestionBinding
     {
-        public string QuizQuestionId { get; set; }
         public string QuizId { get; set; }
         public string Question { get; set; }
         public string ImageUrl { get; set; }
@@ -29,7 +30,7 @@ namespace QuizApp.Models.Input
         public string Option3 { get; set; }
         public string Option4 { get; set; }
         public string CorrectOption { get; set; }
-        public TimeSpan MaxTime { get; set; }
+        public int MaxTime { get; set; }
         public int QuestionPoint { get; set; }
     }
 }

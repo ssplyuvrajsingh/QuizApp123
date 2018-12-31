@@ -18,27 +18,19 @@ namespace QuizApp.Controllers
         //POST api/Account/Quiz
        [AllowAnonymous]
        [Route("Quiz")]
-        public ResultClass Quiz(QuizBindingModel model)
+        public ActionResult GetQuiz()
         {
             try
             {
-                ResultClass result = new ResultClass();
-
-                string quizId = Guid.NewGuid().ToString();
-                model.QuizId = quizId;
-
                 QuizBinding quiz = new QuizBinding();
 
-                result = quiz.AddQuiz(model);
+                var result = quiz.GetQuiz();
 
-                return result;
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch(Exception ex)
             {
-                ResultClass result = new ResultClass();
-                result.Result = false;
-                result.Message = ex.Message;
-                return result;
+                return Json(ex.Message, JsonRequestBehavior.AllowGet);
             }
         }
 

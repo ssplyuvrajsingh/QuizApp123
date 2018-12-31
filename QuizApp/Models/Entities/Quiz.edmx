@@ -79,24 +79,25 @@
           <Key>
             <PropertyRef Name="QuizID" />
           </Key>
-          <Property Name="QuizID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="QuizID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="QuizTitle" Type="nvarchar(max)" Nullable="false" />
           <Property Name="PlayingDescriptionImg" Type="nvarchar(max)" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="QuizDate" Type="datetime" />
           <Property Name="QuizBannerImage" Type="nvarchar(max)" />
           <Property Name="MaxPoint" Type="float" />
           <Property Name="MinPoint" Type="float" />
           <Property Name="WinPrecentage" Type="float" Nullable="false" />
           <Property Name="NoOfQuestion" Type="int" />
+          <Property Name="isActive" Type="bit" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="QuizQuestion">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="QuizQuestionID" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="QuizQuestionID" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="QuizID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="QuizQuestionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="QuizID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Question" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ImageUrl" Type="nvarchar(max)" />
           <Property Name="Option1" Type="nvarchar(max)" Nullable="false" />
@@ -104,8 +105,19 @@
           <Property Name="Option3" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Option4" Type="nvarchar(max)" Nullable="false" />
           <Property Name="CorrectOption" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="MaxTime" Type="time" Precision="7" />
+          <Property Name="MaxTime" Type="int" />
           <Property Name="QuestionPoint" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RefreshToken">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="IssuedUtc" Type="datetime" />
+          <Property Name="ExpiresUtc" Type="datetime" />
+          <Property Name="ProtectedTicket" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -185,7 +197,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_QuizQuestion_Quizs">
+        <Association Name="FK_QuizQuestion_QuizData">
           <End Role="QuizData" Type="Self.QuizData" Multiplicity="1" />
           <End Role="QuizQuestion" Type="Self.QuizQuestion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -194,6 +206,18 @@
             </Principal>
             <Dependent Role="QuizQuestion">
               <PropertyRef Name="QuizID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RefreshToken_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="RefreshToken" Type="Self.RefreshToken" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RefreshToken">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -219,6 +243,7 @@
           <EntitySet Name="MobileOTP" EntityType="Self.MobileOTP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QuizData" EntityType="Self.QuizData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QuizQuestion" EntityType="Self.QuizQuestion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RefreshToken" EntityType="Self.RefreshToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -236,9 +261,13 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
-          <AssociationSet Name="FK_QuizQuestion_Quizs" Association="Self.FK_QuizQuestion_Quizs">
+          <AssociationSet Name="FK_QuizQuestion_QuizData" Association="Self.FK_QuizQuestion_QuizData">
             <End Role="QuizData" EntitySet="QuizData" />
             <End Role="QuizQuestion" EntitySet="QuizQuestion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RefreshToken_AspNetUsers" Association="Self.FK_RefreshToken_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="RefreshToken" EntitySet="RefreshToken" />
           </AssociationSet>
           <AssociationSet Name="FK_UserID_UserID" Association="Self.FK_UserID_UserID">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -308,6 +337,7 @@
           <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
           <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
           <NavigationProperty Name="Users" Relationship="QuizAppModel.FK_UserID_UserID1" FromRole="AspNetUser" ToRole="User" />
+          <NavigationProperty Name="RefreshTokens" Relationship="QuizAppModel.FK_RefreshToken_AspNetUsers" FromRole="AspNetUser" ToRole="RefreshToken" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
@@ -365,9 +395,14 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
-          <EntitySet Name="QuizQuestions" EntityType="QuizAppModel.QuizQuestion" />
           <EntitySet Name="QuizDatas" EntityType="QuizAppModel.QuizData" />
-          <AssociationSet Name="FK_QuizQuestion_Quizs" Association="QuizAppModel.FK_QuizQuestion_Quizs">
+          <EntitySet Name="QuizQuestions" EntityType="QuizAppModel.QuizQuestion" />
+          <EntitySet Name="RefreshTokens" EntityType="QuizAppModel.RefreshToken" />
+          <AssociationSet Name="FK_RefreshToken_AspNetUsers" Association="QuizAppModel.FK_RefreshToken_AspNetUsers">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="RefreshToken" EntitySet="RefreshTokens" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuizQuestion_QuizData" Association="QuizAppModel.FK_QuizQuestion_QuizData">
             <End Role="QuizData" EntitySet="QuizDatas" />
             <End Role="QuizQuestion" EntitySet="QuizQuestions" />
           </AssociationSet>
@@ -416,13 +451,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="QuizData">
+          <Key>
+            <PropertyRef Name="QuizID" />
+          </Key>
+          <Property Name="QuizID" Type="Guid" Nullable="false" />
+          <Property Name="QuizTitle" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PlayingDescriptionImg" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="QuizDate" Type="DateTime" Precision="3" />
+          <Property Name="QuizBannerImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MaxPoint" Type="Double" />
+          <Property Name="MinPoint" Type="Double" />
+          <Property Name="WinPrecentage" Type="Double" Nullable="false" />
+          <Property Name="NoOfQuestion" Type="Int32" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="QuizQuestions" Relationship="QuizAppModel.FK_QuizQuestion_QuizData" FromRole="QuizData" ToRole="QuizQuestion" />
+        </EntityType>
         <EntityType Name="QuizQuestion">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="QuizQuestionID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="QuizQuestionID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="QuizID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="QuizQuestionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="QuizID" Type="Guid" Nullable="false" />
           <Property Name="Question" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ImageUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Option1" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -430,27 +482,35 @@
           <Property Name="Option3" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Option4" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CorrectOption" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="MaxTime" Type="Time" Precision="7" />
+          <Property Name="MaxTime" Type="Int32" />
           <Property Name="QuestionPoint" Type="Int32" />
-          <NavigationProperty Name="QuizData" Relationship="QuizAppModel.FK_QuizQuestion_Quizs" FromRole="QuizQuestion" ToRole="QuizData" />
-        </EntityType>
-        <EntityType Name="QuizData">
-          <Key>
-            <PropertyRef Name="QuizID" />
-          </Key>
-          <Property Name="QuizID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="QuizTitle" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PlayingDescriptionImg" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="QuizDate" Type="DateTime" Precision="3" />
-          <Property Name="QuizBannerImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="MaxPoint" Type="Double" />
-          <Property Name="MinPoint" Type="Double" />
-          <Property Name="WinPrecentage" Type="Double" Nullable="false" />
-          <Property Name="NoOfQuestion" Type="Int32" />
-          <NavigationProperty Name="QuizQuestions" Relationship="QuizAppModel.FK_QuizQuestion_Quizs" FromRole="QuizData" ToRole="QuizQuestion" />
+          <NavigationProperty Name="QuizData" Relationship="QuizAppModel.FK_QuizQuestion_QuizData" FromRole="QuizQuestion" ToRole="QuizData" />
         </EntityType>
-        <Association Name="FK_QuizQuestion_Quizs">
+        <EntityType Name="RefreshToken">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="IssuedUtc" Type="DateTime" Precision="3" />
+          <Property Name="ExpiresUtc" Type="DateTime" Precision="3" />
+          <Property Name="ProtectedTicket" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_RefreshToken_AspNetUsers" FromRole="RefreshToken" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="FK_RefreshToken_AspNetUsers">
+          <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
+          <End Type="QuizAppModel.RefreshToken" Role="RefreshToken" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RefreshToken">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuizQuestion_QuizData">
           <End Type="QuizAppModel.QuizData" Role="QuizData" Multiplicity="1" />
           <End Type="QuizAppModel.QuizQuestion" Role="QuizQuestion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -564,9 +624,28 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="QuizDatas">
+            <EntityTypeMapping TypeName="QuizAppModel.QuizData">
+              <MappingFragment StoreEntitySet="QuizData">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="NoOfQuestion" ColumnName="NoOfQuestion" />
+                <ScalarProperty Name="WinPrecentage" ColumnName="WinPrecentage" />
+                <ScalarProperty Name="MinPoint" ColumnName="MinPoint" />
+                <ScalarProperty Name="MaxPoint" ColumnName="MaxPoint" />
+                <ScalarProperty Name="QuizBannerImage" ColumnName="QuizBannerImage" />
+                <ScalarProperty Name="QuizDate" ColumnName="QuizDate" />
+                <ScalarProperty Name="PlayingDescriptionImg" ColumnName="PlayingDescriptionImg" />
+                <ScalarProperty Name="QuizTitle" ColumnName="QuizTitle" />
+                <ScalarProperty Name="QuizID" ColumnName="QuizID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="QuizQuestions">
             <EntityTypeMapping TypeName="QuizAppModel.QuizQuestion">
               <MappingFragment StoreEntitySet="QuizQuestion">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="QuestionPoint" ColumnName="QuestionPoint" />
                 <ScalarProperty Name="MaxTime" ColumnName="MaxTime" />
                 <ScalarProperty Name="CorrectOption" ColumnName="CorrectOption" />
@@ -578,23 +657,17 @@
                 <ScalarProperty Name="Question" ColumnName="Question" />
                 <ScalarProperty Name="QuizID" ColumnName="QuizID" />
                 <ScalarProperty Name="QuizQuestionID" ColumnName="QuizQuestionID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="QuizDatas">
-            <EntityTypeMapping TypeName="QuizAppModel.QuizData">
-              <MappingFragment StoreEntitySet="QuizData">
-                <ScalarProperty Name="NoOfQuestion" ColumnName="NoOfQuestion" />
-                <ScalarProperty Name="WinPrecentage" ColumnName="WinPrecentage" />
-                <ScalarProperty Name="MinPoint" ColumnName="MinPoint" />
-                <ScalarProperty Name="MaxPoint" ColumnName="MaxPoint" />
-                <ScalarProperty Name="QuizBannerImage" ColumnName="QuizBannerImage" />
-                <ScalarProperty Name="QuizDate" ColumnName="QuizDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="PlayingDescriptionImg" ColumnName="PlayingDescriptionImg" />
-                <ScalarProperty Name="QuizTitle" ColumnName="QuizTitle" />
-                <ScalarProperty Name="QuizID" ColumnName="QuizID" />
+          <EntitySetMapping Name="RefreshTokens">
+            <EntityTypeMapping TypeName="QuizAppModel.RefreshToken">
+              <MappingFragment StoreEntitySet="RefreshToken">
+                <ScalarProperty Name="ProtectedTicket" ColumnName="ProtectedTicket" />
+                <ScalarProperty Name="ExpiresUtc" ColumnName="ExpiresUtc" />
+                <ScalarProperty Name="IssuedUtc" ColumnName="IssuedUtc" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
