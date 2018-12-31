@@ -21,7 +21,7 @@ namespace QuizApp.Models.Actions
                     if(quiz != null)
                     {
                         result.Result = true;
-                        result.Message = "Get Quiz successfully";
+                        result.Message = "Get quiz successfully";
                         result.Data = quiz;
                     }
                     else
@@ -52,7 +52,7 @@ namespace QuizApp.Models.Actions
                     if (quizQuestions != null)
                     {
                         result.Result = true;
-                        result.Message = "Get Quiz question successfully";
+                        result.Message = "Get quiz question successfully";
                         result.Data = quizQuestions;
                     }
                     else
