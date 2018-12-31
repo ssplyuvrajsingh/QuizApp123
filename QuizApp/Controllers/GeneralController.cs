@@ -8,6 +8,7 @@ using System.Web.Http;
 
 namespace QuizApp.Controllers
 {
+    [Authorize]
     public class GeneralController : ApiController
     {
         #region Hello World

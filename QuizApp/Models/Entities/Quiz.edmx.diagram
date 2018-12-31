@@ -5,7 +5,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="d766da9b9dfb423c87dad6f16053ece8" Name="Diagram1">
-        <EntityTypeShape EntityType="QuizAppModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.C__MigrationHistory" Width="1.5" PointX="2.875" PointY="6.5" IsExpanded="true" />
         <EntityTypeShape EntityType="QuizAppModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
         <EntityTypeShape EntityType="QuizAppModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="QuizAppModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
@@ -13,6 +13,12 @@
         <AssociationConnector Association="QuizAppModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="QuizAppModel.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="QuizAppModel.MobileOTP" Width="1.5" PointX="5.125" PointY="6.25" />
+        <EntityTypeShape EntityType="QuizAppModel.User" Width="1.5" PointX="5" PointY="8.5" />
+        <AssociationConnector Association="QuizAppModel.FK_UserID_UserID1" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizQuestion" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizData" Width="1.5" PointX="5.125" PointY="14" />
+        <AssociationConnector Association="QuizAppModel.FK_QuizQuestion_Quizs" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

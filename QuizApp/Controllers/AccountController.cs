@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -14,6 +15,9 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using QuizApp.Models;
+using QuizApp.Models.Actions;
+using QuizApp.Models.Entities;
+using QuizApp.Models.Input;
 using QuizApp.Providers;
 using QuizApp.Results;
 
@@ -155,43 +159,157 @@ namespace QuizApp.Controllers
         #endregion
 
         #region Passwrod
-        // POST api/Account/ChangePassword
-        [Route("ChangePassword")]
-        public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
+        // POST api/Account/ForgotPassword
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("ForgotPassword")]
+        public ResultClass ForgotPassword(ForgotPasswordBindingModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                GeneralFunctions generalFunctions = new GeneralFunctions();
+                model.OTP = generalFunctions.GetOTP();
+
+                AccountBinding accountBinding = new AccountBinding();
+
+                var addOTPResult = accountBinding.AddOTP(model);
+
+                ResultClass result = new ResultClass();
+
+                if (addOTPResult.Result)
+                {
+                    result.Result = true;
+                    result.Message = "OTP send successfully";
+                }
+                else
+                {
+                    result.Result = false;
+                    result.Message = "OTP send failure";
+                }
+                return result;
             }
-
-            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
-                model.NewPassword);
-
-            if (!result.Succeeded)
+            catch (Exception ex)
             {
-                return GetErrorResult(result);
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
             }
+        }
 
-            return Ok();
+        // POST api/Account/ChangePassword
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("ChangePassword")]
+        public async Task<ResultClass> ChangePassword(ChangePasswordBindingModel model)
+        {
+            try
+            {
+                AccountBinding accountBinding = new AccountBinding();
+
+                GetUserIdPasswordResponse getUserIdPassword = accountBinding.GetUserIdPassword(model.PhoneNumber);
+
+                ResultClass result = new ResultClass();
+
+                if(model.OldPassword != getUserIdPassword.Password)
+                {
+                    result.Result = false;
+                    result.Message = "Increct old password";
+                    return result;
+                }
+
+                IdentityResult identityResult = await UserManager.ChangePasswordAsync(getUserIdPassword.UserId, model.OldPassword,
+                    model.NewPassword);
+
+                if (!identityResult.Succeeded)
+                {
+                    result.Result = identityResult.Succeeded;
+                    result.Message = "Password change failure";
+                    return result;
+                }
+
+                var updatePassword = accountBinding.UpdatePassword(getUserIdPassword.UserId, model.NewPassword);
+
+                if (updatePassword.Result)
+                {
+                    result.Result = true;
+                    result.Message = "Password change successfully";
+                    return result;
+                }
+                else
+                {
+                    return updatePassword;
+                }
+            }
+            catch (Exception ex)
+            {
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
+            }
         }
 
         // POST api/Account/SetPassword
+        [HttpPost]
+        [AllowAnonymous]
         [Route("SetPassword")]
-        public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
+        public async Task<ResultClass> SetPassword(SetPasswordBindingModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                AccountBinding accountBinding = new AccountBinding();
+
+                GetUserIdPasswordResponse getUserIdPassword = accountBinding.GetUserIdPassword(model.PhoneNumber);
+
+                RegisterBindingModel registerBinding = new RegisterBindingModel()
+                {
+                    PhoneNumber = model.PhoneNumber,
+                    OTP = model.OTP
+                };
+
+                var OTPVarification = accountBinding.OTPVerification(registerBinding);
+
+                if (OTPVarification.Result)
+                {
+                    IdentityResult removePassoword = await UserManager.RemovePasswordAsync(getUserIdPassword.UserId);
+
+                    var addPassword = await UserManager.AddPasswordAsync(getUserIdPassword.UserId, model.NewPassword);
+
+                    ResultClass result = new ResultClass();
+
+                    if (!addPassword.Succeeded)
+                    {
+                        result.Result = false;
+                        result.Message = "Password change failure";
+                        return result;
+                    }
+
+                    var resultUpdatePassword = accountBinding.UpdatePassword(getUserIdPassword.UserId, model.NewPassword);
+
+                    if (resultUpdatePassword.Result)
+                    {
+                        result.Result = true;
+                        result.Message = "Password change successfully";
+                        return result;
+                    }
+                    else
+                    {
+                        return resultUpdatePassword;
+                    }
+                }
+                else
+                {
+                    return OTPVarification;
+                }
             }
-
-            IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
-
-            if (!result.Succeeded)
+            catch (Exception ex)
             {
-                return GetErrorResult(result);
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
             }
-
-            return Ok();
         }
         #endregion
 
@@ -232,7 +350,7 @@ namespace QuizApp.Controllers
             }
 
             return Ok();
-        }        
+        }
 
         // GET api/Account/ExternalLogin
         [OverrideAuthentication]
@@ -367,28 +485,157 @@ namespace QuizApp.Controllers
 
         #endregion
 
+        #region Login
+
+        // POST api/user/login
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("Login")]
+        public async Task<ResultClass> LoginUser(LoginBindingModel model)
+        {
+            AccountBinding accountBinding = new AccountBinding();
+            return await accountBinding.GetAccessToken(model);
+        }
+
+        #endregion
+
         #region Register
 
         // POST api/Account/Register
+        [HttpPost]
         [AllowAnonymous]
         [Route("Register")]
-        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
+        public async Task<ResultClass> Register(RegisterBindingModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                ResultClass result = new ResultClass();
+                if (!ModelState.IsValid)
+                {
+                    result.Result = false;
+                    result.Message = "Invalid model state";
+                    return result;
+                }
+
+                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email };
+
+                IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
+
+                if (!identityResult.Succeeded)
+                {
+                    result.Result = identityResult.Succeeded;
+                    result.Message = "User registration failure";
+                    return result;
+                }
+
+                GeneralFunctions generalFunctions = new GeneralFunctions();
+                AccountBinding accountBinding = new AccountBinding();
+                
+                model.ReferalCode = generalFunctions.GetReferalCode();
+                model.OTP = generalFunctions.GetOTP();
+                model.UserId = user.Id;
+                
+                AccountBinding registration = new AccountBinding();
+                var resultRegistration = registration.RegisterUser(model);
+
+                return resultRegistration;
+            }
+            catch(Exception ex)
+            {
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        // POST api/Account/ValidateUsedReferalCode
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("ValidateUsedReferalCode")]
+        public ResultClass ValidateUsedReferalCode(RegisterBindingModel model)
+        {
+            try
+            {
+                ResultClass result = new ResultClass();
+                
+                GeneralFunctions generalFunctions = new GeneralFunctions();
+                AccountBinding accountBinding = new AccountBinding();
+
+                var users = UserManager.Users;
+
+                string userId = string.Empty;
+
+                foreach(var item in users)
+                {
+                    if(item.UserName == model.PhoneNumber)
+                    {
+                        userId = item.Id;
+                        break;
+                    }
+                }
+
+                if(userId != null)
+                {
+                    model.UserId = userId;
+
+                    var resultFromUsedReferalCode = accountBinding.GetParentsIDsFromReferalCode(model.UsedReferalCode, userId);
+
+                    if (resultFromUsedReferalCode.Result)
+                    {
+                        model.ParentIDs = resultFromUsedReferalCode.Data.ToString();
+                        AccountBinding registration = new AccountBinding();
+                        var resultRegistration = registration.UpdateRegisterUser(model);
+                        if (resultRegistration.Result)
+                        {
+                            result.Result = true;
+                            result.Message = "Valid Referal Code";
+                            return result;
+                        }
+                        return resultRegistration;
+                    }
+                    else
+                    {
+                        return resultFromUsedReferalCode;
+                    }
+                }
+                else
+                {
+                    result.Result = false;
+                    result.Message = "Invalid User Name";
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        #endregion
+
+        #region OTP Verification
+
+        // POST api/Account/OTP Verification
+        [AllowAnonymous]
+        [Route("OTPVerification")]
+        public ResultClass OTPVerification(RegisterBindingModel model)
+        {
+            var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email };
+
+            AccountBinding registration = new AccountBinding();
+
+            var OTPVarification = registration.OTPVerification(model);
+
+            if (OTPVarification.Result)
+            {
+                user.EmailConfirmed = true;
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
-
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
-
-            return Ok();
+            return OTPVarification;
         }
 
         #endregion

@@ -239,11 +239,14 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\GeneralController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\QuizController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Actions\AccountBinding.cs" />
+    <Compile Include="Models\Actions\QuizBinding.cs" />
     <Compile Include="Models\Common\GeneralFunctions.cs" />
     <Compile Include="Models\Common\MailSenderRepo.cs" />
     <Compile Include="Models\Common\RepoUserLogs.cs" />
@@ -262,22 +265,31 @@
     <Compile Include="Models\Entities\C__MigrationHistory.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\MobileOTP.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\Quiz.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Quiz.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entities\Quiz.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\Quiz.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Quiz.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\QuizData.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\QuizQuestion.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\User.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Input\AccountBindingModel.cs" />
+    <Compile Include="Models\Input\QuizBindingModel.cs" />
     <Compile Include="Models\Output\Common\ResultClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
@@ -362,8 +374,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\Actions\" />
-    <Folder Include="Models\Input\" />
+    <Folder Include="Views\Quiz\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

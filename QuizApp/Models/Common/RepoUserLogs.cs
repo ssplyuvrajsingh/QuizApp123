@@ -13,7 +13,7 @@ namespace QuizApp.Models
             SendMail("controller=" + controller + "<br/>action=" + action + "<br/>" + "Message=" + Message + "<br/>" + "StackTrack=" + StackTrack);
             return new ResultClass
             {
-                Result = 0,
+                Result = true,
                 Message = "Too many users in system please try again later."
             };
         }
