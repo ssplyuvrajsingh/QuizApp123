@@ -18,6 +18,7 @@ namespace QuizApp.Models.Input
         public int NoOfQuestion { get; set; }
         public bool isActive { get; set; }
         public DateTime StartDate { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 
     public class QuizQuestionBinding
@@ -32,5 +33,6 @@ namespace QuizApp.Models.Input
         public string CorrectOption { get; set; }
         public int MaxTime { get; set; }
         public int QuestionPoint { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

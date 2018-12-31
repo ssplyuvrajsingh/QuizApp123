@@ -13,7 +13,7 @@ namespace QuizApp.Controllers
     [RoutePrefix("api/Quiz")]
     public class QuizController : Controller
     {
-        #region Quiz
+        #region Get Quiz
 
         //POST api/Account/Quiz
        [AllowAnonymous]
@@ -29,6 +29,29 @@ namespace QuizApp.Controllers
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch(Exception ex)
+            {
+                return Json(ex.Message, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        #endregion
+
+        #region Get Quiz Questions
+
+        //POST api/Account/QuizQuestions
+        [AllowAnonymous]
+        [Route("QuizQuestions")]
+        public ActionResult GetQuizQuestions(string QuizId)
+        {
+            try
+            {
+                QuizBinding quiz = new QuizBinding();
+
+                var result = quiz.GetQuiz();
+
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
             {
                 return Json(ex.Message, JsonRequestBehavior.AllowGet);
             }
