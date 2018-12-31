@@ -15,9 +15,10 @@ namespace QuizApp.Controllers
     {
         #region Get Quiz
 
-        //POST api/Account/Quiz
-       [AllowAnonymous]
-       [Route("Quiz")]
+        //POST api/Account/GetQuiz
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("GetQuiz")]
         public ActionResult GetQuiz()
         {
             try
@@ -28,7 +29,7 @@ namespace QuizApp.Controllers
 
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(ex.Message, JsonRequestBehavior.AllowGet);
             }
@@ -38,9 +39,10 @@ namespace QuizApp.Controllers
 
         #region Get Quiz Questions
 
-        //POST api/Account/QuizQuestions
+        //POST api/Account/GetQuizQuestions
+        [HttpPost]
         [AllowAnonymous]
-        [Route("QuizQuestions")]
+        [Route("GetQuizQuestions")]
         public ActionResult GetQuizQuestions(string QuizId)
         {
             try
