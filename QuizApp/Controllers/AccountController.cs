@@ -394,8 +394,6 @@ namespace QuizApp.Controllers
         }
         #endregion
 
-
-
         #region Helpers
 
         protected override void Dispose(bool disposing)

@@ -10,24 +10,23 @@ using System.Web.Mvc;
 namespace QuizApp.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/Quiz")]
     public class QuizController : Controller
     {
         #region Get Quiz
 
         //POST api/Quiz/GetQuiz
         [HttpPost]
-        [AllowAnonymous]
-        [Route("GetQuiz")]
         public ResultClass GetQuiz()
         {
             try
             {
                 QuizBinding quiz = new QuizBinding();
-
-                var result = quiz.GetQuiz();
-
-                return result;
+                return new ResultClass()
+                {
+                    Data = quiz.GetQuiz(),
+                    Message = "Data founud successfully",
+                    Result = true
+                };
             }
             catch (Exception ex)
             {
@@ -44,8 +43,6 @@ namespace QuizApp.Controllers
 
         //POST api/Quiz/GetQuizQuestions
         [HttpPost]
-        [AllowAnonymous]
-        [Route("GetQuizQuestions")]
         public ResultClass GetQuizQuestions(string QuizId)
         {
             try

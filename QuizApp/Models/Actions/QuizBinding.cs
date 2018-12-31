@@ -9,35 +9,13 @@ namespace QuizApp.Models.Actions
 {
     public class QuizBinding
     {
-        public ResultClass GetQuiz()
+        public List<QuizData> GetQuiz()
         {
-            ResultClass result = new ResultClass();
-            try
+            QuizAppEntities entities = new QuizAppEntities();
+            return entities.QuizDatas.Where(x => x.StartDate == DateTime.Now.Date && x.isActive == true).ToList().Select(a => new QuizData()
             {
-                using (QuizAppEntities entities = new QuizAppEntities())
-                {
-                    var quiz = entities.QuizDatas.Where(x => x.StartDate == DateTime.Now.Date && x.isActive == true).ToList();
-                    
-                    if(quiz != null)
-                    {
-                        result.Result = true;
-                        result.Message = "Get quiz successfully";
-                        result.Data = quiz;
-                    }
-                    else
-                    {
-                        result.Result = false;
-                        result.Message = "Empty quiz list";
-                    }
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                result.Result = false;
-                result.Message = ex.Message;
-                return result;
-            }
+                isActive = true,
+            }).ToList();
         }
 
         public ResultClass GetQuizQuestions(string quizId)
@@ -63,7 +41,7 @@ namespace QuizApp.Models.Actions
                     return result;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result.Result = false;
                 result.Message = ex.Message;
