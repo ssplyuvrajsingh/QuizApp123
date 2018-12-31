@@ -22,6 +22,7 @@ namespace QuizApp.Models.Entities
             this.AspNetRoles = new HashSet<AspNetRole>();
             this.Users = new HashSet<User>();
             this.RefreshTokens = new HashSet<RefreshToken>();
+            this.ParentUsers = new HashSet<ParentUser>();
         }
     
         public string Id { get; set; }
@@ -47,5 +48,7 @@ namespace QuizApp.Models.Entities
         public virtual ICollection<User> Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ParentUser> ParentUsers { get; set; }
     }
 }

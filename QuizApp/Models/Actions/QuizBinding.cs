@@ -9,37 +9,65 @@ namespace QuizApp.Models.Actions
 {
     public class QuizBinding
     {
-        public List<QuizData> GetQuiz()
+        public ResultClass GetQuiz()
         {
+            ResultClass result = new ResultClass();
             try
             {
                 using (QuizAppEntities entities = new QuizAppEntities())
                 {
                     var quiz = entities.QuizDatas.Where(x => x.StartDate == DateTime.Now.Date && x.isActive == true).ToList();
                     
-                    return quiz;
+                    if(quiz != null)
+                    {
+                        result.Result = true;
+                        result.Message = "Get Quiz successfully";
+                        result.Data = quiz;
+                    }
+                    else
+                    {
+                        result.Result = false;
+                        result.Message = "Empty quiz list";
+                    }
+                    return result;
                 }
             }
             catch (Exception ex)
             {
-                return null;
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
             }
         }
 
-        public List<QuizQuestion> GetQuizQuestions(string quizId)
+        public ResultClass GetQuizQuestions(string quizId)
         {
+            ResultClass result = new ResultClass();
             try
             {
                 using (QuizAppEntities entities = new QuizAppEntities())
                 {
                     var quizQuestions = entities.QuizQuestions.Where(x => x.QuizID.ToString() == quizId).ToList();
 
-                    return quizQuestions;
+                    if (quizQuestions != null)
+                    {
+                        result.Result = true;
+                        result.Message = "Get Quiz question successfully";
+                        result.Data = quizQuestions;
+                    }
+                    else
+                    {
+                        result.Result = false;
+                        result.Message = "Empty quiz question list";
+                    }
+                    return result;
                 }
             }
             catch(Exception ex)
             {
-                return null;
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
             }
         }
     }

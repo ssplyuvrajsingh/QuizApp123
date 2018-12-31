@@ -35,5 +35,6 @@ namespace QuizApp.Models.Entities
         public virtual DbSet<QuizData> QuizDatas { get; set; }
         public virtual DbSet<QuizQuestion> QuizQuestions { get; set; }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+        public virtual DbSet<ParentUser> ParentUsers { get; set; }
     }
 }

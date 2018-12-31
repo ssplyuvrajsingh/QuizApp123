@@ -15,11 +15,11 @@ namespace QuizApp.Controllers
     {
         #region Get Quiz
 
-        //POST api/Account/GetQuiz
+        //POST api/Quiz/GetQuiz
         [HttpPost]
         [AllowAnonymous]
         [Route("GetQuiz")]
-        public ActionResult GetQuiz()
+        public ResultClass GetQuiz()
         {
             try
             {
@@ -27,11 +27,14 @@ namespace QuizApp.Controllers
 
                 var result = quiz.GetQuiz();
 
-                return Json(result, JsonRequestBehavior.AllowGet);
+                return result;
             }
             catch (Exception ex)
             {
-                return Json(ex.Message, JsonRequestBehavior.AllowGet);
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
             }
         }
 
@@ -39,11 +42,11 @@ namespace QuizApp.Controllers
 
         #region Get Quiz Questions
 
-        //POST api/Account/GetQuizQuestions
+        //POST api/Quiz/GetQuizQuestions
         [HttpPost]
         [AllowAnonymous]
         [Route("GetQuizQuestions")]
-        public ActionResult GetQuizQuestions(string QuizId)
+        public ResultClass GetQuizQuestions(string QuizId)
         {
             try
             {
@@ -51,11 +54,14 @@ namespace QuizApp.Controllers
 
                 var result = quiz.GetQuiz();
 
-                return Json(result, JsonRequestBehavior.AllowGet);
+                return result;
             }
             catch (Exception ex)
             {
-                return Json(ex.Message, JsonRequestBehavior.AllowGet);
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
             }
         }
 
