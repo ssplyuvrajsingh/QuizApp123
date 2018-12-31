@@ -3,23 +3,17 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
+using System.Web.Script.Serialization;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.OAuth;
 using QuizApp.Models;
 using QuizApp.Models.Actions;
 using QuizApp.Models.Entities;
 using QuizApp.Models.Input;
-using QuizApp.Providers;
-using QuizApp.Results;
 
 namespace QuizApp.Controllers
 {
@@ -56,109 +50,194 @@ namespace QuizApp.Controllers
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
-        #endregion
+        #endregion        
 
-        #region Get User Info
+        #region Get Token
 
-        // GET api/Account/UserInfo
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-        [Route("UserInfo")]
-        public UserInfoViewModel GetUserInfo()
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("gettoken")]
+        public TokenResult GetToken(TokenBindingModel model)
         {
-            ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
-
-            return new UserInfoViewModel
+            try
             {
-                Email = User.Identity.GetUserName(),
-                HasRegistered = externalLogin == null,
-                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
-            };
+                if (!ModelState.IsValid)
+                {
+                    return new TokenResult()
+                    {
+                        error_message = "Phone Number password is required.",
+                        result = false
+                    };
+                }
+                else
+                {
+                    var user = UserManager.Find(model.PhoneNumber, model.Password);
+                    if (user != null && !user.EmailConfirmed)
+                    {
+                        return new TokenResult()
+                        {
+                            error_message = "User not active. Please verify your mobile number",
+                            result = false
+                        };
+                    }
+                    else if (user != null)
+                    {
+                        AuthRepository authRepository = new AuthRepository();
+                        return authRepository.GenerateToken(model.PhoneNumber, model.Password, user.Id, "");
+                    }
+                    else
+                    {
+                        return new TokenResult()
+                        {
+                            error_message = "Phone Number password is not match.",
+                            result = false
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new TokenResult()
+                {
+                    error_message = ex.Message,
+                    result = false
+                };
+            }
         }
 
-
-        // GET api/Account/ManageInfo?returnUrl=%2F&generateState=true
-        [Route("ManageInfo")]
-        public async Task<ManageInfoViewModel> GetManageInfo(string returnUrl, bool generateState = false)
-        {
-            IdentityUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-
-            if (user == null)
-            {
-                return null;
-            }
-
-            List<UserLoginInfoViewModel> logins = new List<UserLoginInfoViewModel>();
-
-            foreach (IdentityUserLogin linkedAccount in user.Logins)
-            {
-                logins.Add(new UserLoginInfoViewModel
-                {
-                    LoginProvider = linkedAccount.LoginProvider,
-                    ProviderKey = linkedAccount.ProviderKey
-                });
-            }
-
-            if (user.PasswordHash != null)
-            {
-                logins.Add(new UserLoginInfoViewModel
-                {
-                    LoginProvider = LocalLoginProvider,
-                    ProviderKey = user.UserName,
-                });
-            }
-
-            return new ManageInfoViewModel
-            {
-                LocalLoginProvider = LocalLoginProvider,
-                Email = user.UserName,
-                Logins = logins,
-                ExternalLoginProviders = GetExternalLogins(returnUrl, generateState)
-            };
-        }
         #endregion
 
-        #region Logout
-
-        // POST api/Account/RemoveLogin
-        [Route("RemoveLogin")]
-        public async Task<IHttpActionResult> RemoveLogin(RemoveLoginBindingModel model)
+        #region Refresh Token
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("RefreshToken")]
+        public TokenResult RefreshToken(RefreshTokenBindingModel model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new TokenResult()
+                {
+                    error_message = "refresh token is required.",
+                    result = false
+                };
             }
 
-            IdentityResult result;
-
-            if (model.LoginProvider == LocalLoginProvider)
+            var getClient = new User();
+            using (AuthRepository _repo = new AuthRepository())
             {
-                result = await UserManager.RemovePasswordAsync(User.Identity.GetUserId());
-            }
-            else
-            {
-                result = await UserManager.RemoveLoginAsync(User.Identity.GetUserId(),
-                    new UserLoginInfo(model.LoginProvider, model.ProviderKey));
+                getClient = _repo.FindUserByRefreshToken(model.RefreshToken);
             }
 
-            if (!result.Succeeded)
+            if (getClient == null)
             {
-                return GetErrorResult(result);
+                return new TokenResult()
+                {
+                    error_message = "refresh token is expired",
+                    result = false
+                };
             }
 
-            return Ok();
+            AuthRepository authRepository = new AuthRepository();
+            return authRepository.GenerateToken(getClient.AspNetUser.UserName, getClient.Password, getClient.UserID, model.RefreshToken);
         }
+        #endregion
 
-        // POST api/Account/Logout
-        [Route("Logout")]
-        public IHttpActionResult Logout()
+        #region Register
+
+        // POST api/Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("Register")]
+        public async Task<TokenResult> Register(RegisterBindingModel model)
         {
-            Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
-            return Ok();
+            try
+            {
+                TokenResult result = new TokenResult();
+                AccountBinding registration = new AccountBinding();
+
+                if (!ModelState.IsValid)
+                {
+                    result.result = false;
+                    result.error_message = "Please send required fields";
+                    return result;
+                }
+                else if (!string.IsNullOrEmpty(model.UsedReferalCode) && registration.ValidateReferalCode(model.UsedReferalCode, model.PhoneNumber))
+                {
+                    result.result = false;
+                    result.error_message = "Given referal code is not valid";
+                    return result;
+                }
+
+                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email };
+
+
+                IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
+
+                if (!identityResult.Succeeded)
+                {
+                    result.result = identityResult.Succeeded;
+                    result.error_message = "Username or email is already exists";
+                    return result;
+                }
+
+                model.UserId = user.Id;
+                return registration.RegisterUser(model);
+            }
+            catch (Exception ex)
+            {
+                TokenResult result = new TokenResult();
+                result.result = false;
+                result.error_message = ex.Message;
+                return result;
+            }
         }
 
         #endregion
 
-        #region Passwrod
+        #region OTP Verification
+
+        // POST api/Account/OTP Verification
+        [AllowAnonymous]
+        [Route("OTPVerification")]
+        public ResultClass OTPVerification(OTPVerificationBindingModel model)
+        {
+            ResultClass result = new ResultClass();
+            result.Result = false;
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    result.Message = "Phone Number, OTP is required";
+                }
+                else
+                {
+                    result.Message = "OTP verification failed";
+                    var user = UserManager.FindByName(model.PhoneNumber);
+                    if (user != null)
+                    {
+                        AccountBinding registration = new AccountBinding();
+                        result.Result = registration.OTPVerification(model);
+                        if (result.Result)
+                        {
+                            result.Message = "OTP verification successfully";
+                            result.Result = true;
+                            user.EmailConfirmed = true;
+                            UserManager.Update(user);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Password
         // POST api/Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
@@ -167,78 +246,23 @@ namespace QuizApp.Controllers
         {
             try
             {
-                GeneralFunctions generalFunctions = new GeneralFunctions();
-                model.OTP = generalFunctions.GetOTP();
-
-                AccountBinding accountBinding = new AccountBinding();
-
-                var addOTPResult = accountBinding.AddOTP(model);
-
-                ResultClass result = new ResultClass();
-
-                if (addOTPResult.Result)
+                if (!ModelState.IsValid)
                 {
-                    result.Result = true;
-                    result.Message = "OTP send successfully";
+                    return new ResultClass()
+                    {
+                        Result = false,
+                        Message = "Phone Number is required"
+                    };
                 }
                 else
                 {
-                    result.Result = false;
-                    result.Message = "OTP send failure";
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                ResultClass result = new ResultClass();
-                result.Result = false;
-                result.Message = ex.Message;
-                return result;
-            }
-        }
-
-        // POST api/Account/ChangePassword
-        [HttpPost]
-        [AllowAnonymous]
-        [Route("ChangePassword")]
-        public async Task<ResultClass> ChangePassword(ChangePasswordBindingModel model)
-        {
-            try
-            {
-                AccountBinding accountBinding = new AccountBinding();
-
-                GetUserIdPasswordResponse getUserIdPassword = accountBinding.GetUserIdPassword(model.PhoneNumber);
-
-                ResultClass result = new ResultClass();
-
-                if(model.OldPassword != getUserIdPassword.Password)
-                {
-                    result.Result = false;
-                    result.Message = "Increct old password";
-                    return result;
-                }
-
-                IdentityResult identityResult = await UserManager.ChangePasswordAsync(getUserIdPassword.UserId, model.OldPassword,
-                    model.NewPassword);
-
-                if (!identityResult.Succeeded)
-                {
-                    result.Result = identityResult.Succeeded;
-                    result.Message = "Password change failure";
-                    return result;
-                }
-
-                var updatePassword = accountBinding.UpdatePassword(getUserIdPassword.UserId, model.NewPassword);
-
-                if (updatePassword.Result)
-                {
-                    result.Result = true;
-                    result.Message = "Password change successfully";
-                    return result;
-                }
-                else
-                {
-                    return updatePassword;
+                    AccountBinding accountBinding = new AccountBinding();
+                    var addOTPResult = accountBinding.AddOTP(model);
+                    return new ResultClass()
+                    {
+                        Result = addOTPResult,
+                        Message = addOTPResult ? "OTP send successfully" : "OTP send failure"
+                    };
                 }
             }
             catch (Exception ex)
@@ -258,352 +282,55 @@ namespace QuizApp.Controllers
         {
             try
             {
-                AccountBinding accountBinding = new AccountBinding();
-
-                GetUserIdPasswordResponse getUserIdPassword = accountBinding.GetUserIdPassword(model.PhoneNumber);
-
-                RegisterBindingModel registerBinding = new RegisterBindingModel()
-                {
-                    PhoneNumber = model.PhoneNumber,
-                    OTP = model.OTP
-                };
-
-                var OTPVarification = accountBinding.OTPVerification(registerBinding);
-
-                if (OTPVarification.Result)
-                {
-                    IdentityResult removePassoword = await UserManager.RemovePasswordAsync(getUserIdPassword.UserId);
-
-                    var addPassword = await UserManager.AddPasswordAsync(getUserIdPassword.UserId, model.NewPassword);
-
-                    ResultClass result = new ResultClass();
-
-                    if (!addPassword.Succeeded)
-                    {
-                        result.Result = false;
-                        result.Message = "Password change failure";
-                        return result;
-                    }
-
-                    var resultUpdatePassword = accountBinding.UpdatePassword(getUserIdPassword.UserId, model.NewPassword);
-
-                    if (resultUpdatePassword.Result)
-                    {
-                        result.Result = true;
-                        result.Message = "Password change successfully";
-                        return result;
-                    }
-                    else
-                    {
-                        return resultUpdatePassword;
-                    }
-                }
-                else
-                {
-                    return OTPVarification;
-                }
-            }
-            catch (Exception ex)
-            {
-                ResultClass result = new ResultClass();
-                result.Result = false;
-                result.Message = ex.Message;
-                return result;
-            }
-        }
-        #endregion
-
-        #region External Login
-        // POST api/Account/AddExternalLogin
-        [Route("AddExternalLogin")]
-        public async Task<IHttpActionResult> AddExternalLogin(AddExternalLoginBindingModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-
-            AuthenticationTicket ticket = AccessTokenFormat.Unprotect(model.ExternalAccessToken);
-
-            if (ticket == null || ticket.Identity == null || (ticket.Properties != null
-                && ticket.Properties.ExpiresUtc.HasValue
-                && ticket.Properties.ExpiresUtc.Value < DateTimeOffset.UtcNow))
-            {
-                return BadRequest("External login failure.");
-            }
-
-            ExternalLoginData externalData = ExternalLoginData.FromIdentity(ticket.Identity);
-
-            if (externalData == null)
-            {
-                return BadRequest("The external login is already associated with an account.");
-            }
-
-            IdentityResult result = await UserManager.AddLoginAsync(User.Identity.GetUserId(),
-                new UserLoginInfo(externalData.LoginProvider, externalData.ProviderKey));
-
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
-
-            return Ok();
-        }
-
-        // GET api/Account/ExternalLogin
-        [OverrideAuthentication]
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
-        [AllowAnonymous]
-        [Route("ExternalLogin", Name = "ExternalLogin")]
-        public async Task<IHttpActionResult> GetExternalLogin(string provider, string error = null)
-        {
-            if (error != null)
-            {
-                return Redirect(Url.Content("~/") + "#error=" + Uri.EscapeDataString(error));
-            }
-
-            if (!User.Identity.IsAuthenticated)
-            {
-                return new ChallengeResult(provider, this);
-            }
-
-            ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
-
-            if (externalLogin == null)
-            {
-                return InternalServerError();
-            }
-
-            if (externalLogin.LoginProvider != provider)
-            {
-                Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                return new ChallengeResult(provider, this);
-            }
-
-            ApplicationUser user = await UserManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider,
-                externalLogin.ProviderKey));
-
-            bool hasRegistered = user != null;
-
-            if (hasRegistered)
-            {
-                Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-
-                ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(UserManager,
-                   OAuthDefaults.AuthenticationType);
-                ClaimsIdentity cookieIdentity = await user.GenerateUserIdentityAsync(UserManager,
-                    CookieAuthenticationDefaults.AuthenticationType);
-
-                AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(user.UserName);
-                Authentication.SignIn(properties, oAuthIdentity, cookieIdentity);
-            }
-            else
-            {
-                IEnumerable<Claim> claims = externalLogin.GetClaims();
-                ClaimsIdentity identity = new ClaimsIdentity(claims, OAuthDefaults.AuthenticationType);
-                Authentication.SignIn(identity);
-            }
-
-            return Ok();
-        }
-
-        // GET api/Account/ExternalLogins?returnUrl=%2F&generateState=true
-        [AllowAnonymous]
-        [Route("ExternalLogins")]
-        public IEnumerable<ExternalLoginViewModel> GetExternalLogins(string returnUrl, bool generateState = false)
-        {
-            IEnumerable<AuthenticationDescription> descriptions = Authentication.GetExternalAuthenticationTypes();
-            List<ExternalLoginViewModel> logins = new List<ExternalLoginViewModel>();
-
-            string state;
-
-            if (generateState)
-            {
-                const int strengthInBits = 256;
-                state = RandomOAuthStateGenerator.Generate(strengthInBits);
-            }
-            else
-            {
-                state = null;
-            }
-
-            foreach (AuthenticationDescription description in descriptions)
-            {
-                ExternalLoginViewModel login = new ExternalLoginViewModel
-                {
-                    Name = description.Caption,
-                    Url = Url.Route("ExternalLogin", new
-                    {
-                        provider = description.AuthenticationType,
-                        response_type = "token",
-                        client_id = Startup.PublicClientId,
-                        redirect_uri = new Uri(Request.RequestUri, returnUrl).AbsoluteUri,
-                        state = state
-                    }),
-                    State = state
-                };
-                logins.Add(login);
-            }
-
-            return logins;
-        }
-
-        // POST api/Account/RegisterExternal
-        [OverrideAuthentication]
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-        [Route("RegisterExternal")]
-        public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var info = await Authentication.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                return InternalServerError();
-            }
-
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-
-            IdentityResult result = await UserManager.CreateAsync(user);
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
-
-            result = await UserManager.AddLoginAsync(user.Id, info.Login);
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
-            return Ok();
-        }
-
-        #endregion
-
-        #region Login
-
-        // POST api/user/login
-        [HttpPost]
-        [AllowAnonymous]
-        [Route("Login")]
-        public async Task<ResultClass> LoginUser(LoginBindingModel model)
-        {
-            AccountBinding accountBinding = new AccountBinding();
-            return await accountBinding.GetAccessToken(model);
-        }
-
-        #endregion
-
-        #region Register
-
-        // POST api/Account/Register
-        [HttpPost]
-        [AllowAnonymous]
-        [Route("Register")]
-        public async Task<ResultClass> Register(RegisterBindingModel model)
-        {
-            try
-            {
-                ResultClass result = new ResultClass();
                 if (!ModelState.IsValid)
                 {
-                    result.Result = false;
-                    result.Message = "Invalid model state";
-                    return result;
-                }
-
-                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email };
-
-                IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
-
-                if (!identityResult.Succeeded)
-                {
-                    result.Result = identityResult.Succeeded;
-                    result.Message = "User registration failure";
-                    return result;
-                }
-
-                GeneralFunctions generalFunctions = new GeneralFunctions();
-                AccountBinding accountBinding = new AccountBinding();
-                
-                model.ReferalCode = generalFunctions.GetReferalCode();
-                model.OTP = generalFunctions.GetOTP();
-                model.UserId = user.Id;
-                
-                AccountBinding registration = new AccountBinding();
-                var resultRegistration = registration.RegisterUser(model);
-
-                return resultRegistration;
-            }
-            catch(Exception ex)
-            {
-                ResultClass result = new ResultClass();
-                result.Result = false;
-                result.Message = ex.Message;
-                return result;
-            }
-        }
-
-        // POST api/Account/ValidateUsedReferalCode
-        [HttpPost]
-        [AllowAnonymous]
-        [Route("ValidateUsedReferalCode")]
-        public ResultClass ValidateUsedReferalCode(RegisterBindingModel model)
-        {
-            try
-            {
-                ResultClass result = new ResultClass();
-                
-                GeneralFunctions generalFunctions = new GeneralFunctions();
-                AccountBinding accountBinding = new AccountBinding();
-
-                var users = UserManager.Users;
-
-                string userId = string.Empty;
-
-                foreach(var item in users)
-                {
-                    if(item.UserName == model.PhoneNumber)
+                    return new ResultClass()
                     {
-                        userId = item.Id;
-                        break;
-                    }
-                }
-
-                if(userId != null)
-                {
-                    model.UserId = userId;
-
-                    var resultFromUsedReferalCode = accountBinding.GetParentsIDsFromReferalCode(model.UsedReferalCode, userId);
-
-                    if (resultFromUsedReferalCode.Result)
-                    {
-                        model.ParentIDs = resultFromUsedReferalCode.Data.ToString();
-                        AccountBinding registration = new AccountBinding();
-                        var resultRegistration = registration.UpdateRegisterUser(model);
-                        if (resultRegistration.Result)
-                        {
-                            result.Result = true;
-                            result.Message = "Valid Referal Code";
-                            return result;
-                        }
-                        return resultRegistration;
-                    }
-                    else
-                    {
-                        return resultFromUsedReferalCode;
-                    }
+                        Result = false,
+                        Message = "Please send required fields"
+                    };
                 }
                 else
                 {
-                    result.Result = false;
-                    result.Message = "Invalid User Name";
-                    return result;
+                    AccountBinding accountBinding = new AccountBinding();
+                    var OTPVarification = accountBinding.OTPVerification(new OTPVerificationBindingModel()
+                    {
+                        OTP = model.OTP,
+                        PhoneNumber = model.PhoneNumber
+                    });
+
+                    if (!OTPVarification)
+                    {
+                        return new ResultClass()
+                        {
+                            Result = false,
+                            Message = "OTP verification failed"
+                        };
+                    }
+                    else
+                    {
+                        var user = UserManager.FindByName(model.PhoneNumber);
+                        IdentityResult removePassoword = await UserManager.RemovePasswordAsync(user.Id);
+
+                        var addPassword = await UserManager.AddPasswordAsync(user.Id, model.NewPassword);
+                        if (!addPassword.Succeeded)
+                        {
+                            return new ResultClass()
+                            {
+                                Result = false,
+                                Message = "Password change failed"
+                            };
+                        }
+                        else
+                        {
+                            var resultUpdatePassword = accountBinding.UpdatePassword(user.Id, model.NewPassword);
+                            return new ResultClass()
+                            {
+                                Result = true,
+                                Message = "Password change successfully"
+                            };
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -615,30 +342,59 @@ namespace QuizApp.Controllers
             }
         }
 
-        #endregion
-
-        #region OTP Verification
-
-        // POST api/Account/OTP Verification
-        [AllowAnonymous]
-        [Route("OTPVerification")]
-        public ResultClass OTPVerification(RegisterBindingModel model)
+        // POST api/Account/ChangePassword
+        [HttpPost]
+        [Route("ChangePassword")]
+        public async Task<ResultClass> ChangePassword(ChangePasswordBindingModel model)
         {
-            var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email };
-
-            AccountBinding registration = new AccountBinding();
-
-            var OTPVarification = registration.OTPVerification(model);
-
-            if (OTPVarification.Result)
+            try
             {
-                user.EmailConfirmed = true;
+                if (!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Result = false,
+                        Message = "Please send required fields"
+                    };
+                }
+                else
+                {
+                    AccountBinding accountBinding = new AccountBinding();
+
+                    var user = UserManager.FindByName(model.PhoneNumber);
+                    IdentityResult identityResult = await UserManager.ChangePasswordAsync(user.Id, model.OldPassword,
+                    model.NewPassword);
+                    if (!identityResult.Succeeded)
+                    {
+                        return new ResultClass()
+                        {
+                            Result = false,
+                            Message = "Old Password not match"
+                        };
+                    }
+                    else
+                    {
+                        var updatePassword = accountBinding.UpdatePassword(user.Id, model.NewPassword);
+                        return new ResultClass()
+                        {
+                            Result = true,
+                            Message = "Password change successfully"
+                        };
+                    }
+
+                }
             }
-
-            return OTPVarification;
+            catch (Exception ex)
+            {
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
+            }
         }
-
         #endregion
+
+
 
         #region Helpers
 
