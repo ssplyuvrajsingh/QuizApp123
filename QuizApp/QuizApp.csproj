@@ -242,7 +242,7 @@
     </Compile>
     <Compile Include="Models\Actions\Account\AccountBinding.cs" />
     <Compile Include="Models\Actions\Account\AuthRepository.cs" />
-    <Compile Include="Models\Actions\QuizBinding.cs" />
+    <Compile Include="Models\Actions\Quiz\QuizBinding.cs" />
     <Compile Include="Models\Common\Constants.cs" />
     <Compile Include="Models\Common\GeneralFunctions.cs" />
     <Compile Include="Models\Common\MailSenderRepo.cs" />
@@ -303,9 +303,11 @@
     <Compile Include="Models\Input\Account\RegisterBindingModel.cs" />
     <Compile Include="Models\Input\Account\SetPasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\TokenBindingModel.cs" />
-    <Compile Include="Models\Input\QuizBindingModel.cs" />
+    <Compile Include="Models\Input\Quiz\QuizQuestionBindingModel.cs" />
     <Compile Include="Models\Output\Account\TokenResult.cs" />
     <Compile Include="Models\Output\Common\ResultClass.cs" />
+    <Compile Include="Models\Output\QuizData\QuizQuestionResult.cs" />
+    <Compile Include="Models\Output\QuizData\QuizResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
@@ -389,7 +391,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\Output\QuizData\" />
     <Folder Include="Views\Quiz\" />
   </ItemGroup>
   <ItemGroup>
