@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using System.Configuration;
 
 namespace QuizApp.Models
 {
@@ -12,21 +13,27 @@ namespace QuizApp.Models
         #region Quiz
         public List<QuizResult> GetQuiz()
         {
+            var ImageSource = ConfigurationManager.AppSettings["ImageSource"].ToString();
             QuizAppEntities entities = new QuizAppEntities();
-            var data = entities.QuizDatas.Where(x => x.isActive == true).Select(a => new QuizResult()
+            DateTime today = DateTime.Now.Date;
+            var data = entities.QuizDatas.Where(x => x.isActive == true && x.StartDate.Value.Year == today.Year && x.StartDate.Value.Month == today.Month && x.StartDate.Value.Day == today.Day).Select(a => new QuizResult()
             {
                 QuizID = a.QuizID,
                 QuizTitle = a.QuizTitle,
-                QuizBannerImage = a.QuizBannerImage,
-                isActive = a.isActive.Value,
+                QuizBannerImage = ImageSource + a.QuizBannerImage,
                 NoOfQuestion = a.NoOfQuestion.Value,
-                PlayingDescriptionImg = a.PlayingDescriptionImg,
+                PlayingDescriptionImg = ImageSource + a.PlayingDescriptionImg,
                 StartDate = a.StartDate.Value,
-                StartDateStr = a.StartDate.Value.ToString("dd MMM, yyyy"),
                 WinPrecentage = a.WinPrecentage
+            }).ToList();
+
+            data.ForEach(a =>
+            {
+                a.StartDateStr = a.StartDate.ToString("dd MMM, yyyy hh:mm");
+                a.isActive = DateTime.Compare(a.StartDate, DateTime.Now) <= 0;
             });
 
-            return data.Where(x => DateTime.Compare(x.StartDate, DateTime.Now) < 0).ToList();
+            return data;
         }
 
         public int SetQuiz(QuizBindingModel model)
@@ -57,6 +64,8 @@ namespace QuizApp.Models
 
         public QuizQuestionResultMain GetQuizQuestions(Guid quizId, string UserId)
         {
+            var ImageSource = ConfigurationManager.AppSettings["ImageSource"].ToString();
+
             QuizQuestionResultMain quizQuestionResultMain = new QuizQuestionResultMain();
 
             QuizAppEntities entities = new QuizAppEntities();
@@ -67,7 +76,7 @@ namespace QuizApp.Models
                 QuizID = a.QuizID,
                 QuizQuestionID = a.QuizQuestionID,
                 CorrectOption = a.CorrectOption,
-                ImageUrl = a.ImageUrl,
+                ImageUrl = ImageSource + a.ImageUrl,
                 MaxTime = (int)a.MaxTime,
                 Option1 = a.Option1,
                 Option2 = a.Option2,
