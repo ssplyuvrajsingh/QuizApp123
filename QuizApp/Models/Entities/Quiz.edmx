@@ -168,8 +168,8 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
-          <Property Name="PlayerID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PlayerID" Type="int" Nullable="false" />
           <Property Name="QuizQuestionID" Type="int" Nullable="false" />
           <Property Name="SelectedOption" Type="nvarchar(max)" Nullable="false" />
           <Property Name="TimeTaken" Type="int" Nullable="false" />
@@ -271,7 +271,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_QuizPlayer_AspNetUsers">
+        <Association Name="FK_QuizPlayer_AspNetUsers1">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="QuizPlayer" Type="Self.QuizPlayer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="QuizPlayer">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuizPlayer_QuizData">
           <End Role="QuizData" Type="Self.QuizData" Multiplicity="1" />
           <End Role="QuizPlayer" Type="Self.QuizPlayer" Multiplicity="*" />
           <ReferentialConstraint>
@@ -307,15 +319,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_UserAnswer_UserAnswer">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+        <Association Name="FK_UserAnswer_QuizPlayer">
+          <End Role="QuizPlayer" Type="Self.QuizPlayer" Multiplicity="1" />
           <End Role="UserAnswer" Type="Self.UserAnswer" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
+            <Principal Role="QuizPlayer">
+              <PropertyRef Name="PlayerID" />
             </Principal>
             <Dependent Role="UserAnswer">
               <PropertyRef Name="PlayerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAnswer_QuizQuestion">
+          <End Role="QuizQuestion" Type="Self.QuizQuestion" Multiplicity="1" />
+          <End Role="UserAnswer" Type="Self.UserAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuizQuestion">
+              <PropertyRef Name="QuizQuestionID" />
+            </Principal>
+            <Dependent Role="UserAnswer">
+              <PropertyRef Name="QuizQuestionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -392,7 +416,11 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
-          <AssociationSet Name="FK_QuizPlayer_AspNetUsers" Association="Self.FK_QuizPlayer_AspNetUsers">
+          <AssociationSet Name="FK_QuizPlayer_AspNetUsers1" Association="Self.FK_QuizPlayer_AspNetUsers1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="QuizPlayer" EntitySet="QuizPlayer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuizPlayer_QuizData" Association="Self.FK_QuizPlayer_QuizData">
             <End Role="QuizData" EntitySet="QuizData" />
             <End Role="QuizPlayer" EntitySet="QuizPlayer" />
           </AssociationSet>
@@ -404,8 +432,12 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="RefreshToken" EntitySet="RefreshToken" />
           </AssociationSet>
-          <AssociationSet Name="FK_UserAnswer_UserAnswer" Association="Self.FK_UserAnswer_UserAnswer">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          <AssociationSet Name="FK_UserAnswer_QuizPlayer" Association="Self.FK_UserAnswer_QuizPlayer">
+            <End Role="QuizPlayer" EntitySet="QuizPlayer" />
+            <End Role="UserAnswer" EntitySet="UserAnswer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAnswer_QuizQuestion" Association="Self.FK_UserAnswer_QuizQuestion">
+            <End Role="QuizQuestion" EntitySet="QuizQuestion" />
             <End Role="UserAnswer" EntitySet="UserAnswer" />
           </AssociationSet>
           <AssociationSet Name="FK_UserID_UserID" Association="Self.FK_UserID_UserID">
@@ -453,13 +485,13 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="DailyUserLog" EntitySet="DailyUserLogs" />
           </AssociationSet>
+          <AssociationSet Name="FK_QuizPlayer_AspNetUsers1" Association="QuizAppModel.FK_QuizPlayer_AspNetUsers1">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="QuizPlayer" EntitySet="QuizPlayers" />
+          </AssociationSet>
           <AssociationSet Name="FK_RefreshToken_AspNetUsers" Association="QuizAppModel.FK_RefreshToken_AspNetUsers">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="RefreshToken" EntitySet="RefreshTokens" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserAnswer_UserAnswer" Association="QuizAppModel.FK_UserAnswer_UserAnswer">
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="UserAnswer" EntitySet="UserAnswers" />
           </AssociationSet>
           <AssociationSet Name="FK_UserID_UserID" Association="QuizAppModel.FK_UserID_UserID">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
@@ -473,13 +505,21 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="UserWallet" EntitySet="UserWallets" />
           </AssociationSet>
-          <AssociationSet Name="FK_QuizPlayer_AspNetUsers" Association="QuizAppModel.FK_QuizPlayer_AspNetUsers">
+          <AssociationSet Name="FK_QuizPlayer_QuizData" Association="QuizAppModel.FK_QuizPlayer_QuizData">
             <End Role="QuizData" EntitySet="QuizDatas" />
             <End Role="QuizPlayer" EntitySet="QuizPlayers" />
           </AssociationSet>
           <AssociationSet Name="FK_QuizQuestion_QuizData" Association="QuizAppModel.FK_QuizQuestion_QuizData">
             <End Role="QuizData" EntitySet="QuizDatas" />
             <End Role="QuizQuestion" EntitySet="QuizQuestions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAnswer_QuizPlayer" Association="QuizAppModel.FK_UserAnswer_QuizPlayer">
+            <End Role="QuizPlayer" EntitySet="QuizPlayers" />
+            <End Role="UserAnswer" EntitySet="UserAnswers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAnswer_QuizQuestion" Association="QuizAppModel.FK_UserAnswer_QuizQuestion">
+            <End Role="QuizQuestion" EntitySet="QuizQuestions" />
+            <End Role="UserAnswer" EntitySet="UserAnswers" />
           </AssociationSet>
           <AssociationSet Name="AspNetUserRoles" Association="QuizAppModel.AspNetUserRoles">
             <End Role="AspNetRole" EntitySet="AspNetRoles" />
@@ -544,8 +584,8 @@
           <NavigationProperty Name="AspNetUserClaims" Relationship="QuizAppModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserClaim" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
           <NavigationProperty Name="DailyUserLogs" Relationship="QuizAppModel.FK_DailyUserLog_AspNetUsers" FromRole="AspNetUser" ToRole="DailyUserLog" />
+          <NavigationProperty Name="QuizPlayers" Relationship="QuizAppModel.FK_QuizPlayer_AspNetUsers1" FromRole="AspNetUser" ToRole="QuizPlayer" />
           <NavigationProperty Name="RefreshTokens" Relationship="QuizAppModel.FK_RefreshToken_AspNetUsers" FromRole="AspNetUser" ToRole="RefreshToken" />
-          <NavigationProperty Name="UserAnswers" Relationship="QuizAppModel.FK_UserAnswer_UserAnswer" FromRole="AspNetUser" ToRole="UserAnswer" />
           <NavigationProperty Name="Users" Relationship="QuizAppModel.FK_UserID_UserID" FromRole="AspNetUser" ToRole="User" />
           <NavigationProperty Name="UserPoints" Relationship="QuizAppModel.FK_UserPoints_AspNetUsers" FromRole="AspNetUser" ToRole="UserPoint" />
           <NavigationProperty Name="UserWallets" Relationship="QuizAppModel.FK_UserWallet_AspNetUsers" FromRole="AspNetUser" ToRole="UserWallet" />
@@ -585,7 +625,7 @@
           <Property Name="isActive" Type="Boolean" />
           <Property Name="StartDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="QuizPlayers" Relationship="QuizAppModel.FK_QuizPlayer_AspNetUsers" FromRole="QuizData" ToRole="QuizPlayer" />
+          <NavigationProperty Name="QuizPlayers" Relationship="QuizAppModel.FK_QuizPlayer_QuizData" FromRole="QuizData" ToRole="QuizPlayer" />
           <NavigationProperty Name="QuizQuestions" Relationship="QuizAppModel.FK_QuizQuestion_QuizData" FromRole="QuizData" ToRole="QuizQuestion" />
         </EntityType>
         <EntityType Name="QuizPlayer">
@@ -602,7 +642,9 @@
           <Property Name="PercentageEarn" Type="Int32" />
           <Property Name="Language" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="QuizData" Relationship="QuizAppModel.FK_QuizPlayer_AspNetUsers" FromRole="QuizPlayer" ToRole="QuizData" />
+          <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_QuizPlayer_AspNetUsers1" FromRole="QuizPlayer" ToRole="AspNetUser" />
+          <NavigationProperty Name="QuizData" Relationship="QuizAppModel.FK_QuizPlayer_QuizData" FromRole="QuizPlayer" ToRole="QuizData" />
+          <NavigationProperty Name="UserAnswers" Relationship="QuizAppModel.FK_UserAnswer_QuizPlayer" FromRole="QuizPlayer" ToRole="UserAnswer" />
         </EntityType>
         <EntityType Name="QuizQuestion">
           <Key>
@@ -621,6 +663,7 @@
           <Property Name="QuestionPoint" Type="Int32" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="QuizData" Relationship="QuizAppModel.FK_QuizQuestion_QuizData" FromRole="QuizQuestion" ToRole="QuizData" />
+          <NavigationProperty Name="UserAnswers" Relationship="QuizAppModel.FK_UserAnswer_QuizQuestion" FromRole="QuizQuestion" ToRole="UserAnswer" />
         </EntityType>
         <EntityType Name="RefreshToken">
           <Key>
@@ -660,15 +703,16 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="PlayerID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PlayerID" Type="Int32" Nullable="false" />
           <Property Name="QuizQuestionID" Type="Int32" Nullable="false" />
           <Property Name="SelectedOption" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TimeTaken" Type="Int32" Nullable="false" />
           <Property Name="IsCorrect" Type="Boolean" Nullable="false" />
           <Property Name="PointEarn" Type="Int32" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_UserAnswer_UserAnswer" FromRole="UserAnswer" ToRole="AspNetUser" />
+          <NavigationProperty Name="QuizPlayer" Relationship="QuizAppModel.FK_UserAnswer_QuizPlayer" FromRole="UserAnswer" ToRole="QuizPlayer" />
+          <NavigationProperty Name="QuizQuestion" Relationship="QuizAppModel.FK_UserAnswer_QuizQuestion" FromRole="UserAnswer" ToRole="QuizQuestion" />
         </EntityType>
         <EntityType Name="UserPoint">
           <Key>
@@ -738,6 +782,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_QuizPlayer_AspNetUsers1">
+          <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="QuizAppModel.QuizPlayer" Role="QuizPlayer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="QuizPlayer">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_RefreshToken_AspNetUsers">
           <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
           <End Type="QuizAppModel.RefreshToken" Role="RefreshToken" Multiplicity="*" />
@@ -747,18 +803,6 @@
             </Principal>
             <Dependent Role="RefreshToken">
               <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UserAnswer_UserAnswer">
-          <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
-          <End Type="QuizAppModel.UserAnswer" Role="UserAnswer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUser">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserAnswer">
-              <PropertyRef Name="PlayerID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -798,7 +842,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_QuizPlayer_AspNetUsers">
+        <Association Name="FK_QuizPlayer_QuizData">
           <End Type="QuizAppModel.QuizData" Role="QuizData" Multiplicity="1" />
           <End Type="QuizAppModel.QuizPlayer" Role="QuizPlayer" Multiplicity="*" />
           <ReferentialConstraint>
@@ -819,6 +863,30 @@
             </Principal>
             <Dependent Role="QuizQuestion">
               <PropertyRef Name="QuizID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAnswer_QuizPlayer">
+          <End Type="QuizAppModel.QuizPlayer" Role="QuizPlayer" Multiplicity="1" />
+          <End Type="QuizAppModel.UserAnswer" Role="UserAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuizPlayer">
+              <PropertyRef Name="PlayerID" />
+            </Principal>
+            <Dependent Role="UserAnswer">
+              <PropertyRef Name="PlayerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAnswer_QuizQuestion">
+          <End Type="QuizAppModel.QuizQuestion" Role="QuizQuestion" Multiplicity="1" />
+          <End Type="QuizAppModel.UserAnswer" Role="UserAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuizQuestion">
+              <PropertyRef Name="QuizQuestionID" />
+            </Principal>
+            <Dependent Role="UserAnswer">
+              <PropertyRef Name="QuizQuestionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

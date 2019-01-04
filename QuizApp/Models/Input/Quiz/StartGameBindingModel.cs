@@ -6,7 +6,7 @@ using System.Web;
 
 namespace QuizApp.Models
 {
-    public class QuizQuestionBindingModel
+    public class StartGameBindingModel
     {
         [Required]
         public Guid QuizId { get; set; }

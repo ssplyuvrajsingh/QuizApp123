@@ -317,6 +317,8 @@
     <Compile Include="Models\Input\Account\TokenBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\QuizBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\QuizQuestionBindingModel.cs" />
+    <Compile Include="Models\Input\Quiz\SetQuestionAnswer.cs" />
+    <Compile Include="Models\Input\Quiz\StartGameBindingModel.cs" />
     <Compile Include="Models\Output\Account\TokenResult.cs" />
     <Compile Include="Models\Output\Common\ResultClass.cs" />
     <Compile Include="Models\Output\QuizData\QuizQuestionResult.cs" />

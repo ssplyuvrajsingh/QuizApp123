@@ -110,5 +110,79 @@ namespace QuizApp.Controllers
         }
 
         #endregion
+
+        #region Start Game
+
+        [HttpPost]
+        public ResultClass StartGame(StartGameBindingModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    QuizBinding quiz = new QuizBinding();
+                    return new ResultClass()
+                    {
+                        Data = quiz.StartGame(model),
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        #endregion
+
+        #region Start Game
+
+        [HttpPost]
+        public ResultClass SetQuestionAnswer(SetQuestionAnswerBindingModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    QuizBinding quiz = new QuizBinding();
+                    return new ResultClass()
+                    {
+                        Data = quiz.SetQuestionAnswer(model),
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        #endregion
     }
 }

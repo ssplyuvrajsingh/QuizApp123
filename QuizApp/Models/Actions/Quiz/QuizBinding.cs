@@ -29,7 +29,7 @@ namespace QuizApp.Models
 
             data.ForEach(a =>
             {
-                a.StartDateStr = a.StartDate.ToString("dd MMM, yyyy hh:mm");
+                a.StartDateStr = a.StartDate.ToString("dd MMM hh:mm tt");
                 a.isActive = DateTime.Compare(a.StartDate, DateTime.Now) <= 0;
             });
 
@@ -105,6 +105,58 @@ namespace QuizApp.Models
             return quizQuestionResultMain;
         }
 
+        #endregion
+
+        #region Start Game
+        public int StartGame(StartGameBindingModel model)
+        {
+            QuizAppEntities entities = new QuizAppEntities();
+            var player = new QuizPlayer()
+            {
+                CreatedDate = DateTime.Now,
+                IsCompleted = false,
+                IsWon = false,
+                Language = "",
+                PercentageEarn = 0,
+                PlayedDate = DateTime.Now,
+                PointEarn = 0,
+                QuizID = model.QuizId,
+                UserID = model.UserId
+            };
+            entities.QuizPlayers.Add(player);
+            entities.SaveChanges();
+            return player.PlayerID;
+        }
+        #endregion
+
+        #region Set Question Answer
+        public int SetQuestionAnswer(SetQuestionAnswerBindingModel model)
+        {
+            QuizAppEntities entities = new QuizAppEntities();
+            var quizQuestion = entities.QuizQuestions.Where(a => a.QuizQuestionID == model.QuizQuestionID).FirstOrDefault();
+
+            var IsCorrect = (quizQuestion.CorrectOption == model.SelectedOption);
+            var PointEarn = 0;
+            if (IsCorrect)
+            {
+                PointEarn = quizQuestion.QuestionPoint.Value;
+            }
+
+
+            var player = new UserAnswer()
+            {
+                CreatedDate = DateTime.Now,
+                PlayerID = model.PlayerID,
+                IsCorrect = IsCorrect,
+                PointEarn = PointEarn,
+                QuizQuestionID = model.QuizQuestionID,
+                SelectedOption = model.SelectedOption,
+                TimeTaken = model.TimeTakeninSeconds
+            };
+            entities.UserAnswers.Add(player);
+            entities.SaveChanges();
+            return player.ID;
+        }
         #endregion
     }
 }
