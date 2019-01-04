@@ -30,7 +30,7 @@ namespace QuizApp.Models.Actions.Quiz
                 WinPrecentage = a.WinPrecentage
             }).ToList();
 
-            var result = data.Where(x => DateTime.Compare(x.StartDate.Date, DateTime.Now.Date) > 0).ToList();
+            var result = data.Where(x => DateTime.Compare(x.StartDate.Date, DateTime.Now.Date) == 0).ToList();
 
             return result;
         }
