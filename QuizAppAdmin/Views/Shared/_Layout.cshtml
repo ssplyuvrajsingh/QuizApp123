@@ -1,0 +1,207 @@
+﻿@using System.Configuration;
+@using Microsoft.AspNet.Identity
+@{
+    var version = ConfigurationManager.AppSettings["jsversion"].ToString();
+    var Name = User.Identity.GetUserName();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/vendor/loaders.css/loaders.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CRubik:300,400,500%7CSource+Code+Pro" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/c3/c3.min.css">
+    <!--  Bootstrap -->
+    <link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome Icon Fonts -->
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Include MDI Icon Fonts -->
+    <link rel="stylesheet" href="/vendor/mdi/css/materialdesignicons.min.css">
+    <!-- Open Iconic Icon Fonts -->
+    <link href="/vendor/open-iconic/font/css/open-iconic-bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Switch -->
+    <link rel="stylesheet" href="/vendor/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css" />
+
+    <!-- Toastr Popups -->
+    <link rel="stylesheet" type="text/css" href="/vendor/toastr/toastr.min.css">
+    <!-- Sweet Alert Popups -->
+    <link rel="stylesheet" type="text/css" href="/vendor/sweetalert2/dist/sweetalert2.min.css">
+    <!-- iCheck Checkboxes -->
+    <link rel="stylesheet" href="/vendor/iCheck/skins/square/_all.css">
+    <!-- mscroll -->
+    <link rel="stylesheet" type="text/css" href="/vendor/mscroll/jquery.mCustomScrollbar.css">
+
+    <link rel="stylesheet" href="/css/extra/loaders.min.css">
+    <!-- Emphasize (Always Include Last)-->
+    <link rel="stylesheet" href="/css/style.css?ver=@version">
+    <link rel="stylesheet" href="/vendor/datatables/media/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+    <style>
+        .subtasks h4 {
+            margin-bottom: 1em;
+        }
+
+        .subtask h6 {
+            margin-bottom: 1em;
+        }
+    </style>
+    <!-- jQuery -->
+    <script src="/vendor/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap Javascript -->
+    <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/commonFunctions.js?ver=@version"></script>
+    <script src="~/js/admin.js?ver=@version"></script>
+    <script src="/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/media/js/dataTables.bootstrap.min.js"></script>
+    <script src="/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/ckeditor/ckeditor.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/ckeditor/adapters/jquery.js")"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            setTimeout(function () { $('.alert').fadeOut("slow", function () { $('.alert').remove() }) }, 5000);
+            //$(".alert").hide(3000);
+        });
+
+    </script>
+
+</head>
+<body>
+    <div class="page-wrapper fixed-navbar-top">
+        <div id="loader-container" style="display:none">
+            <div id="loader">
+                <div class="loader-inner line-scale">
+                    <div></div><div></div><div></div><div></div><div></div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-blue navbar-fixed-top topbar" style="" id="topbar">
+            <div class="navbar-header navbar-always-float navbar-left">
+                <button class="btn btn-transparent-light navbar-btn navbar-sidebar-toggle  hidden-xs ">
+                    <i class="mdi mdi-menu"></i>
+                </button>
+                <button class="btn btn-transparent-light navbar-btn navbar-sidebar-collapse hidden-sm hidden-md hidden-lg">
+                    <i class="mdi mdi-menu"></i>
+                </button>
+                <a class="navbar-brand" href="#">
+                    <i class="mdi mdi-crown"></i><span class="navbar-brand-text">Admin Panel</span>
+                </a>
+
+            </div>
+            <div class="navbar-body">
+                <div class="">
+                    <div class="row row-table">
+                        <div class="col-md-9 col-lg-10 col-xs-10">
+                            <form class="navbar-form navbar-form-full">
+                                <div class="input-group navbar-input-group">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-1 col-lg-1 col-sm-11 col-xs-2">
+                            <ul class="nav navbar-nav navbar-right navbar-always-float">
+                                <li>
+                                    <a href="/Account/LogOff"><i class="fa fa-sign-out"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div><!-- /.container-fluid -->
+            </div>
+        </nav>
+
+        <div class="sidebar sidebar-dark sidebar-navbar-theme" id="sidebar">
+
+            <div class="sidebar-scrollable-content">
+
+                <div class="sidebar-body">
+                    <div class="main-menu-container">
+                        <ul class="main-nav" id="main-nav">
+                            <li>
+                                <a href="/home">
+                                    <i class="mdi mdi-cube"></i><span class="title">Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="has-arrow">
+                                    <span class="menu-caret"></span>
+                                    <i class="mdi mdi-layers"></i><span class="title">Masters</span>
+                                </a>
+                                <div class="sub-menu">
+                                    <ul>
+                                        <li>
+                                            <a href="/home/Quiz"><span class="title">Quiz</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="#" class="has-arrow">
+                                    <span class="menu-caret"></span>
+                                    <i class="mdi mdi-face"></i><span class="title">@Name</span>
+                                </a>
+                                <div class="sub-menu">
+                                    <ul>
+                                        <li>
+                                            <a href="#"><span class="title">Change Password</span></a>
+                                        </li>
+                                        <li>
+                                            <a href="/Account/LogOff"><span class="title">Logout</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /.main-menu-container -->
+                </div>
+                <!-- /.sidebar-body -->
+            </div>
+            <!-- /.sidebar-scrollable-content -->
+        </div>
+
+        <div class="page">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- /.page-wrapper -->
+    <!-- Bootstrap Switch-->
+    <script src="/vendor/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+
+    <!-- Panel Actions -->
+    <script src="/scripts/panel.min.js"></script>
+    <!-- Class Toggle Plugin -->
+    <script src="/scripts/classtoggle.min.js"></script>
+    <!-- jQuery SlimScroll -->
+    <script src="/vendor/jquery-slimscroll/jquery.slimscroll.min.js" charset="utf-8"></script>
+    <!-- Initialize Emphasize -->
+    <!-- Icheck Checkboxes -->
+    <script src="/vendor/iCheck/icheck.min.js"></script>
+    <!-- mscroller -->
+    <script src="/vendor/mscroll/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="/scripts/init.js?ver=@version"></script>
+    <script>
+        $(function () {
+            $('.datepicker-input').datepicker({
+                autoclose: true
+            });
+        });
+    </script>
+
+    @RenderSection("footer", false)
+    @*$(function () {
+        $('.listbox').multiselect({
+        includeSelectAllOption: true
+        });
+        });*@
+</body>
+</html>

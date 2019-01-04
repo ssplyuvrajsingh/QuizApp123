@@ -1,0 +1,61 @@
+﻿html, body {
+    color: #333333;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+p {
+    color: #1c1c1c;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    line-height: 16px;
+    padding: 0px;
+    margin: 0px;
+}
+
+.clearfix:before, .clearfix:after {
+    content: "";
+    display: table;
+    line-height: 0;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.pdf-report-wrapper {
+    width: 914px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.pdf-report-logo {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.pdf-report-data {
+    padding-bottom: 15px;
+}
+
+    .pdf-report-data h2 {
+        color: #4c4c4c;
+        font-size: 18px;
+        line-height: 20px;
+        font-weight: normal;
+        font-family: 'Raleway', sans-serif;
+        padding: 0px;
+        margin: 0px;
+        padding-bottom: 10px;
+    }
+
+    .pdf-report-data h3 {
+        color: #4c4c4c;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: normal;
+        font-family: 'Raleway', sans-serif;
+        padding: 0px;
+        margin: 0px;
+        padding-bottom: 1px;
+    }
