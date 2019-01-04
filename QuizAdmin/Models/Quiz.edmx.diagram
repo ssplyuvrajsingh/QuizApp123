@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="2e31306ab0944c789fc90edacdff45ed" Name="Diagram1">
+        <EntityTypeShape EntityType="QuizAppModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.AspNetRole" Width="1.5" PointX="0.75" PointY="16.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.AspNetUser" Width="1.5" PointX="3" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.DailyUserLog" Width="1.5" PointX="5.25" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.MobileOTP" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizData" Width="1.5" PointX="7.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizPlayer" Width="1.5" PointX="5.25" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizQuestion" Width="1.5" PointX="10" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.RefreshToken" Width="1.5" PointX="5.25" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.User" Width="1.5" PointX="5.25" PointY="17.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.UserAnswer" Width="1.5" PointX="5.25" PointY="22.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.UserPoint" Width="1.5" PointX="5.25" PointY="25.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QuizAppModel.UserWallet" Width="1.5" PointX="5.25" PointY="29.125" IsExpanded="true" />
+        <AssociationConnector Association="QuizAppModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.FK_DailyUserLog_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.FK_QuizPlayer_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.FK_RefreshToken_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.FK_UserAnswer_UserAnswer" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.FK_UserID_UserID" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.FK_UserPoints_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.FK_UserWallet_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.FK_QuizQuestion_QuizData" ManuallyRouted="false" />
+        <AssociationConnector Association="QuizAppModel.AspNetUserRoles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
