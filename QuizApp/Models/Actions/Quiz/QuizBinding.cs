@@ -1,8 +1,10 @@
 ﻿using QuizApp.Models.Entities;
 using QuizApp.Models.Input;
+using QuizApp.Models.Input.Quiz;
 using QuizApp.Models.Output.QuizData;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
@@ -13,21 +15,24 @@ namespace QuizApp.Models.Actions.Quiz
         public List<QuizResult> GetQuiz()
         {
             QuizAppEntities entities = new QuizAppEntities();
-            return entities.QuizDatas.Where(x => Convert.ToDateTime(x.StartDate).Date == DateTime.Now.Date && x.isActive == true).Select(a => new QuizResult()
+            var data =  entities.QuizDatas.Where(x=> x.isActive == true).Select(a => new QuizResult()
             {
-                isActive = (bool)a.isActive,
+                isActive = a.isActive.Value,
                 CreatedDate = a.CreatedDate,
-                MaxPoint = (double)a.MaxPoint,
-                MinPoint = (double)a.MinPoint,
-                NoOfQuestion = (int)a.NoOfQuestion,
+                MaxPoint = a.MaxPoint.Value,
+                MinPoint = a.MinPoint.Value,
+                NoOfQuestion = a.NoOfQuestion.Value,
                 PlayingDescriptionImg = a.PlayingDescriptionImg,
                 QuizBannerImage = a.QuizBannerImage,
-                QuizDate = (DateTime)a.QuizDate,
                 QuizID = a.QuizID,
                 QuizTitle = a.QuizTitle,
-                StartDate = (DateTime)a.StartDate,
+                StartDate = a.StartDate.Value,
                 WinPrecentage = a.WinPrecentage
             }).ToList();
+
+            var result = data.Where(x => DateTime.Compare(x.StartDate.Date, DateTime.Now.Date) > 0).ToList();
+
+            return result;
         }
 
         public List<QuizQuestionResult> GetQuizQuestions(string quizId)
@@ -48,6 +53,29 @@ namespace QuizApp.Models.Actions.Quiz
                 QuestionPoint = (int)a.QuestionPoint,
                 QuizQuestionID = a.QuizQuestionID
             }).ToList();
+        }
+
+        public int SetQuiz(QuizBindingModel model)
+        {
+            QuizAppEntities entities = new QuizAppEntities();
+
+            QuizData quizData = new QuizData()
+            {
+                CreatedDate = DateTime.Now,
+                isActive = true,
+                MaxPoint = model.MaxPoint,
+                MinPoint = model.MinPoint,
+                NoOfQuestion = model.NoOfQuestion,
+                PlayingDescriptionImg = model.PlayingDescriptionImg,
+                QuizBannerImage = model.QuizBannerImage,
+                StartDate = model.StartDate,
+                QuizID = Guid.NewGuid(),
+                QuizTitle = model.QuizTitle,
+                WinPrecentage = model.WinPrecentage
+            };
+
+            entities.QuizDatas.Add(quizData);
+            return entities.SaveChanges();
         }
     }
 }

@@ -16,13 +16,21 @@
         <EntityTypeShape EntityType="QuizAppModel.MobileOTP" Width="1.5" PointX="0.625" PointY="7" />
         <EntityTypeShape EntityType="QuizAppModel.User" Width="1.5" PointX="5.25" PointY="5.875" />
         <AssociationConnector Association="QuizAppModel.FK_UserID_UserID1" />
-        <EntityTypeShape EntityType="QuizAppModel.QuizData" Width="1.5" PointX="7.375" PointY="1" />
-        <EntityTypeShape EntityType="QuizAppModel.QuizQuestion" Width="1.5" PointX="9.625" PointY="1" />
         <EntityTypeShape EntityType="QuizAppModel.RefreshToken" Width="1.5" PointX="3" PointY="6.375" />
         <AssociationConnector Association="QuizAppModel.FK_RefreshToken_AspNetUsers" />
-        <AssociationConnector Association="QuizAppModel.FK_QuizQuestion_QuizData" />
         <EntityTypeShape EntityType="QuizAppModel.ParentUser" Width="1.5" PointX="5.25" PointY="11.75" />
         <AssociationConnector Association="QuizAppModel.FK_ParentUsers_AspNetUsers" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizPlayer" Width="1.5" PointX="5.25" PointY="21.625" />
+        <EntityTypeShape EntityType="QuizAppModel.UserAnswer" Width="1.5" PointX="7.5" PointY="22" />
+        <EntityTypeShape EntityType="QuizAppModel.UserPoint" Width="1.5" PointX="5.25" PointY="14.625" />
+        <EntityTypeShape EntityType="QuizAppModel.UserWallet" Width="1.5" PointX="5.25" PointY="18" />
+        <AssociationConnector Association="QuizAppModel.FK_QuizPlayer_AspNetUsers" />
+        <AssociationConnector Association="QuizAppModel.FK_UserPoints_AspNetUsers" />
+        <AssociationConnector Association="QuizAppModel.FK_UserWallet_AspNetUsers" />
+        <AssociationConnector Association="QuizAppModel.FK_UserAnswer_UserAnswer" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizData" Width="1.5" PointX="7.375" PointY="1.125" />
+        <EntityTypeShape EntityType="QuizAppModel.QuizQuestion" Width="1.5" PointX="9.625" PointY="1" />
+        <AssociationConnector Association="QuizAppModel.FK_QuizQuestion_QuizData" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

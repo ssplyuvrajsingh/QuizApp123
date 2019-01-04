@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace QuizApp.Models.Output.QuizData
+namespace QuizApp.Models.Input.Quiz
 {
-    public class QuizResult
+    public class QuizBindingModel
     {
-        public Guid QuizID { get; set; }
+        [Required]
         public string QuizTitle { get; set; }
+        [Required]
         public string PlayingDescriptionImg { get; set; }
+        [Required]
         public DateTime StartDate { get; set; }
+        [Required]
         public string QuizBannerImage { get; set; }
+        [Required]
         public int MaxPoint { get; set; }
+        [Required]
         public int MinPoint { get; set; }
+        [Required]
         public int WinPrecentage { get; set; }
+        [Required]
         public int NoOfQuestion { get; set; }
-        public bool isActive { get; set; }
-        public DateTime CreatedDate { get; set; }
     }
 }

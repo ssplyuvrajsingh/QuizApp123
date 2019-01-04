@@ -23,6 +23,9 @@ namespace QuizApp.Models.Entities
             this.Users = new HashSet<User>();
             this.RefreshTokens = new HashSet<RefreshToken>();
             this.ParentUsers = new HashSet<ParentUser>();
+            this.QuizPlayers = new HashSet<QuizPlayer>();
+            this.UserPoints = new HashSet<UserPoint>();
+            this.UserWallets = new HashSet<UserWallet>();
         }
     
         public string Id { get; set; }
@@ -50,5 +53,11 @@ namespace QuizApp.Models.Entities
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ParentUser> ParentUsers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<QuizPlayer> QuizPlayers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserPoint> UserPoints { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserWallet> UserWallets { get; set; }
     }
 }

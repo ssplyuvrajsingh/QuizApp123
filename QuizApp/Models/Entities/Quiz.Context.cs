@@ -32,9 +32,13 @@ namespace QuizApp.Models.Entities
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<MobileOTP> MobileOTPs { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<QuizData> QuizDatas { get; set; }
-        public virtual DbSet<QuizQuestion> QuizQuestions { get; set; }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<ParentUser> ParentUsers { get; set; }
+        public virtual DbSet<QuizPlayer> QuizPlayers { get; set; }
+        public virtual DbSet<UserAnswer> UserAnswers { get; set; }
+        public virtual DbSet<UserPoint> UserPoints { get; set; }
+        public virtual DbSet<UserWallet> UserWallets { get; set; }
+        public virtual DbSet<QuizData> QuizDatas { get; set; }
+        public virtual DbSet<QuizQuestion> QuizQuestions { get; set; }
     }
 }

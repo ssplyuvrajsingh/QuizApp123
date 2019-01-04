@@ -286,6 +286,9 @@
     <Compile Include="Models\Entities\QuizData.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\QuizPlayer.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\QuizQuestion.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
@@ -293,6 +296,15 @@
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\User.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\UserAnswer.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\UserPoint.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\UserWallet.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
@@ -303,6 +315,7 @@
     <Compile Include="Models\Input\Account\RegisterBindingModel.cs" />
     <Compile Include="Models\Input\Account\SetPasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\TokenBindingModel.cs" />
+    <Compile Include="Models\Input\Quiz\QuizBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\QuizQuestionBindingModel.cs" />
     <Compile Include="Models\Output\Account\TokenResult.cs" />
     <Compile Include="Models\Output\Common\ResultClass.cs" />
@@ -322,6 +335,10 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Images\Quiz\game1.png" />
+    <Content Include="Images\Quiz\game2.png" />
+    <Content Include="Images\Quiz\game3.png" />
+    <Content Include="Images\Quiz\game4.png" />
     <Content Include="Models\Entities\Quiz.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Quiz.edmx</DependentUpon>

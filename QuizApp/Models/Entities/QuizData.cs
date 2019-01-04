@@ -23,11 +23,10 @@ namespace QuizApp.Models.Entities
         public System.Guid QuizID { get; set; }
         public string QuizTitle { get; set; }
         public string PlayingDescriptionImg { get; set; }
-        public Nullable<System.DateTime> QuizDate { get; set; }
         public string QuizBannerImage { get; set; }
-        public Nullable<double> MaxPoint { get; set; }
-        public Nullable<double> MinPoint { get; set; }
-        public double WinPrecentage { get; set; }
+        public Nullable<int> MaxPoint { get; set; }
+        public Nullable<int> MinPoint { get; set; }
+        public int WinPrecentage { get; set; }
         public Nullable<int> NoOfQuestion { get; set; }
         public Nullable<bool> isActive { get; set; }
         public Nullable<System.DateTime> StartDate { get; set; }
