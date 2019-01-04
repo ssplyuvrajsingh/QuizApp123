@@ -17,6 +17,7 @@ namespace QuizApp.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public QuizData()
         {
+            this.QuizPlayers = new HashSet<QuizPlayer>();
             this.QuizQuestions = new HashSet<QuizQuestion>();
         }
     
@@ -32,6 +33,8 @@ namespace QuizApp.Models.Entities
         public Nullable<System.DateTime> StartDate { get; set; }
         public System.DateTime CreatedDate { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<QuizPlayer> QuizPlayers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<QuizQuestion> QuizQuestions { get; set; }
     }

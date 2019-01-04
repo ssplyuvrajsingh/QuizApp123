@@ -262,10 +262,10 @@
     <Compile Include="Models\Entities\C__MigrationHistory.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Entities\MobileOTP.cs">
+    <Compile Include="Models\Entities\DailyUserLog.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Entities\ParentUser.cs">
+    <Compile Include="Models\Entities\MobileOTP.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\Quiz.Context.cs">

@@ -17,11 +17,12 @@ namespace QuizApp.Models.Entities
         public int ID { get; set; }
         public string PlayerID { get; set; }
         public int QuizQuestionID { get; set; }
-        public string SelectedOptionID { get; set; }
+        public string SelectedOption { get; set; }
         public int TimeTaken { get; set; }
         public bool IsCorrect { get; set; }
+        public Nullable<int> PointEarn { get; set; }
         public System.DateTime CreatedDate { get; set; }
     
-        public virtual QuizPlayer QuizPlayer { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
     }
 }

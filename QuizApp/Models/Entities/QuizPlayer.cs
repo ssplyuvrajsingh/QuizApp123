@@ -16,7 +16,7 @@ namespace QuizApp.Models.Entities
     {
         public int PlayerID { get; set; }
         public string UserID { get; set; }
-        public string QuizID { get; set; }
+        public System.Guid QuizID { get; set; }
         public Nullable<bool> IsCompleted { get; set; }
         public Nullable<bool> IsWon { get; set; }
         public Nullable<int> PointEarn { get; set; }
@@ -25,7 +25,6 @@ namespace QuizApp.Models.Entities
         public string Language { get; set; }
         public System.DateTime CreatedDate { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual UserAnswer UserAnswer { get; set; }
+        public virtual QuizData QuizData { get; set; }
     }
 }

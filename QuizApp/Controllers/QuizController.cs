@@ -1,7 +1,5 @@
 ﻿using QuizApp.Models;
-using QuizApp.Models.Actions.Quiz;
-using QuizApp.Models.Input;
-using QuizApp.Models.Input.Quiz;
+using QuizApp.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +38,7 @@ namespace QuizApp.Controllers
 
         #endregion
 
-        #region Get Quiz
+        #region Set Quiz
 
         //POST api/Quiz/SetQuiz
         [HttpPost]
@@ -83,13 +81,24 @@ namespace QuizApp.Controllers
         {
             try
             {
-                QuizBinding quiz = new QuizBinding();
-                return new ResultClass()
+                if (!ModelState.IsValid)
                 {
-                    Data = quiz.GetQuizQuestions(model.QuizId),
-                    Message = "Data found successfully",
-                    Result = true
-                };
+                    return new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    QuizBinding quiz = new QuizBinding();
+                    return new ResultClass()
+                    {
+                        Data = quiz.GetQuizQuestions(model.QuizId, model.UserId),
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
             }
             catch (Exception ex)
             {

@@ -19,13 +19,13 @@ namespace QuizApp.Models.Entities
         {
             this.AspNetUserClaims = new HashSet<AspNetUserClaim>();
             this.AspNetUserLogins = new HashSet<AspNetUserLogin>();
-            this.AspNetRoles = new HashSet<AspNetRole>();
-            this.Users = new HashSet<User>();
+            this.DailyUserLogs = new HashSet<DailyUserLog>();
             this.RefreshTokens = new HashSet<RefreshToken>();
-            this.ParentUsers = new HashSet<ParentUser>();
-            this.QuizPlayers = new HashSet<QuizPlayer>();
+            this.UserAnswers = new HashSet<UserAnswer>();
+            this.Users = new HashSet<User>();
             this.UserPoints = new HashSet<UserPoint>();
             this.UserWallets = new HashSet<UserWallet>();
+            this.AspNetRoles = new HashSet<AspNetRole>();
         }
     
         public string Id { get; set; }
@@ -46,18 +46,18 @@ namespace QuizApp.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<DailyUserLog> DailyUserLogs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ParentUser> ParentUsers { get; set; }
+        public virtual ICollection<UserAnswer> UserAnswers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<QuizPlayer> QuizPlayers { get; set; }
+        public virtual ICollection<User> Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPoint> UserPoints { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserWallet> UserWallets { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
     }
 }

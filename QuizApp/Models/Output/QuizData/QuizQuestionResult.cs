@@ -3,8 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace QuizApp.Models.Output.QuizData
+namespace QuizApp.Models
 {
+    public class QuizQuestionResultMain
+    {
+        public List<QuizQuestionResult> Questions { get; set; }
+        public bool AlreadyPlayed { get; set; }
+        public int PlayerID { get; set; }
+        public bool IsCompleted { get; set; }
+        public bool IsWon { get; set; }
+        public int PointEarn { get; set; }
+        public string PlayedDate { get; set; }
+    }
     public class QuizQuestionResult
     {
         public int QuizQuestionID { get; set; }
@@ -18,6 +28,5 @@ namespace QuizApp.Models.Output.QuizData
         public string CorrectOption { get; set; }
         public int MaxTime { get; set; }
         public int QuestionPoint { get; set; }
-        public DateTime CreatedDate { get; set; }
     }
 }

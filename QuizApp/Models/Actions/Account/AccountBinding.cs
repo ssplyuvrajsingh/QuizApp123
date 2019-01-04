@@ -1,5 +1,4 @@
 ﻿using QuizApp.Models.Entities;
-using QuizApp.Models.Input;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

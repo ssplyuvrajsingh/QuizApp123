@@ -11,9 +11,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using QuizApp.Models;
-using QuizApp.Models.Actions;
 using QuizApp.Models.Entities;
-using QuizApp.Models.Input;
 
 namespace QuizApp.Controllers
 {

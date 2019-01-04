@@ -16,7 +16,7 @@ namespace QuizApp.Models.Entities
     {
         public int Id { get; set; }
         public string PhoneNumber { get; set; }
-        public System.DateTime CreatedDate { get; set; }
         public int OTP { get; set; }
+        public System.DateTime CreatedDate { get; set; }
     }
 }

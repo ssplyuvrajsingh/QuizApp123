@@ -4,12 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace QuizApp.Models.Input.Quiz
+namespace QuizApp.Models
 {
     public class QuizQuestionBindingModel
     {
         [Required]
         [Display(Name = "Quiz Id")]
-        public string QuizId { get; set; }
+        public Guid QuizId { get; set; }
+
+        [Required]
+        public string UserId { get; set; }
     }
 }

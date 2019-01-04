@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace QuizApp.Models.Input.Quiz
+namespace QuizApp.Models.Entities
 {
     public class QuizBindingModel
     {

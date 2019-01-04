@@ -12,11 +12,12 @@ namespace QuizApp.Models.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class ParentUser
+    public partial class DailyUserLog
     {
-        public int ID { get; set; }
+        public int LogID { get; set; }
         public string UserID { get; set; }
-        public string ParentId { get; set; }
+        public System.DateTime LogDate { get; set; }
+        public Nullable<bool> VideoWatched { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
     }
