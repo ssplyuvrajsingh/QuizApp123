@@ -1,5 +1,6 @@
 ﻿using QuizApp.Models;
 using QuizApp.Models.Entities;
+using QuizApp.Models.Input.Quiz;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -148,7 +149,33 @@ namespace QuizApp.Controllers
 
         #endregion
 
-        #region Start Game
+        #region End Game
+
+        [HttpPost]
+        public ResultClass EndGame(EndGameBindingModel model)
+        {
+            try
+            {
+                QuizBinding quiz = new QuizBinding();
+                return new ResultClass()
+                {
+                    Data = quiz.EndGame(model),
+                    Message = "Game end successfully",
+                    Result = true
+                };
+            }
+            catch (Exception ex)
+            {
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        #endregion
+
+            #region Set Question Answer
 
         [HttpPost]
         public ResultClass SetQuestionAnswer(SetQuestionAnswerBindingModel model)
