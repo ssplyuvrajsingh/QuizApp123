@@ -167,88 +167,95 @@ namespace QuizApp.Models
             QuizAppEntities entities = new QuizAppEntities();
             var quizData = entities.QuizDatas.Where(x => x.QuizID == model.QuizID).FirstOrDefault();
 
-            int minPoint = (int)quizData.MinPoint;
-
-            int maxPoint = (int)quizData.MinPoint;
-
-            int userAnswerTotal = (int)entities.UserAnswers.Where(x => x.PlayerID == model.PlayerID).Sum(x => x.PointEarn);
-
-            int totalGetPointEarned = minPoint + userAnswerTotal;
-
-            //Get percentage earn
-            int percentageEarn = (totalGetPointEarned * 100) / maxPoint;
-
-            //Get IsWon
-            bool isWon = false;
-            if (quizData.WinPrecentage <= percentageEarn)
+            if (quizData != null)
             {
-                isWon = true;
-            }
+                int minPoint = (int)quizData.MinPoint;
 
-            //Insert user points 
-            UserPoint userPoint = new UserPoint()
-            {
-                UserID = model.UserID,
-                TransactionDate = DateTime.Now,
-                PointsEarned = totalGetPointEarned,
-                PointsWithdraw = totalGetPointEarned,
-                Description = "Point earnd from quiz id : " + model.QuizID,
-                CreatedDate = DateTime.Now
-            };
+                int maxPoint = (int)quizData.MinPoint;
 
-            entities.UserPoints.Add(userPoint);
-            //entities.SaveChanges();
+                int userAnswerTotal = (int)entities.UserAnswers.Where(x => x.PlayerID == model.PlayerID).Sum(x => x.PointEarn);
 
-            //Update or Insert Userwallet
-            var userWallet = entities.UserWallets.Where(x => x.UserID == model.UserID);
+                int totalGetPointEarned = minPoint + userAnswerTotal;
 
-            if (userWallet != null)
-            {
-                UserWallet wallet = new UserWallet()
+                //Get percentage earn
+                int percentageEarn = (totalGetPointEarned * 100) / maxPoint;
+
+                //Get IsWon
+                bool isWon = false;
+                if (quizData.WinPrecentage <= percentageEarn)
                 {
-                    CurrentBalance = totalGetPointEarned,
-                    CurrentPoint = totalGetPointEarned,
-                    LastUpdated = DateTime.Now,
-                    TotalEarn = totalGetPointEarned,
-                    TotalWithdraw = totalGetPointEarned,
-                    PendingWithdraw = totalGetPointEarned
+                    isWon = true;
+                }
+
+                //Insert user points 
+                UserPoint userPoint = new UserPoint()
+                {
+                    UserID = model.UserID,
+                    TransactionDate = DateTime.Now,
+                    PointsEarned = totalGetPointEarned,
+                    PointsWithdraw = 0,
+                    Description = "Point earnd from quiz id : " + model.QuizID,
+                    CreatedDate = DateTime.Now
                 };
-                entities.Entry(userWallet).CurrentValues.SetValues(wallet);
-                //entities.SaveChanges();
+
+                entities.UserPoints.Add(userPoint);
+
+                //Update or Insert Userwallet
+                var userWallet = entities.UserWallets.Where(x => x.UserID == model.UserID).FirstOrDefault();
+
+                if (userWallet != null)
+                {
+                    UserWallet wallet = new UserWallet()
+                    {
+                        CurrentBalance = userWallet.CurrentBalance + totalGetPointEarned,
+                        CurrentPoint = userWallet.CurrentPoint + totalGetPointEarned,
+                        LastUpdated = DateTime.Now,
+                        TotalEarn = userWallet.TotalEarn + totalGetPointEarned,
+                        TotalWithdraw = userWallet.TotalWithdraw + totalGetPointEarned,
+                        PendingWithdraw = userWallet.PendingWithdraw + totalGetPointEarned
+                    };
+                    entities.Entry(userWallet).CurrentValues.SetValues(wallet);
+                }
+                else
+                {
+                    UserWallet wallet = new UserWallet()
+                    {
+                        UserID = model.UserID,
+                        CurrentBalance = totalGetPointEarned,
+                        CurrentPoint = totalGetPointEarned,
+                        LastUpdated = DateTime.Now,
+                        TotalEarn = totalGetPointEarned,
+                        TotalWithdraw = totalGetPointEarned,
+                        PendingWithdraw = totalGetPointEarned,
+                        CreatedDate = DateTime.Now
+                    };
+                    entities.UserWallets.Add(wallet);
+                }
+
+                //Update QuizPlayer
+                var quizPlayer = entities.QuizPlayers.Where(x => x.PlayerID == model.PlayerID).FirstOrDefault();
+
+                if (quizPlayer != null)
+                {
+                    QuizPlayer player = new QuizPlayer()
+                    {
+                        QuizID = model.QuizID,
+                        IsCompleted = true,
+                        IsWon = isWon,
+                        PointEarn = totalGetPointEarned,
+                        PlayedDate = DateTime.Now,
+                        PercentageEarn = percentageEarn,
+                        Language = "English"
+                    };
+
+                    entities.Entry(quizPlayer).CurrentValues.SetValues(player);
+                }
+                return entities.SaveChanges();
             }
             else
             {
-                UserWallet wallet = new UserWallet()
-                {
-                    UserID = model.UserID,
-                    CurrentBalance = totalGetPointEarned,
-                    CurrentPoint = totalGetPointEarned,
-                    LastUpdated = DateTime.Now,
-                    TotalEarn = totalGetPointEarned,
-                    TotalWithdraw = totalGetPointEarned,
-                    PendingWithdraw = totalGetPointEarned,
-                    CreatedDate = DateTime.Now
-                };
-                entities.UserWallets.Add(wallet);
-                //entities.SaveChanges();
+                return 0;
             }
-
-            //Update QuizPlayer
-            var quizPlayer = entities.QuizPlayers.Where(x => x.PlayerID == model.PlayerID).FirstOrDefault();
-            
-            QuizPlayer player = new QuizPlayer()
-            {
-                QuizID = model.QuizID,
-                IsCompleted = true,
-                IsWon = isWon,
-                PointEarn = totalGetPointEarned,
-                PlayedDate = DateTime.Now,
-                PercentageEarn = percentageEarn,
-                Language = "English"
-            };
-
-            entities.Entry(quizPlayer).CurrentValues.SetValues(player);
-            return entities.SaveChanges();
         }
 
         #endregion
