@@ -1,13 +1,14 @@
-﻿@model IEnumerable<QuizAdmin.Models.QuizData>
+﻿@model IEnumerable<QuizAdmin.Models.QuizQuestion>
+
 <!-- /.row -->
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h2>Quiz Master</h2>
+                <h2>Quiz Question Master</h2>
             </div>
             <div class="panel-highlight-action">
-                <a href="/Home/AddQuiz">
+                <a href="/Home/AddQuizQuestion">
                     <button class="btn btn-round btn-danger btn-lg">
                         <i class="fa fa-plus"></i>
                     </button>
@@ -20,22 +21,25 @@
                         <thead>
                             <tr>
                                 <th>
-                                    Name
+                                    Quiz Title
                                 </th>
                                 <th>
-                                    Quiz Start Date
+                                    Question
                                 </th>
                                 <th>
-                                    No Of Questions
+                                    Option1
                                 </th>
                                 <th>
-                                    Max Point
+                                    Option2
                                 </th>
                                 <th>
-                                    Min Point
+                                    Option3
                                 </th>
                                 <th>
-                                    Win Precentage
+                                    Option4
+                                </th>
+                                <th>
+                                    Correct Answer
                                 </th>
                                 <th>
                                 </th>
@@ -46,30 +50,33 @@
                             {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.QuizTitle)
+                                    @Html.DisplayFor(modelItem => item.QuizData.QuizTitle)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.StartDate)
+                                    @Html.DisplayFor(modelItem => item.Question)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.NoOfQuestion)
+                                    @Html.DisplayFor(modelItem => item.Option1)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.MaxPoint)
+                                    @Html.DisplayFor(modelItem => item.Option2)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.MinPoint)
+                                    @Html.DisplayFor(modelItem => item.Option3)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.WinPrecentage)
+                                    @Html.DisplayFor(modelItem => item.Option4)
                                 </td>
                                 <td>
-                                    <a href="/Home/AddQuiz/@item.QuizID?mode=edit">
+                                    @Html.DisplayFor(modelItem => item.CorrectOption)
+                                </td>
+                                <td>
+                                    <a href="/Home/AddQuizQuestion/@item.QuizQuestionID?mode=edit">
                                         <button class="btn btn-primary btn-round">
                                             <i class="fa fa-edit"></i>
                                         </button>
                                     </a>
-                                    <a href="/Home/DeleteQuiz/@item.QuizID" onclick="return confirm('Do you want to Delete ?')">
+                                    <a href="/Home/DeleteQuizQuestion/@item.QuizQuestionID" onclick="return confirm('Do you want to Delete ?')">
                                         <button class="btn btn-danger btn-round">
                                             <i class="fa fa-times"></i>
                                         </button>

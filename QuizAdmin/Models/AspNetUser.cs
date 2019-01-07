@@ -22,7 +22,6 @@ namespace QuizAdmin.Models
             this.DailyUserLogs = new HashSet<DailyUserLog>();
             this.QuizPlayers = new HashSet<QuizPlayer>();
             this.RefreshTokens = new HashSet<RefreshToken>();
-            this.UserAnswers = new HashSet<UserAnswer>();
             this.Users = new HashSet<User>();
             this.UserPoints = new HashSet<UserPoint>();
             this.UserWallets = new HashSet<UserWallet>();
@@ -52,8 +51,6 @@ namespace QuizAdmin.Models
         public virtual ICollection<QuizPlayer> QuizPlayers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserAnswer> UserAnswers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

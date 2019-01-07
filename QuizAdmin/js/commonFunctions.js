@@ -32,7 +32,7 @@ function doAjaxPost(url, data, successCallback) {
 
 function addDatepicker() {
     //changeDateFormat();
-    $(".datepicker").datepicker();
+    $(".datepicker").datetimepicker();
 }
 
 function changeDateFormat() {

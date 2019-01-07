@@ -40,7 +40,8 @@
     <!-- Emphasize (Always Include Last)-->
     <link rel="stylesheet" href="/css/style.css?ver=@version">
     <link rel="stylesheet" href="/vendor/datatables/media/css/dataTables.bootstrap.min.css">
-    <link rel="stylesheet" href="/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+    @*<link rel="stylesheet" href="/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">*@
+    <link href="/vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
     <style>
         .subtasks h4 {
             margin-bottom: 1em;
@@ -58,7 +59,9 @@
     <script src="~/js/admin.js?ver=@version"></script>
     <script src="/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
     <script src="/vendor/datatables/media/js/dataTables.bootstrap.min.js"></script>
-    <script src="/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    @*<script src="/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>*@
+    <script src="/vendor/bootstrap-datetimepicker/js/moment-with-locales.js"></script>
+    <script src="/vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript" src="@Url.Content("~/Content/ckeditor/ckeditor.js")"></script>
     <script type="text/javascript" src="@Url.Content("~/Content/ckeditor/adapters/jquery.js")"></script>
 
@@ -140,6 +143,9 @@
                                         <li>
                                             <a href="/home/Quiz"><span class="title">Quiz</span></a>
                                         </li>
+                                        <li>
+                                            <a href="/home/QuizQuestion"><span class="title">Quiz Question</span></a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
@@ -191,7 +197,7 @@
     <script src="/scripts/init.js?ver=@version"></script>
     <script>
         $(function () {
-            $('.datepicker-input').datepicker({
+            $('.datepicker-input').datetimepicker({
                 autoclose: true
             });
         });

@@ -12,8 +12,34 @@
     $(document).ready(function () {
         var count = 0;
 
-        var manualuploader = new qq.FineUploader({
-            element: $('#manual-fine-uploader')[0],
+        var PlayingDescriptionImgUploader = new qq.FineUploader({
+            element: $('#PlayingDescriptionImgUploader')[0],
+            action: '@Url.Action("/Home/upload")',
+            type: "post",
+            minSizeLimit: 0,
+            autoUpload: true,
+            text: {
+                uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+            },
+            validation: {
+                sizeLimit: 2000000 // 50 kB = 50 * 1024 bytes
+            },
+            callbacks: {
+                onComplete: function (id, filename, responseJSON) {
+                    console.log(responseJSON);
+                    if (responseJSON.success == true) {
+                        var response_show = responseJSON.filename;
+                        $("#PlayingDescriptionImg").val(responseJSON.filename);
+
+                    } else {
+                        alert("Error: " + responseJSON.message);
+                    }
+                }
+            }
+        });
+
+        var QuizBannerImageUploader = new qq.FineUploader({
+            element: $('#QuizBannerImageUploader')[0],
             action: '@Url.Action("/Home/upload")',
             type: "post",
             minSizeLimit: 0,
@@ -65,6 +91,7 @@
                             if (ViewBag.id != null)
                             {
                                 <input type="hidden" name="QuizId" value="@ViewBag.id" />
+                                @Html.HiddenFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control" } })
                             }
                             <div class="row">
                                 <div class="col-md-4">
@@ -74,11 +101,71 @@
                                         @Html.ValidationMessageFor(model => model.QuizTitle, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Attach a File</label>
+                                        <label>Max Point<em>*</em></label>
+                                        @Html.EditorFor(model => model.MaxPoint, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.MaxPoint, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Min Point<em>*</em></label>
+                                        @Html.EditorFor(model => model.MinPoint, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.MinPoint, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Win Precentage<em>*</em></label>
+                                        @Html.EditorFor(model => model.WinPrecentage, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.WinPrecentage, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>No Of Question<em>*</em></label>
+                                        @Html.EditorFor(model => model.NoOfQuestion, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.NoOfQuestion, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Quiz Start Date<em>*</em></label>
+                                        @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control required datepicker" } })
+                                        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Playing Description Image</label>
                                         <div class="controls">
-                                            <div id="manual-fine-uploader">
+                                            <div id="PlayingDescriptionImgUploader">
+                                            </div>
+                                            @Html.HiddenFor(a => a.PlayingDescriptionImg, new { @class = "form-control" })
+                                            @if (Model != null && !string.IsNullOrEmpty(Model.PlayingDescriptionImg))
+                                            {
+                                                <a href="@Model.PlayingDescriptionImg" target="_blank">Download</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Quiz Banner Image</label>
+                                        <div class="controls">
+                                            <div id="QuizBannerImageUploader">
                                             </div>
                                             @Html.HiddenFor(a => a.QuizBannerImage, new { @class = "form-control" })
                                             @if (Model != null && !string.IsNullOrEmpty(Model.QuizBannerImage))
@@ -88,7 +175,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -103,3 +189,7 @@
         </div>
     </div>
 </div>
+
+<script>
+    addDatepicker();
+</script>

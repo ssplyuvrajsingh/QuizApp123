@@ -14,6 +14,12 @@ namespace QuizAdmin.Models
     
     public partial class QuizQuestion
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public QuizQuestion()
+        {
+            this.UserAnswers = new HashSet<UserAnswer>();
+        }
+    
         public int QuizQuestionID { get; set; }
         public System.Guid QuizID { get; set; }
         public string Question { get; set; }
@@ -28,5 +34,7 @@ namespace QuizAdmin.Models
         public System.DateTime CreatedDate { get; set; }
     
         public virtual QuizData QuizData { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserAnswer> UserAnswers { get; set; }
     }
 }

@@ -1,0 +1,187 @@
+﻿@model QuizAdmin.Models.QuizQuestion
+
+@{
+    ViewBag.Title = "AddQuizQuestion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/js/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
+<link href="/Content/Css/fineuploader-3.7.0.min.css" rel="stylesheet" type="text/css" />
+<script src="/js/jquery.fineuploader-3.7.0.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var count = 0;
+
+        var ImageUploader = new qq.FineUploader({
+            element: $('#ImageUploader')[0],
+            action: '@Url.Action("/Home/upload")',
+            type: "post",
+            minSizeLimit: 0,
+            autoUpload: true,
+            text: {
+                uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+            },
+            validation: {
+                sizeLimit: 2000000 // 50 kB = 50 * 1024 bytes
+            },
+            callbacks: {
+                onComplete: function (id, filename, responseJSON) {
+                    console.log(responseJSON);
+                    if (responseJSON.success == true) {
+                        var response_show = responseJSON.filename;
+                        $("#ImageUrl").val(responseJSON.filename);
+
+                    } else {
+                        alert("Error: " + responseJSON.message);
+                    }
+                }
+            }
+        });
+    });
+</script>
+<header class="ribbon">
+    <h2>&nbsp;</h2>
+</header>
+
+<div class="page-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h2>Quiz Question</h2>
+                    </div>
+                    <div class="panel-highlight-action">
+                        <a href="/Home/QuizQuestion">
+                            <button class="btn btn-round btn-danger btn-lg">
+                                <i class="fa fa-chevron-left"></i>
+                            </button>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        @using (Html.BeginForm())
+                        {
+
+                            if (ViewBag.id != null)
+                            {
+                                @Html.HiddenFor(model => model.QuizQuestionID, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.HiddenFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.HiddenFor(model => model.QuizID, new { htmlAttributes = new { @class = "form-control" } })
+                            }
+
+                            <div class="row">
+                                @if (ViewBag.QuizTitle != null)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Quiz Title<em>*</em></label>
+                                            @Html.DropDownListFor(model => model.QuizID, ViewBag.QuizTitle as SelectList, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                }
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Max Time<em>*</em></label>
+                                        @Html.EditorFor(model => model.MaxTime, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.MaxTime, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Question Point<em>*</em></label>
+                                        @Html.EditorFor(model => model.QuestionPoint, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.QuestionPoint, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Question<em>*</em></label>
+                                        @Html.EditorFor(model => model.Question, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.Question, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Correct Answer<em>*</em></label>
+                                        @Html.EditorFor(model => model.CorrectOption, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.CorrectOption, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Image</label>
+                                        <div class="controls">
+                                            <div id="ImageUploader">
+                                            </div>
+                                            @Html.HiddenFor(a => a.ImageUrl, new { @class = "form-control" })
+                                            @if (Model != null && !string.IsNullOrEmpty(Model.CorrectOption))
+                                            {
+                                                <a href="@Model.ImageUrl" target="_blank">Download</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Option1<em>*</em></label>
+                                        @Html.EditorFor(model => model.Option1, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.Option1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Option2<em>*</em></label>
+                                        @Html.EditorFor(model => model.Option2, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.Option2, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Option3<em>*</em></label>
+                                        @Html.EditorFor(model => model.Option3, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.Option3, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Option4<em>*</em></label>
+                                        @Html.EditorFor(model => model.Option4, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.Option4, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        }
+
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-primary panel -->
+            </div>
+            <!-- /.col-md-7 -->
+        </div>
+    </div>
+</div>
+
+<script>
+    addDatepicker();
+</script>
+

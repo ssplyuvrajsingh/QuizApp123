@@ -1,4 +1,5 @@
 ﻿using QuizAdmin.Models;
+using QuizAdmin.Models.Output.Quiz;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -61,11 +62,14 @@ namespace QuizAdmin.Controllers
         {
             return View();
         }
+
         public ActionResult QuizPartialView()
         {
             RepoQuiz db = new RepoQuiz();
+            
             return PartialView(db.getQuiz());
         }
+
         public ActionResult AddQuiz(string mode, Guid? id)
         {
             if (!string.IsNullOrEmpty(mode) && mode == "edit")
@@ -79,6 +83,7 @@ namespace QuizAdmin.Controllers
                 return View();
             }
         }
+
         [HttpPost]
         public ActionResult AddQuiz(QuizData model)
         {
@@ -103,6 +108,7 @@ namespace QuizAdmin.Controllers
 
             return View();
         }
+
         public ActionResult DeleteQuiz(Guid Id)
         {
             try
@@ -117,6 +123,83 @@ namespace QuizAdmin.Controllers
                 {
                     TempData["error"] = "Record Deletion Unsuccessfull";
                     return RedirectToAction("Quiz", "Home");
+                }
+            }
+
+            catch (Exception ee)
+            {
+                TempData["error"] = "Record Not Found or Deleted by Another user";
+                return RedirectToAction("Quiz", "Home");
+            }
+        }
+        #endregion
+
+        #region QuizQuestion
+        public ActionResult QuizQuestion()
+        {
+            return View();
+        }
+
+        public ActionResult QuizQuestionPartialView()
+        {
+            RepoQuiz db = new RepoQuiz();
+            return PartialView(db.getQuizAnswer());
+        }
+
+        public ActionResult AddQuizQuestion(string mode, int? id)
+        {
+            RepoQuiz db = new RepoQuiz();
+            ViewBag.QuizTitle = new SelectList(db.getQuiz().ToList(), "QuizID", "QuizTitle");
+            if (!string.IsNullOrEmpty(mode) && mode == "edit")
+            {
+                ViewBag.id = id.Value;
+                return View(db.getQuizAnswerById(id.Value));
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddQuizQuestion(QuizQuestion model)
+        {
+            try
+            {
+                RepoQuiz db = new RepoQuiz();
+                bool result = db.addUpdateQuizAnswer(model);
+                if (result)
+                {
+                    TempData["success"] = "Saved Successfully";
+                    return RedirectToAction("QuizQuestion", "Home");
+                }
+                else
+                {
+                    TempData["error"] = "Record Added & Updated Unsuccessfully";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Record Added & Updated Unsuccessfully";
+            }
+
+            return View();
+        }
+
+        public ActionResult DeleteQuizQuestion(int Id)
+        {
+            try
+            {
+                RepoQuiz db = new RepoQuiz();
+                if (db.deleteQuizAnswer(Id))
+                {
+                    TempData["success"] = "Deleted Successfully";
+                    return RedirectToAction("QuizQuestion", "Home");
+                }
+                else
+                {
+                    TempData["error"] = "Record Deletion Unsuccessfull";
+                    return RedirectToAction("QuizQuestion", "Home");
                 }
             }
 

@@ -15,7 +15,7 @@ namespace QuizAdmin.Models
     public partial class UserAnswer
     {
         public int ID { get; set; }
-        public string PlayerID { get; set; }
+        public int PlayerID { get; set; }
         public int QuizQuestionID { get; set; }
         public string SelectedOption { get; set; }
         public int TimeTaken { get; set; }
@@ -23,6 +23,7 @@ namespace QuizAdmin.Models
         public Nullable<int> PointEarn { get; set; }
         public System.DateTime CreatedDate { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
+        public virtual QuizPlayer QuizPlayer { get; set; }
+        public virtual QuizQuestion QuizQuestion { get; set; }
     }
 }
