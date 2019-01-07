@@ -315,6 +315,7 @@
     <Compile Include="Models\Input\Account\RegisterBindingModel.cs" />
     <Compile Include="Models\Input\Account\SetPasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\TokenBindingModel.cs" />
+    <Compile Include="Models\Input\Quiz\EndGameBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\QuizBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\QuizQuestionBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\SetQuestionAnswer.cs" />
