@@ -149,7 +149,7 @@ namespace QuizAdmin.Controllers
         public ActionResult AddQuizQuestion(string mode, int? id)
         {
             RepoQuiz db = new RepoQuiz();
-            ViewBag.QuizTitle = new SelectList(db.getQuiz().ToList(), "QuizID", "QuizTitle");
+            ViewBag.QuizTitle = new SelectList(db.getQuiz(), "QuizID", "QuizTitle");
             if (!string.IsNullOrEmpty(mode) && mode == "edit")
             {
                 ViewBag.id = id.Value;

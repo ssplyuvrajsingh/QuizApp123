@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "AddQuizQuestion";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var mm = Model;
 }
 
 <script src="/js/jquery.validate.min.js" type="text/javascript"></script>
@@ -69,7 +70,7 @@
                             {
                                 @Html.HiddenFor(model => model.QuizQuestionID, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.HiddenFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.HiddenFor(model => model.QuizID, new { htmlAttributes = new { @class = "form-control" } })
+                                @*@Html.HiddenFor(model => model.QuizID, new { htmlAttributes = new { @class = "form-control" } })*@
                             }
 
                             <div class="row">
