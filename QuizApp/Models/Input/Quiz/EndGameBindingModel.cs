@@ -17,4 +17,5 @@ namespace QuizApp.Models.Input.Quiz
         [Required]
         public int PlayerID { get; set; }
     }
+
 }
