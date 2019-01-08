@@ -156,13 +156,24 @@ namespace QuizApp.Controllers
         {
             try
             {
-                QuizBinding quiz = new QuizBinding();
-                return new ResultClass()
+                if (!ModelState.IsValid)
                 {
-                    Data = quiz.EndGame(model),
-                    Message = "Game end successfully",
-                    Result = true
-                };
+                    return new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    QuizBinding quiz = new QuizBinding();
+                    return new ResultClass()
+                    {
+                        Data = quiz.EndGame(model),
+                        Message = "Game end successfully",
+                        Result = true
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -175,7 +186,7 @@ namespace QuizApp.Controllers
 
         #endregion
 
-            #region Set Question Answer
+        #region Set Question Answer
 
         [HttpPost]
         public ResultClass SetQuestionAnswer(SetQuestionAnswerBindingModel model)
