@@ -74,9 +74,9 @@ namespace QuizApp.Models
 
             quizQuestionResultMain.Questions = entities.QuizQuestions.Where(x => x.QuizID == quizId).Select(a => new QuizQuestionResult()
             {
-                QuizQuestionID = a.QuizQuestionID,
-                QuizQuestionSet = new QuizQuestionSet()
+                QuizQuestions = new QuizQuestions()
                 {
+                    QuizQuestionID = a.QuizQuestionID,
                     QuizID = a.QuizID,
                     CorrectOption = a.CorrectOption,
                     ImageUrl = ImageSource + a.ImageUrl,

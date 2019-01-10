@@ -18,12 +18,12 @@ namespace QuizApp.Models
 
     public class QuizQuestionResult
     {
-        public int QuizQuestionID { get; set; }
-        public QuizQuestionSet QuizQuestionSet { get; set; }
+        public QuizQuestions QuizQuestions { get; set; }
     }
 
-    public class QuizQuestionSet
+    public class QuizQuestions
     {
+        public int QuizQuestionID { get; set; }
         public Guid QuizID { get; set; }
         public string Question { get; set; }
         public string ImageUrl { get; set; }
