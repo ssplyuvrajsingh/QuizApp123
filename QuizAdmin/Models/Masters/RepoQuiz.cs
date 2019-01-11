@@ -90,6 +90,21 @@ namespace QuizAdmin.Models
             db.SaveChanges();
             return true;
         }
+
+        public List<QuizUserCount> UsersQuizList(string id)
+        {
+            var old = db.QuizPlayers.Where(a => a.UserID == id).GroupBy(a => a.QuizID).ToList();
+            List<QuizUserCount> quizcount = new List<QuizUserCount>();
+            foreach (var quiz in old)
+            {
+                quizcount.Add(new QuizUserCount()
+                {
+                    Quiztitle = quiz.FirstOrDefault().QuizData.QuizTitle,
+                    QuizCount=quiz.Count()
+                });
+            }
+            return quizcount;
+        }
         #endregion
     }
 }

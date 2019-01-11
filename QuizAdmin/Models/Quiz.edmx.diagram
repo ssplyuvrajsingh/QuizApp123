@@ -5,35 +5,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="2e31306ab0944c789fc90edacdff45ed" Name="Diagram1">
-        <EntityTypeShape EntityType="QuizAppModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="1.75" />
-        <EntityTypeShape EntityType="QuizAppModel.AspNetRole" Width="1.5" PointX="0.75" PointY="15.75" />
-        <EntityTypeShape EntityType="QuizAppModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="13.875" />
-        <EntityTypeShape EntityType="QuizAppModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="8" />
-        <EntityTypeShape EntityType="QuizAppModel.AspNetUser" Width="1.5" PointX="3" PointY="14" />
-        <EntityTypeShape EntityType="QuizAppModel.DailyUserLog" Width="1.5" PointX="5.25" PointY="5.25" />
-        <EntityTypeShape EntityType="QuizAppModel.MobileOTP" Width="1.5" PointX="2.75" PointY="1.75" />
-        <EntityTypeShape EntityType="QuizAppModel.QuizData" Width="1.5" PointX="6" PointY="0.75" />
-        <EntityTypeShape EntityType="QuizAppModel.QuizPlayer" Width="1.5" PointX="8.25" PointY="14.75" />
-        <EntityTypeShape EntityType="QuizAppModel.QuizQuestion" Width="1.5" PointX="8.25" PointY="9.625" />
-        <EntityTypeShape EntityType="QuizAppModel.RefreshToken" Width="1.5" PointX="5.25" PointY="24.625" />
-        <EntityTypeShape EntityType="QuizAppModel.User" Width="1.5" PointX="5.25" PointY="27.5" />
-        <EntityTypeShape EntityType="QuizAppModel.UserAnswer" Width="1.5" PointX="10.5" PointY="15" />
-        <EntityTypeShape EntityType="QuizAppModel.UserPoint" Width="1.5" PointX="5.25" PointY="10.625" />
-        <EntityTypeShape EntityType="QuizAppModel.UserWallet" Width="1.5" PointX="5.25" PointY="20.875" />
-        <AssociationConnector Association="QuizAppModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="QuizAppModel.FK_DailyUserLog_AspNetUsers" />
-        <AssociationConnector Association="QuizAppModel.FK_QuizPlayer_AspNetUsers1" />
-        <AssociationConnector Association="QuizAppModel.FK_RefreshToken_AspNetUsers" />
-        <AssociationConnector Association="QuizAppModel.FK_UserID_UserID" />
-        <AssociationConnector Association="QuizAppModel.FK_UserPoints_AspNetUsers" />
-        <AssociationConnector Association="QuizAppModel.FK_UserWallet_AspNetUsers" />
-        <AssociationConnector Association="QuizAppModel.FK_QuizPlayer_QuizData" />
-        <AssociationConnector Association="QuizAppModel.FK_QuizQuestion_QuizData" />
-        <AssociationConnector Association="QuizAppModel.FK_UserAnswer_QuizPlayer" />
-        <AssociationConnector Association="QuizAppModel.FK_UserAnswer_QuizQuestion" />
-        <AssociationConnector Association="QuizAppModel.AspNetUserRoles" />
-      </Diagram>
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

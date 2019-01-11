@@ -1,0 +1,71 @@
+﻿@using QuizAdmin.Models.Output;
+<!-- /.row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2>User Master</h2>
+            </div>
+            <div class="panel-highlight-action">
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table datatable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th> Email</th>
+                                <th>Platform</th>
+                                <th>Phone Number</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.allusers.Count > 0)
+                            {
+                                {
+                                    List<AllUser> listallusers = (List<AllUser>)ViewBag.allusers;
+                                }
+                                foreach (AllUser user in ViewBag.allusers)
+                                {
+                                    <tr>
+                                        <td>
+                                            @user.Name
+                                        </td>
+                                        <td>
+                                          @user.Email
+                                        </td>
+                                        <td>@user.Platform</td>
+                                        <td>@user.PhoneNumber</td>
+                                        <td>
+                                                <a href="/Home/UsersGame/@user.UserId">
+                                                    <button class="btn btn-primary btn-round">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                </a>
+                                                @*<a href="/Home/DeleteQuiz/@item.QuizID" onclick="return confirm('Do you want to Delete ?')">
+                                                    <button class="btn btn-danger btn-round">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </a>*@
+                                            </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.panel -->
+        </div>
+    </div>
+</div>
+<!-- /.row -->
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('table.datatable').dataTable();
+    });
+</script>

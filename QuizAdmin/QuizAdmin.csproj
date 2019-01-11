@@ -226,9 +226,12 @@
     <Compile Include="Models\Input\Quiz\QuizQuestionBindingModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Masters\RepoQuiz.cs" />
+    <Compile Include="Models\Masters\RepoUserMaster.cs" />
     <Compile Include="Models\MobileOTP.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Output\Quiz\QuizUserCount.cs" />
+    <Compile Include="Models\Output\Users\AllUser.cs" />
     <Compile Include="Models\Output\Quiz\QuizQuestionResult.cs" />
     <Compile Include="Models\Output\Quiz\QuizResult.cs" />
     <Compile Include="Models\Quiz.Context.cs">
@@ -1335,6 +1338,9 @@
     <Content Include="Views\Home\QuizQuestion.cshtml" />
     <Content Include="Views\Home\QuizQuestionPartialView.cshtml" />
     <Content Include="Views\Home\AddQuizQuestion.cshtml" />
+    <Content Include="Views\Home\UserMaster.cshtml" />
+    <Content Include="Views\Home\UserMasterPartialView.cshtml" />
+    <Content Include="Views\Home\UsersGame.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

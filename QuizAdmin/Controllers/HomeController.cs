@@ -66,7 +66,7 @@ namespace QuizAdmin.Controllers
         public ActionResult QuizPartialView()
         {
             RepoQuiz db = new RepoQuiz();
-            
+
             return PartialView(db.getQuiz());
         }
 
@@ -208,6 +208,29 @@ namespace QuizAdmin.Controllers
                 TempData["error"] = "Record Not Found or Deleted by Another user";
                 return RedirectToAction("Quiz", "Home");
             }
+        }
+        #endregion
+
+        #region user
+        public ActionResult UserMaster()
+        {
+            return View();
+        }
+
+        public ActionResult UserMasterPartialView()
+        {
+            RepoUserMaster db = new RepoUserMaster();
+            var s = db.getUser();
+            ViewBag.allusers = s;
+            return PartialView();
+        }
+        #endregion
+
+        #region Game
+        public ActionResult UsersGame(string id)
+        {
+            RepoQuiz db = new RepoQuiz();
+            return View(db.UsersQuizList(id));
         }
         #endregion
     }

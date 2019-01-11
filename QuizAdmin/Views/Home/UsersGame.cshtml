@@ -1,0 +1,62 @@
+﻿@model IEnumerable<QuizAdmin.Models.QuizUserCount>
+@{
+    ViewBag.Title = "UserGame";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- /.row -->
+<div class="page-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h2>Game Master</h2>
+                    </div>
+                    <div class="panel-highlight-action">
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Quiz Title
+                                        </th>
+                                        <th>
+                                            Count
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var userquiz in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @userquiz.Quiztitle
+                                            </td>
+                                            <td>
+                                                @userquiz.QuizCount
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.panel -->
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('table.datatable').dataTable();
+    });
+</script>
+

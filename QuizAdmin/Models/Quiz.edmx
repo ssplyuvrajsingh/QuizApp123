@@ -168,7 +168,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PlayerID" Type="int" Nullable="false" />
           <Property Name="QuizQuestionID" Type="int" Nullable="false" />
           <Property Name="SelectedOption" Type="nvarchar(max)" Nullable="false" />
