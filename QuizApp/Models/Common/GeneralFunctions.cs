@@ -21,10 +21,8 @@ namespace QuizApp.Models
         public static string GetReferalCode()
         {
             int length = random.Next(4, 11);
-
-            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            string referalCode = new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
+            
+            string referalCode = RandomString(length);
 
             using (QuizAppEntities entities = new QuizAppEntities())
             {

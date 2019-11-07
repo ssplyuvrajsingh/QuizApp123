@@ -15,13 +15,8 @@ namespace QuizApp.Models
         public int PointEarn { get; set; }
         public string PlayedDate { get; set; }
     }
-
+    
     public class QuizQuestionResult
-    {
-        public QuizQuestions QuizQuestions { get; set; }
-    }
-
-    public class QuizQuestions
     {
         public int QuizQuestionID { get; set; }
         public Guid QuizID { get; set; }

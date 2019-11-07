@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Configuration;
 using QuizApp.Models.Input.Quiz;
+using QuizApp.Models.Output.QuizData;
 
 namespace QuizApp.Models
 {
@@ -74,23 +75,20 @@ namespace QuizApp.Models
 
             quizQuestionResultMain.Questions = entities.QuizQuestions.Where(x => x.QuizID == quizId).Select(a => new QuizQuestionResult()
             {
-                QuizQuestions = new QuizQuestions()
+                QuizQuestionID = a.QuizQuestionID,
+                QuizID = a.QuizID,
+                CorrectOption = a.CorrectOption,
+                ImageUrl = ImageSource + a.ImageUrl,
+                MaxTime = (int)a.MaxTime,
+                Options = new QuestionOptions()
                 {
-                    QuizQuestionID = a.QuizQuestionID,
-                    QuizID = a.QuizID,
-                    CorrectOption = a.CorrectOption,
-                    ImageUrl = ImageSource + a.ImageUrl,
-                    MaxTime = (int)a.MaxTime,
-                    Options = new QuestionOptions()
-                    {
-                        Option1 = a.Option1,
-                        Option2 = a.Option2,
-                        Option3 = a.Option3,
-                        Option4 = a.Option4
-                    },
-                    Question = a.Question,
-                    QuestionPoint = (int)a.QuestionPoint,
-                }
+                    Option1 = a.Option1,
+                    Option2 = a.Option2,
+                    Option3 = a.Option3,
+                    Option4 = a.Option4
+                },
+                Question = a.Question,
+                QuestionPoint = (int)a.QuestionPoint
             }).OrderBy(r => Guid.NewGuid()).Take(quiz.NoOfQuestion.Value).ToList();
 
             var existingData = entities.QuizPlayers.Where(a => a.QuizID == quizId && a.UserID == UserId).OrderByDescending(a => a.PlayedDate).FirstOrDefault();
@@ -167,7 +165,7 @@ namespace QuizApp.Models
 
         #region End Game
 
-        public int EndGame(EndGameBindingModel model)
+        public EndGameResult EndGame(EndGameBindingModel model)
         {
             QuizAppEntities entities = new QuizAppEntities();
             var quizData = entities.QuizDatas.Where(x => x.QuizID == model.QuizID).FirstOrDefault();
@@ -217,7 +215,10 @@ namespace QuizApp.Models
                         LastUpdated = DateTime.Now,
                         TotalEarn = userWallet.TotalEarn + totalGetPointEarned,
                         TotalWithdraw = userWallet.TotalWithdraw + totalGetPointEarned,
-                        PendingWithdraw = userWallet.PendingWithdraw + totalGetPointEarned
+                        PendingWithdraw = userWallet.PendingWithdraw + totalGetPointEarned,
+                        CreatedDate = userWallet.CreatedDate,
+                        WalletID = userWallet.WalletID,
+                        UserID = userWallet.UserID
                     };
                     entities.Entry(userWallet).CurrentValues.SetValues(wallet);
                 }
@@ -232,7 +233,7 @@ namespace QuizApp.Models
                         TotalEarn = totalGetPointEarned,
                         TotalWithdraw = totalGetPointEarned,
                         PendingWithdraw = totalGetPointEarned,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now,
                     };
                     entities.UserWallets.Add(wallet);
                 }
@@ -244,22 +245,60 @@ namespace QuizApp.Models
                 {
                     QuizPlayer player = new QuizPlayer()
                     {
+                        PlayerID = quizPlayer.PlayerID,
                         QuizID = model.QuizID,
                         IsCompleted = true,
                         IsWon = isWon,
                         PointEarn = totalGetPointEarned,
                         PlayedDate = DateTime.Now,
                         PercentageEarn = percentageEarn,
-                        Language = "English"
+                        Language = "English",
+                        UserID = quizPlayer.UserID,
+                        CreatedDate = quizPlayer.CreatedDate
                     };
 
                     entities.Entry(quizPlayer).CurrentValues.SetValues(player);
                 }
-                return entities.SaveChanges();
+                entities.SaveChanges();
+
+                return new EndGameResult()
+                {
+                    PercentageEarn = percentageEarn,
+                    PointsEarned = totalGetPointEarned,
+                    IsWon = isWon,
+                    TimeTakeninSeconds = entities.UserAnswers.Where(x => x.PlayerID == model.PlayerID).Sum(x => x.TimeTaken)
+                };
             }
             else
             {
-                return 0;
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region GetScoreByQuiz
+
+        public GetScoreResult GetScoreByQuiz(GetScoreByQuiz model)
+        {
+            QuizAppEntities entities = new QuizAppEntities();
+            var quizPlayer = entities.QuizPlayers.Where(x => x.UserID == model.UserID && x.QuizID == model.QuizID);
+            if (quizPlayer != null)
+            {
+                int playerBestScore = (int)quizPlayer.Max(x => x.PointEarn);
+                return new GetScoreResult()
+                {
+                    YourBestScore = playerBestScore,
+                    OverallScore = (int)entities.QuizDatas.Where(x => x.QuizID == model.QuizID).FirstOrDefault().MaxPoint
+                };
+            }
+            else
+            {
+                return new GetScoreResult()
+                {
+                    YourBestScore = 0,
+                    OverallScore = (int)entities.QuizDatas.Where(x => x.QuizID == model.QuizID).FirstOrDefault().MaxPoint
+                };
             }
         }
 

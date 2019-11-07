@@ -316,12 +316,15 @@
     <Compile Include="Models\Input\Account\SetPasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\TokenBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\EndGameBindingModel.cs" />
+    <Compile Include="Models\Input\Quiz\GetYourHighScoreByQuiz.cs" />
     <Compile Include="Models\Input\Quiz\QuizBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\QuizQuestionBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\SetQuestionAnswer.cs" />
     <Compile Include="Models\Input\Quiz\StartGameBindingModel.cs" />
     <Compile Include="Models\Output\Account\TokenResult.cs" />
     <Compile Include="Models\Output\Common\ResultClass.cs" />
+    <Compile Include="Models\Output\QuizData\EndGameResult.cs" />
+    <Compile Include="Models\Output\QuizData\GetScoreResult.cs" />
     <Compile Include="Models\Output\QuizData\QuizQuestionResult.cs" />
     <Compile Include="Models\Output\QuizData\QuizResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -384,6 +387,7 @@
       <DependentUpon>Quiz.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -395,7 +399,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

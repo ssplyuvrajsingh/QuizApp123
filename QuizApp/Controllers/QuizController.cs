@@ -222,5 +222,42 @@ namespace QuizApp.Controllers
         }
 
         #endregion
+
+        #region GetScoreByQuiz
+
+        [HttpPost]
+        public ResultClass GetScoreByQuiz(GetScoreByQuiz model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    QuizBinding quiz = new QuizBinding();
+                    return new ResultClass()
+                    {
+                        Data = quiz.GetScoreByQuiz(model),
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                ResultClass result = new ResultClass();
+                result.Result = false;
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        #endregion
     }
 }

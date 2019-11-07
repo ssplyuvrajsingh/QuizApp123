@@ -1,4 +1,3 @@
-D:\Rakesh Projects\quizapp\QuizAdmin\obj\Debug\QuizAdmin.csprojAssemblyReference.cache
 D:\Rakesh Projects\quizapp\QuizAdmin\obj\Debug\QuizAdmin.csproj.CoreCompileInputs.cache
 D:\Rakesh Projects\quizapp\QuizAdmin\bin\ApplicationInsights.config
 D:\Rakesh Projects\quizapp\QuizAdmin\bin\QuizAdmin.dll.config
@@ -98,3 +97,4 @@ D:\Rakesh Projects\quizapp\QuizAdmin\bin\Microsoft.CodeDom.Providers.DotNetCompi
 D:\Rakesh Projects\quizapp\QuizAdmin\obj\Debug\QuizAdmin.csproj.CopyComplete
 D:\Rakesh Projects\quizapp\QuizAdmin\obj\Debug\QuizAdmin.dll
 D:\Rakesh Projects\quizapp\QuizAdmin\obj\Debug\QuizAdmin.pdb
+D:\Rakesh Projects\quizapp\QuizAdmin\obj\Debug\QuizAdmin.csprojAssemblyReference.cache
