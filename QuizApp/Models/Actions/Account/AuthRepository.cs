@@ -27,15 +27,15 @@ namespace QuizApp.Models
             var RefreshToken = new RefreshToken();
             using (AuthRepository _repo = new AuthRepository())
             {
-                if (string.IsNullOrEmpty(RefreshTokenStr))
-                {
-                    RefreshToken = _repo.AddRefreshToken(UserId, tokenResult.access_token);
-                    tokenResult.refresh_token = RefreshToken.ProtectedTicket;
-                }
-                else
-                {
-                    tokenResult.refresh_token = RefreshTokenStr;
-                }
+                //if (string.IsNullOrEmpty(RefreshTokenStr))
+                //{
+                //    RefreshToken = _repo.AddRefreshToken(UserId, tokenResult.access_token);
+                //    tokenResult.refresh_token = RefreshToken.ProtectedTicket;
+                //}
+                //else
+                //{
+                //    tokenResult.refresh_token = RefreshTokenStr;
+                //}
 
                 tokenResult.id = UserId;
             }
@@ -47,7 +47,7 @@ namespace QuizApp.Models
         #region Refresh Token
         public RefreshToken AddRefreshToken(string UserId, string AccessToken)
         {
-            var existingToken = _ctx.RefreshTokens.Where(r => r.UserId == UserId).SingleOrDefault();
+            var existingToken = _ctx.RefreshTokens.Where(r => r.UserId == UserId).FirstOrDefault();
 
             if (existingToken != null)
             {

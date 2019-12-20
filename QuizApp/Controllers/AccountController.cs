@@ -97,7 +97,7 @@ namespace QuizApp.Controllers
             {
                 return new TokenResult()
                 {
-                    error_message = ex.Message,
+                    error_message = ex.Message + "--"+ ex.StackTrace,
                     result = false
                 };
             }
