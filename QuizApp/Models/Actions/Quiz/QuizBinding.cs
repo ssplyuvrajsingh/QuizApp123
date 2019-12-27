@@ -17,7 +17,6 @@ namespace QuizApp.Models
         {
             var ImageSource = ConfigurationManager.AppSettings["ImageSource"].ToString();
             QuizAppEntities entities = new QuizAppEntities();
-            DateTime today = DateTime.Now.Date;
             var data = entities.QuizDatas.Where(x => x.isActive == true).Select(a => new QuizResult()
             {
                 QuizID = a.QuizID,
