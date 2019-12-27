@@ -94,20 +94,46 @@ namespace QuizApp.Models
             using (QuizAppEntities entities = new QuizAppEntities())
             {
                 var user = entities.Users.Where(x => x.ReferalCode == usedReferalCode && x.UserID != userId).FirstOrDefault();
-
-                if (user != null)
+                if (!string.IsNullOrEmpty(user.ParentIDs))
                 {
-                    if (!string.IsNullOrEmpty(user.ParentIDs))
+                    if (user != null)
                     {
                         RefCode = user.ParentIDs + "," + user.UserID;
+                        RefCode = UpdateParentIDsFromReferalCode(RefCode);
                     }
                     else
                     {
                         RefCode = user.UserID;
                     }
                 }
+
             }
             return RefCode;
+        }
+        public string UpdateParentIDsFromReferalCode(string RefCode)
+        {
+            string[] Ref = RefCode.Split(',');
+            if (Ref.Length >= 10)
+            {
+                for (int i = 0, j = 1; i < Ref.Length; i++, j++)
+                {
+                    if (i == Ref.Length - 1)
+                    {
+                        Ref[i] = "";
+                    }
+                    else
+                    {
+                        Ref[i] = Ref[j];
+                    }
+
+                }
+                Ref = Ref.Where(w => w != Ref[Ref.Length - 1]).ToArray();
+                return RefCode = string.Join(",", Ref);
+            }
+            else
+            {
+                return RefCode;
+            }
         }
         #endregion
 
