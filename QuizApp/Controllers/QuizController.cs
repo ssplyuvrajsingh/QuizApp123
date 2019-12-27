@@ -21,12 +21,25 @@ namespace QuizApp.Controllers
             try
             {
                 QuizBinding quiz = new QuizBinding();
-                return new ResultClass()
+                var data = quiz.GetQuiz();
+                if (data.Count() > 0)
                 {
-                    Data = quiz.GetQuiz(),
-                    Message = "Data found successfully",
-                    Result = true
-                };
+                    return new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    return new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data not found",
+                        Result = false
+                    };
+                }
             }
             catch (Exception ex)
             {
