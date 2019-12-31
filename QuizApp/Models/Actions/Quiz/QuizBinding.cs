@@ -12,11 +12,14 @@ namespace QuizApp.Models
 {
     public class QuizBinding
     {
+        #region Database Entities Declaration
+        QuizAppEntities entities = new QuizAppEntities();
+        #endregion
+
         #region Quiz
         public List<QuizResult> GetQuiz()
         {
             var ImageSource = ConfigurationManager.AppSettings["ImageSource"].ToString();
-            QuizAppEntities entities = new QuizAppEntities();
             var data = entities.QuizDatas.Where(x => x.isActive == true).Select(a => new QuizResult()
             {
                 QuizID = a.QuizID,
@@ -62,50 +65,50 @@ namespace QuizApp.Models
         #endregion
 
         #region Quiz Questions
-
         public QuizQuestionResultMain GetQuizQuestions(Guid quizId, string UserId)
         {
             var ImageSource = ConfigurationManager.AppSettings["ImageSource"].ToString();
 
             QuizQuestionResultMain quizQuestionResultMain = new QuizQuestionResultMain();
-
-            QuizAppEntities entities = new QuizAppEntities();
             var quiz = entities.QuizDatas.Where(a => a.QuizID == quizId).FirstOrDefault();
-
-            quizQuestionResultMain.Questions = entities.QuizQuestions.Where(x => x.QuizID == quizId).Select(a => new QuizQuestionResult()
+            if (quiz != null)
             {
-                QuizQuestionID = a.QuizQuestionID,
-                QuizID = a.QuizID,
-                CorrectOption = a.CorrectOption,
-                ImageUrl = ImageSource + a.ImageUrl,
-                MaxTime = (int)a.MaxTime,
-                Options = new QuestionOptions()
+                quizQuestionResultMain.Questions = entities.QuizQuestions.Where(x => x.QuizID == quizId).Select(a => new QuizQuestionResult()
                 {
-                    Option1 = a.Option1,
-                    Option2 = a.Option2,
-                    Option3 = a.Option3,
-                    Option4 = a.Option4
-                },
-                Question = a.Question,
-                QuestionPoint = (int)a.QuestionPoint
-            }).OrderBy(r => Guid.NewGuid()).Take(quiz.NoOfQuestion.Value).ToList();
+                    QuizQuestionID = a.QuizQuestionID,
+                    QuizID = a.QuizID,
+                    CorrectOption = a.CorrectOption,
+                    ImageUrl = ImageSource + a.ImageUrl,
+                    MaxTime = (int)a.MaxTime,
+                    Options = new QuestionOptions()
+                    {
+                        Option1 = a.Option1,
+                        Option2 = a.Option2,
+                        Option3 = a.Option3,
+                        Option4 = a.Option4
+                    },
+                    Question = a.Question,
+                    QuestionPoint = (int)a.QuestionPoint
+                }).OrderBy(r => Guid.NewGuid()).Take(quiz.NoOfQuestion.Value).ToList();
 
-            var existingData = entities.QuizPlayers.Where(a => a.QuizID == quizId && a.UserID == UserId).OrderByDescending(a => a.PlayedDate).FirstOrDefault();
+                var existingData = entities.QuizPlayers.Where(a => a.QuizID == quizId && a.UserID == UserId).OrderByDescending(a => a.PlayedDate).FirstOrDefault();
 
-            if (existingData != null)
-            {
-                quizQuestionResultMain.AlreadyPlayed = true;
-                quizQuestionResultMain.IsCompleted = existingData.IsCompleted.Value;
-                quizQuestionResultMain.IsWon = existingData.IsWon.Value;
-                quizQuestionResultMain.PlayedDate = existingData.PlayedDate.Value.ToString("dd MMM, yyyy");
-                quizQuestionResultMain.PlayerID = existingData.PlayerID;
-                quizQuestionResultMain.PointEarn = existingData.PointEarn.Value;
+                if (existingData != null)
+                {
+                    quizQuestionResultMain.AlreadyPlayed = true;
+                    quizQuestionResultMain.IsCompleted = existingData.IsCompleted.Value;
+                    quizQuestionResultMain.IsWon = existingData.IsWon.Value;
+                    quizQuestionResultMain.PlayedDate = existingData.PlayedDate.Value.ToString("dd MMM, yyyy");
+                    quizQuestionResultMain.PlayerID = existingData.PlayerID;
+                    quizQuestionResultMain.PointEarn = existingData.PointEarn.Value;
+                }
+                else
+                {
+                    quizQuestionResultMain.AlreadyPlayed = false;
+                }
+                return quizQuestionResultMain;
             }
-            else
-            {
-                quizQuestionResultMain.AlreadyPlayed = false;
-            }
-            return quizQuestionResultMain;
+            return null;
         }
 
         #endregion
@@ -113,7 +116,6 @@ namespace QuizApp.Models
         #region Start Game
         public int StartGame(StartGameBindingModel model)
         {
-            QuizAppEntities entities = new QuizAppEntities();
             var player = new QuizPlayer()
             {
                 CreatedDate = DateTime.Now,
@@ -135,7 +137,6 @@ namespace QuizApp.Models
         #region Set Question Answer
         public int SetQuestionAnswer(SetQuestionAnswerBindingModel model)
         {
-            QuizAppEntities entities = new QuizAppEntities();
             var quizQuestion = entities.QuizQuestions.Where(a => a.QuizQuestionID == model.QuizQuestionID).FirstOrDefault();
 
             var IsCorrect = (quizQuestion.CorrectOption == model.SelectedOption);
@@ -166,7 +167,6 @@ namespace QuizApp.Models
 
         public EndGameResult EndGame(EndGameBindingModel model)
         {
-            QuizAppEntities entities = new QuizAppEntities();
             var quizData = entities.QuizDatas.Where(x => x.QuizID == model.QuizID).FirstOrDefault();
 
             if (quizData != null)
@@ -280,7 +280,6 @@ namespace QuizApp.Models
 
         public GetScoreResult GetScoreByQuiz(GetScoreByQuiz model)
         {
-            QuizAppEntities entities = new QuizAppEntities();
             var quizPlayer = entities.QuizPlayers.Where(x => x.UserID == model.UserID && x.QuizID == model.QuizID);
             if (quizPlayer != null)
             {

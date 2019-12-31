@@ -43,10 +43,12 @@ namespace QuizApp.Controllers
             }
             catch (Exception ex)
             {
-                ResultClass result = new ResultClass();
-                result.Result = false;
-                result.Message = ex.Message;
-                return result;
+                return new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message,
+                    Data = null
+                };
             }
         }
 
@@ -93,6 +95,7 @@ namespace QuizApp.Controllers
         [HttpPost]
         public ResultClass GetQuizQuestions(QuizQuestionBindingModel model)
         {
+            ResultClass ResultClass = new ResultClass();
             try
             {
                 if (!ModelState.IsValid)
@@ -106,21 +109,37 @@ namespace QuizApp.Controllers
                 else
                 {
                     QuizBinding quiz = new QuizBinding();
-                    return new ResultClass()
+                    var data = quiz.GetQuizQuestions(model.QuizId, model.UserId);
+                    if(data!=null)
                     {
-                        Data = quiz.GetQuizQuestions(model.QuizId, model.UserId),
-                        Message = "Data found successfully",
-                        Result = true
-                    };
+                        ResultClass = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data found successfully",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        ResultClass = new ResultClass()
+                        {
+                            Data = null,
+                            Message = "Data Not Found",
+                            Result = false
+                        };
+                    }
                 }
             }
             catch (Exception ex)
             {
-                ResultClass result = new ResultClass();
-                result.Result = false;
-                result.Message = ex.Message;
-                return result;
+                ResultClass = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
             }
+            return ResultClass;
         }
 
         #endregion
