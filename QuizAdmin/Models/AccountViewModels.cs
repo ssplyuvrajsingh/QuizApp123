@@ -49,8 +49,8 @@ namespace QuizAdmin.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Email")]
-        [EmailAddress]
+        [Display(Name = "Phone")]
+        //[EmailAddress]
         public string Email { get; set; }
 
         [Required]
