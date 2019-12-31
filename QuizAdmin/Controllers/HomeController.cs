@@ -219,10 +219,17 @@ namespace QuizAdmin.Controllers
 
         public ActionResult UserMasterPartialView()
         {
-            RepoUserMaster db = new RepoUserMaster();
-            var s = db.getUser();
-            ViewBag.allusers = s;
-            return PartialView();
+            try
+            {
+                RepoUserMaster db = new RepoUserMaster();
+                var s = db.getUser();
+                ViewBag.allusers = s;
+                return PartialView();
+            }
+            catch(Exception ex)
+            {
+                return PartialView();
+            }
         }
         #endregion
 

@@ -12,5 +12,8 @@ namespace QuizAdmin.Models.Output
         public string Platform { get; set; }
         public string PhoneNumber { get; set; }
         public string UserId { get; set; }
+        public string ReferalCode { get; set; }
+        public string UsedReferalCode { get; set; }
+        public string ParentIDs { get; set; }
     }
 }
