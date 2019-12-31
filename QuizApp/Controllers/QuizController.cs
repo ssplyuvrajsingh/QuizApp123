@@ -144,6 +144,60 @@ namespace QuizApp.Controllers
 
         #endregion
 
+        #region Set Quize Player
+
+        //POST api/Quiz/SetQuiz
+        [HttpPost]
+        public ResultClass SetQuizePlayer(QuizPlayerResult model)
+        {
+            ResultClass resultClass = null;
+            try
+            {
+                if (model.QuizID != null && model.UserID != null)
+                {
+                    QuizBinding quizBinding = new QuizBinding();
+                    var data = quizBinding.SetQuizePlayer(new QuizPlayer()
+                    {
+                        UserID = model.UserID,
+                        QuizID = model.QuizID,
+                        IsCompleted = model.IsCompleted,
+                        IsWon = model.IsWon,
+                        PointEarn = model.PointEarn,
+                        PlayedDate = model.PlayedDate,
+                        PercentageEarn = model.PercentageEarn,
+                        Language = "English",
+                        CreatedDate = DateTime.Now
+                    });
+                    if(data)
+                    {
+                        resultClass = new ResultClass()
+                        {
+                            Message="Save Quize Player Successfully",
+                            Result=true
+                        };
+                    }
+                }
+                else
+                {
+                    resultClass = new ResultClass()
+                    {
+                        Result = false,
+                        Message = "Please send required fields"
+                    };
+                }
+            }
+            catch(Exception ex)
+            {
+                resultClass = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message,
+                };
+            }
+            return resultClass;
+        }
+        #endregion
+
         #region Start Game
 
         [HttpPost]

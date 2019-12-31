@@ -113,6 +113,14 @@ namespace QuizApp.Models
 
         #endregion
 
+        #region Set Quize Player
+        public bool SetQuizePlayer(QuizPlayer model)
+        {
+            entities.QuizPlayers.Add(model);
+            return entities.SaveChanges() > 0;
+        }
+        #endregion
+
         #region Start Game
         public int StartGame(StartGameBindingModel model)
         {
