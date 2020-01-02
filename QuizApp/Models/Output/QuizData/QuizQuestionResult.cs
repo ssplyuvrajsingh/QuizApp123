@@ -14,15 +14,14 @@ namespace QuizApp.Models
         public bool IsWon { get; set; }
         public int PointEarn { get; set; }
         public string PlayedDate { get; set; }
-    }
-    
+    }  
     public class QuizQuestionResult
     {
         public int QuizQuestionID { get; set; }
         public Guid QuizID { get; set; }
         public string Question { get; set; }
         public string ImageUrl { get; set; }
-        public QuestionOptions Options { get; set; }
+        public string[] Options { get; set; }
         public string CorrectOption { get; set; }
         public int MaxTime { get; set; }
         public int QuestionPoint { get; set; }

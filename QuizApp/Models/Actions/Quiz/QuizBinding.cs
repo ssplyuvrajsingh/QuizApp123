@@ -73,24 +73,22 @@ namespace QuizApp.Models
             var quiz = entities.QuizDatas.Where(a => a.QuizID == quizId).FirstOrDefault();
             if (quiz != null)
             {
-                quizQuestionResultMain.Questions = entities.QuizQuestions.Where(x => x.QuizID == quizId).Select(a => new QuizQuestionResult()
+                List<QuizQuestionResult> lstQuizQuestionResult = new List<QuizQuestionResult>();
+                var QuizQuestions = entities.QuizQuestions.Where(x => x.QuizID == quizId).OrderBy(r => Guid.NewGuid()).Take(quiz.NoOfQuestion.Value).ToList();
+                foreach (var a in QuizQuestions)
                 {
-                    QuizQuestionID = a.QuizQuestionID,
-                    QuizID = a.QuizID,
-                    CorrectOption = a.CorrectOption,
-                    ImageUrl = ImageSource + a.ImageUrl,
-                    MaxTime = (int)a.MaxTime,
-                    Options = new QuestionOptions()
-                    {
-                        Option1 = a.Option1,
-                        Option2 = a.Option2,
-                        Option3 = a.Option3,
-                        Option4 = a.Option4
-                    },
-                    Question = a.Question,
-                    QuestionPoint = (int)a.QuestionPoint
-                }).OrderBy(r => Guid.NewGuid()).Take(quiz.NoOfQuestion.Value).ToList();
-
+                    var quizQuestionResult = new QuizQuestionResult();
+                    quizQuestionResult.QuizQuestionID = a.QuizQuestionID;
+                    quizQuestionResult.QuizID = a.QuizID;
+                    quizQuestionResult.CorrectOption = a.CorrectOption;
+                    quizQuestionResult.ImageUrl = ImageSource + a.ImageUrl;
+                    quizQuestionResult.MaxTime = (int)a.MaxTime;
+                    quizQuestionResult.Options = new string[] { a.Option1, a.Option2, a.Option3, a.Option4 };
+                    quizQuestionResult.Question = a.Question;
+                    quizQuestionResult.QuestionPoint = (int)a.QuestionPoint;
+                    lstQuizQuestionResult.Add(quizQuestionResult);
+                }
+                quizQuestionResultMain.Questions = lstQuizQuestionResult; 
                 var existingData = entities.QuizPlayers.Where(a => a.QuizID == quizId && a.UserID == UserId).OrderByDescending(a => a.PlayedDate).FirstOrDefault();
 
                 if (existingData != null)
