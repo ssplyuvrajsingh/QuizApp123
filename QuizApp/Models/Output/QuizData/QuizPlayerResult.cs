@@ -16,7 +16,6 @@ namespace QuizApp.Models
         public int PercentageEarn { get; set; }
         public string Language { get; set; }
         public System.DateTime CreatedDate { get; set; }
-        public int TotalPoint { get; set; }
         public List<UserAnswerClass> UserAnswer { get; set; }
         public string TotalTimeTaken { get; set; }
     }

@@ -142,6 +142,7 @@ namespace QuizApp.Models
                 if (quizQuestion.CorrectOption == item.SelectedOption)
                 {
                     item.PointEarn = quizQuestion.QuestionPoint.Value;
+                    item.IsCorrect = true;
                 }
                 entities.UserAnswers.Add(new UserAnswer()
                 {
@@ -156,7 +157,7 @@ namespace QuizApp.Models
             }
             entities.SaveChanges();
             model.PointEarn = Convert.ToInt32(entities.UserAnswers.Where(x => x.PlayerID == PlayerID).Sum(x => x.PointEarn));
-            model.PercentageEarn = model.PointEarn * 100 / model.TotalPoint;
+            model.PercentageEarn = model.PointEarn * 100 / Convert.ToInt32(entities.QuizQuestions.Where(x => x.QuizID == model.QuizID).Sum(x => x.QuestionPoint));
             int WinPrecentage = entities.QuizDatas.Where(x => x.QuizID == model.QuizID).Select(s => s.WinPrecentage).FirstOrDefault();
             if(model.PercentageEarn>=WinPrecentage)
             {
@@ -168,7 +169,8 @@ namespace QuizApp.Models
             }
            
             int UserAnswerCount = entities.UserAnswers.Where(x => x.PlayerID == PlayerID).Count();
-            if(UserAnswerCount == entities.QuizQuestions.Where(x=>x.QuizID == model.QuizID).Count())
+            int QuizQuestionCount = entities.QuizQuestions.Where(x => x.QuizID == model.QuizID).Count();
+            if (UserAnswerCount == QuizQuestionCount)
             {
                 model.IsCompleted = true;
             }
