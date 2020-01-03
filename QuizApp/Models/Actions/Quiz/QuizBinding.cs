@@ -43,7 +43,6 @@ namespace QuizApp.Models
         public int SetQuiz(QuizBindingModel model)
         {
             QuizAppEntities entities = new QuizAppEntities();
-
             QuizData quizData = new QuizData()
             {
                 CreatedDate = DateTime.Now,
@@ -90,7 +89,6 @@ namespace QuizApp.Models
                 }
                 quizQuestionResultMain.Questions = lstQuizQuestionResult; 
                 var existingData = entities.QuizPlayers.Where(a => a.QuizID == quizId && a.UserID == UserId).OrderByDescending(a => a.PlayedDate).FirstOrDefault();
-
                 if (existingData != null)
                 {
                     quizQuestionResultMain.AlreadyPlayed = true;
@@ -111,11 +109,73 @@ namespace QuizApp.Models
 
         #endregion
 
-        #region Set Quize Player
-        public bool SetQuizePlayer(QuizPlayer model)
+        #region Get Quize PlayerID
+
+        #endregion
+
+        #region SetQuizPlayer
+        public int SetQuizPlayermodle(QuizPlayer model)
         {
-            entities.QuizPlayers.Add(model);
-            return entities.SaveChanges() > 0;
+            var data = entities.QuizPlayers.Add(model);
+            entities.SaveChanges();
+            return data.PlayerID;
+        }
+        #endregion
+
+        #region Set Quize Player
+        public QuizPlayerResult SetQuizePlayer(QuizPlayerResult model)
+        {
+            model.PercentageEarn = model.PointEarn * 100 / model.TotalPoint;
+            int WinPrecentage = entities.QuizDatas.Where(x => x.QuizID == model.QuizID).Select(s => s.WinPrecentage).FirstOrDefault();
+            if(model.PercentageEarn>=WinPrecentage)
+            {
+                model.IsWon = true;
+            }
+            else
+            {
+                model.IsWon = false;
+            }
+            int  PlayerID = SetQuizPlayermodle(new QuizPlayer()
+            {
+                UserID = model.UserID,
+                QuizID = model.QuizID,
+                IsCompleted = model.IsCompleted,
+                IsWon = model.IsWon,
+                PointEarn = model.PointEarn,
+                PlayedDate = model.PlayedDate,
+                PercentageEarn = model.PercentageEarn,
+                Language = "English",
+                CreatedDate=DateTime.Now
+            });
+            foreach (var item in model.UserAnswer)
+            {
+                entities.UserAnswers.Add(new UserAnswer()
+                {
+                    PlayerID = PlayerID,
+                    QuizQuestionID = item.QuizQuestionID,
+                    SelectedOption = item.SelectedOption,
+                    TimeTaken = item.TimeTaken,
+                    IsCorrect = item.IsCorrect,
+                    PointEarn = item.PointEarn,
+                    CreatedDate=DateTime.Now
+                });
+            }
+            entities.SaveChanges();
+            var FinalResult = entities.QuizPlayers.Where(x => x.PlayerID == PlayerID).FirstOrDefault();
+            int second = entities.UserAnswers.Where(x => x.PlayerID == PlayerID).Sum(s => s.TimeTaken);
+            TimeSpan time = TimeSpan.FromSeconds(second);
+            string str = time.ToString(@"hh\:mm\:ss\:fff");
+            return new QuizPlayerResult()
+            {
+                UserID = FinalResult.UserID,
+                QuizID = FinalResult.QuizID,
+                IsCompleted = Convert.ToBoolean(FinalResult.IsCompleted),
+                IsWon = Convert.ToBoolean(FinalResult.IsWon),
+                PointEarn = Convert.ToInt32(FinalResult.PointEarn),
+                PercentageEarn = Convert.ToInt32(FinalResult.PercentageEarn),
+                TotalTimeTaken = str,
+                Language=FinalResult.Language
+            };
         }
         #endregion
 

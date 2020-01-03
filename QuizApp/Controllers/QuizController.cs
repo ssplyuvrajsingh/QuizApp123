@@ -146,9 +146,9 @@ namespace QuizApp.Controllers
 
         #region Set Quize Player
 
-        //POST api/Quiz/SetQuiz
+        //POST api/Quiz/SetFinalResult
         [HttpPost]
-        public ResultClass SetQuizePlayer(QuizPlayerResult model)
+        public ResultClass SetFinalResult(QuizPlayerResult model)
         {
             ResultClass resultClass = null;
             try
@@ -156,22 +156,13 @@ namespace QuizApp.Controllers
                 if (model.QuizID != null && model.UserID != null)
                 {
                     QuizBinding quizBinding = new QuizBinding();
-                    var data = quizBinding.SetQuizePlayer(new QuizPlayer()
-                    {
-                        UserID = model.UserID,
-                        QuizID = model.QuizID,
-                        IsCompleted = model.IsCompleted,
-                        IsWon = model.IsWon,
-                        PointEarn = model.PointEarn,
-                        PlayedDate = model.PlayedDate,
-                        PercentageEarn = model.PercentageEarn,
-                        Language = "English",
-                        CreatedDate = DateTime.Now
-                    });
-                    if(data)
+                    var data = quizBinding.SetQuizePlayer(model);
+                    
+                    if (data!=null)
                     {
                         resultClass = new ResultClass()
                         {
+                            Data=data,
                             Message="Save Quize Player Successfully",
                             Result=true
                         };
