@@ -125,6 +125,37 @@ namespace QuizApp.Models
         #region Set Quize Player
         public QuizPlayerResult SetQuizePlayer(QuizPlayerResult model)
         {
+
+            int PlayerID = SetQuizPlayermodle(new QuizPlayer()
+            {
+                UserID = model.UserID,
+                QuizID = model.QuizID,
+                PlayedDate = model.PlayedDate,
+                Language = "English",
+                CreatedDate = DateTime.Now
+            });
+
+            foreach (var item in model.UserAnswer)
+            {
+                var quizQuestion = entities.QuizQuestions.Where(a => a.QuizQuestionID == item.QuizQuestionID).FirstOrDefault();
+                item.PointEarn = 0;
+                if (quizQuestion.CorrectOption == item.SelectedOption)
+                {
+                    item.PointEarn = quizQuestion.QuestionPoint.Value;
+                }
+                entities.UserAnswers.Add(new UserAnswer()
+                {
+                    PlayerID = PlayerID,
+                    QuizQuestionID = item.QuizQuestionID,
+                    SelectedOption = item.SelectedOption,
+                    TimeTaken = item.TimeTaken,
+                    IsCorrect = item.IsCorrect,
+                    PointEarn = item.PointEarn,
+                    CreatedDate = DateTime.Now
+                });
+            }
+            entities.SaveChanges();
+            model.PointEarn = Convert.ToInt32(entities.UserAnswers.Where(x => x.PlayerID == PlayerID).Sum(x => x.PointEarn));
             model.PercentageEarn = model.PointEarn * 100 / model.TotalPoint;
             int WinPrecentage = entities.QuizDatas.Where(x => x.QuizID == model.QuizID).Select(s => s.WinPrecentage).FirstOrDefault();
             if(model.PercentageEarn>=WinPrecentage)
@@ -135,32 +166,22 @@ namespace QuizApp.Models
             {
                 model.IsWon = false;
             }
-            int  PlayerID = SetQuizPlayermodle(new QuizPlayer()
+           
+            int UserAnswerCount = entities.UserAnswers.Where(x => x.PlayerID == PlayerID).Count();
+            if(UserAnswerCount == entities.QuizQuestions.Where(x=>x.QuizID == model.QuizID).Count())
             {
-                UserID = model.UserID,
-                QuizID = model.QuizID,
-                IsCompleted = model.IsCompleted,
-                IsWon = model.IsWon,
-                PointEarn = model.PointEarn,
-                PlayedDate = model.PlayedDate,
-                PercentageEarn = model.PercentageEarn,
-                Language = "English",
-                CreatedDate=DateTime.Now
-            });
-            foreach (var item in model.UserAnswer)
-            {
-                entities.UserAnswers.Add(new UserAnswer()
-                {
-                    PlayerID = PlayerID,
-                    QuizQuestionID = item.QuizQuestionID,
-                    SelectedOption = item.SelectedOption,
-                    TimeTaken = item.TimeTaken,
-                    IsCorrect = item.IsCorrect,
-                    PointEarn = item.PointEarn,
-                    CreatedDate=DateTime.Now
-                });
+                model.IsCompleted = true;
             }
-            entities.SaveChanges();
+
+            var data = entities.QuizPlayers.Where(x => x.PlayerID == PlayerID).FirstOrDefault();
+            if (data!=null)
+            {
+                data.IsCompleted = model.IsCompleted;
+                data.IsWon = model.IsWon;
+                data.PointEarn = entities.UserAnswers.Where(a => a.PlayerID == PlayerID).Sum(s => s.PointEarn);
+                data.PercentageEarn = model.PercentageEarn;
+            }
+
             var FinalResult = entities.QuizPlayers.Where(x => x.PlayerID == PlayerID).FirstOrDefault();
             int second = entities.UserAnswers.Where(x => x.PlayerID == PlayerID).Sum(s => s.TimeTaken);
             TimeSpan time = TimeSpan.FromSeconds(second);
@@ -200,33 +221,33 @@ namespace QuizApp.Models
         }
         #endregion
 
-        #region Set Question Answer
-        public int SetQuestionAnswer(SetQuestionAnswerBindingModel model)
-        {
-            var quizQuestion = entities.QuizQuestions.Where(a => a.QuizQuestionID == model.QuizQuestionID).FirstOrDefault();
+                #region Set Question Answer
+        //public int SetQuestionAnswer(SetQuestionAnswerBindingModel model)
+        //{
+        //    var quizQuestion = entities.QuizQuestions.Where(a => a.QuizQuestionID == model.QuizQuestionID).FirstOrDefault();
 
-            var IsCorrect = (quizQuestion.CorrectOption == model.SelectedOption);
-            var PointEarn = 0;
-            if (IsCorrect)
-            {
-                PointEarn = quizQuestion.QuestionPoint.Value;
-            }
+        //    var IsCorrect = (quizQuestion.CorrectOption == model.SelectedOption);
+        //    var PointEarn = 0;
+        //    if (IsCorrect)
+        //    {
+        //        PointEarn = quizQuestion.QuestionPoint.Value;
+        //    }
 
 
-            var player = new UserAnswer()
-            {
-                CreatedDate = DateTime.Now,
-                PlayerID = model.PlayerID,
-                IsCorrect = IsCorrect,
-                PointEarn = PointEarn,
-                QuizQuestionID = model.QuizQuestionID,
-                SelectedOption = model.SelectedOption,
-                TimeTaken = model.TimeTakeninSeconds
-            };
-            entities.UserAnswers.Add(player);
-            entities.SaveChanges();
-            return player.ID;
-        }
+        //    var player = new UserAnswer()
+        //    {
+        //        CreatedDate = DateTime.Now,
+        //        PlayerID = model.PlayerID,
+        //        IsCorrect = IsCorrect,
+        //        PointEarn = PointEarn,
+        //        QuizQuestionID = model.QuizQuestionID,
+        //        SelectedOption = model.SelectedOption,
+        //        TimeTaken = model.TimeTakeninSeconds
+        //    };
+        //    entities.UserAnswers.Add(player);
+        //    entities.SaveChanges();
+        //    return player.ID;
+        //}
         #endregion
 
         #region End Game
