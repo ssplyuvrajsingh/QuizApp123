@@ -17,7 +17,7 @@ namespace QuizApp.Models
         public string Language { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public List<UserAnswerClass> UserAnswer { get; set; }
-        public string TotalTimeTaken { get; set; }
+        public int PlayerId { get; set; }
     }
     public class UserAnswerClass
     {
@@ -27,5 +27,12 @@ namespace QuizApp.Models
         public int TimeTaken { get; set; }
         public bool IsCorrect { get; set; }
         public Nullable<int> PointEarn { get; set; }
+    }
+    public class FinalResult
+    {
+        public bool IsWon { get; set; }
+        public int PointEarn { get; set; }
+        public int PercentageEarn { get; set; }
+        public string TotalTimeTaken { get; set; }
     }
 }

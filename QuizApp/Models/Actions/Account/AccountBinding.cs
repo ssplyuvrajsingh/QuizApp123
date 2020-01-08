@@ -94,9 +94,9 @@ namespace QuizApp.Models
             using (QuizAppEntities entities = new QuizAppEntities())
             {
                 var user = entities.Users.Where(x => x.ReferalCode == usedReferalCode && x.UserID != userId).FirstOrDefault();
-                if (!string.IsNullOrEmpty(user.ParentIDs))
+                if (user != null)
                 {
-                    if (user != null)
+                    if (!string.IsNullOrEmpty(user.ParentIDs))
                     {
                         RefCode = user.ParentIDs + "," + user.UserID;
                         RefCode = UpdateParentIDsFromReferalCode(RefCode);

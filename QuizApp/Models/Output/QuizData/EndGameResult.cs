@@ -9,7 +9,7 @@ namespace QuizApp.Models.Output.QuizData
     {
         public int PointsEarned { get; set; }
         public int PercentageEarn { get; set; }
-        public int TimeTakeninSeconds { get; set; }
+        public string TimeTakeninSeconds { get; set; }
         public bool IsWon { get; set; }
     }
 }

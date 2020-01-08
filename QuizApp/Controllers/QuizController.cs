@@ -144,51 +144,6 @@ namespace QuizApp.Controllers
 
         #endregion
 
-        #region Set Quize Player
-
-        //POST api/Quiz/SetFinalResult
-        [HttpPost]
-        public ResultClass SetFinalResult(QuizPlayerResult model)
-        {
-            ResultClass resultClass = null;
-            try
-            {
-                if (model.QuizID != null && model.UserID != null)
-                {
-                    QuizBinding quizBinding = new QuizBinding();
-                    var data = quizBinding.SetQuizePlayer(model);
-                    
-                    if (data!=null)
-                    {
-                        resultClass = new ResultClass()
-                        {
-                            Data=data,
-                            Message="Save Quize Player Successfully",
-                            Result=true
-                        };
-                    }
-                }
-                else
-                {
-                    resultClass = new ResultClass()
-                    {
-                        Result = false,
-                        Message = "Please send required fields"
-                    };
-                }
-            }
-            catch(Exception ex)
-            {
-                resultClass = new ResultClass()
-                {
-                    Result = false,
-                    Message = ex.Message,
-                };
-            }
-            return resultClass;
-        }
-        #endregion
-
         #region Start Game
 
         [HttpPost]
@@ -226,6 +181,50 @@ namespace QuizApp.Controllers
 
         #endregion
 
+        #region Set Final Result
+
+        //POST api/Quiz/SetFinalResult
+        [HttpPost]
+        public ResultClass SetFinalResult(QuizPlayerResult model)
+        {
+            ResultClass resultClass = null;
+            try
+            {
+                if (model.QuizID != null && model.UserID != null)
+                {
+                    QuizBinding quizBinding = new QuizBinding();
+                    var data = quizBinding.SetQuizePlayer(model);
+                    if (data != null)
+                    {
+                        resultClass = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Save Quize Player Successfully",
+                            Result = true
+                        };
+                    }
+                }
+                else
+                {
+                    resultClass = new ResultClass()
+                    {
+                        Result = false,
+                        Message = "Please send required fields"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                resultClass = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message,
+                };
+            }
+            return resultClass;
+        }
+        #endregion
+
         #region End Game
 
         [HttpPost]
@@ -248,43 +247,6 @@ namespace QuizApp.Controllers
                     {
                         Data = quiz.EndGame(model),
                         Message = "Game end successfully",
-                        Result = true
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                ResultClass result = new ResultClass();
-                result.Result = false;
-                result.Message = ex.Message;
-                return result;
-            }
-        }
-
-        #endregion
-
-        #region Set Question Answer
-
-        [HttpPost]
-        public ResultClass SetQuestionAnswer(SetQuestionAnswerBindingModel model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return new ResultClass()
-                    {
-                        Message = "Please send all required fields",
-                        Result = false
-                    };
-                }
-                else
-                {
-                    QuizBinding quiz = new QuizBinding();
-                    return new ResultClass()
-                    {
-                        Data = quiz.SetQuestionAnswer(model),
-                        Message = "Data found successfully",
                         Result = true
                     };
                 }
@@ -335,6 +297,80 @@ namespace QuizApp.Controllers
             }
         }
 
+        #endregion
+
+        #region Get Wallet Information
+        // POST api/Quiz/GetWalletInformation
+        [HttpPost]
+        public ResultClass GetWalletInformation(UserWalletInput model)
+        {
+            ResultClass resultClass = null;
+            try
+            {
+                QuizBinding quizBinding = new QuizBinding();
+                var data = quizBinding.GetWalletInfo(model.UserId);
+                if (data != null)
+                {
+                    resultClass = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data Found",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    resultClass = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data Not Found",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                resultClass = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return resultClass;
+        }
+        #endregion
+
+        #region Get Level Base Earning Amount
+        [HttpPost]
+        public ResultClass GetLevelBaseEarningAmount()
+        {
+            ResultClass result = null;
+            try
+            {
+                QuizBinding quizBinding = new QuizBinding();
+                var data = quizBinding.GetLevelBaseEarningAmount();
+                if(data!=null)
+                {
+                    result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data Found",
+                        Result = true
+                    };
+                }
+            }
+            catch(Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+        }
         #endregion
     }
 }

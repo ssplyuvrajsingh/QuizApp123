@@ -1,0 +1,33 @@
+{
+  "RegistrationIncome": 5,
+
+  "DirectIncome": 0.10,
+
+  "Level1Income": 4,
+
+  "Level2Income": 2,
+
+  "Level3Income": 0.50,
+
+  "Level4Income": 0.30,
+
+  "Level5Income": 0.20,
+
+  "Level6Income": 0.10,
+
+  "Level7Income": 0.10,
+
+  "Level8Income": 0.10,
+
+  "Level9Income": 0.08,
+
+  "Level10Income": 0.06,
+
+  "MinimumWithdrawlLimit": 110,
+
+  "MinimumCharges": 10,
+
+  "MaximumWithdrawLimit": 1000,
+
+  "ActiveHourLimit": 30
+}

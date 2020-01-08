@@ -8,7 +8,7 @@ namespace QuizApp.Models
 {
     public class RegisterBindingModel
     {
-        [Required]
+        
         public string Email { get; set; }
         [Required]
         public string Name { get; set; }

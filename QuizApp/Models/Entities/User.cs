@@ -31,6 +31,12 @@ namespace QuizApp.Models.Entities
         public string otp { get; set; }
         public string IP { get; set; }
         public System.DateTime LastUpdateDate { get; set; }
+        public Nullable<int> CurrentPoint { get; set; }
+        public Nullable<double> CurrentBalance { get; set; }
+        public Nullable<double> TotalEarn { get; set; }
+        public Nullable<double> TotalWithdraw { get; set; }
+        public Nullable<double> PendingWithdraw { get; set; }
+        public Nullable<double> MothlyIncome { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
     }

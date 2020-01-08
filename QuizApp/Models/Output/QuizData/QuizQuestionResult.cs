@@ -22,7 +22,6 @@ namespace QuizApp.Models
         public string Question { get; set; }
         public string ImageUrl { get; set; }
         public string[] Options { get; set; }
-        public string CorrectOption { get; set; }
         public int MaxTime { get; set; }
         public int QuestionPoint { get; set; }
     }

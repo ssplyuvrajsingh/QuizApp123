@@ -7,6 +7,8 @@ using System.Web;
 using System.Configuration;
 using QuizApp.Models.Input.Quiz;
 using QuizApp.Models.Output.QuizData;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace QuizApp.Models
 {
@@ -30,6 +32,21 @@ namespace QuizApp.Models
                 StartDate = a.StartDate.Value,
                 WinPrecentage = a.WinPrecentage
             }).ToList();
+
+            //var data = (from QuizDatas in entities.QuizDatas
+            //            join QuizPlayer in entities.QuizPlayers on QuizDatas.QuizID equals QuizPlayer.QuizID
+            //            join Users in entities.Users on QuizPlayer.UserID equals Users.UserID
+
+            //            select new QuizResult()
+            //            {
+            //                QuizID = QuizDatas.QuizID,
+            //                QuizTitle = QuizDatas.QuizTitle,
+            //                QuizBannerImage = ImageSource + QuizDatas.QuizBannerImage,
+            //                NoOfQuestion = QuizDatas.NoOfQuestion.Value,
+            //                PlayingDescriptionImg = ImageSource + QuizDatas.PlayingDescriptionImg,
+            //                StartDate = QuizDatas.StartDate.Value,
+            //                WinPrecentage = QuizDatas.WinPrecentage
+            //            }).ToList();
 
             data.ForEach(a =>
             {
@@ -79,7 +96,6 @@ namespace QuizApp.Models
                     var quizQuestionResult = new QuizQuestionResult();
                     quizQuestionResult.QuizQuestionID = a.QuizQuestionID;
                     quizQuestionResult.QuizID = a.QuizID;
-                    quizQuestionResult.CorrectOption = a.CorrectOption;
                     quizQuestionResult.ImageUrl = ImageSource + a.ImageUrl;
                     quizQuestionResult.MaxTime = (int)a.MaxTime;
                     quizQuestionResult.Options = new string[] { a.Option1, a.Option2, a.Option3, a.Option4 };
@@ -87,29 +103,25 @@ namespace QuizApp.Models
                     quizQuestionResult.QuestionPoint = (int)a.QuestionPoint;
                     lstQuizQuestionResult.Add(quizQuestionResult);
                 }
-                quizQuestionResultMain.Questions = lstQuizQuestionResult; 
+                quizQuestionResultMain.Questions = lstQuizQuestionResult;
                 var existingData = entities.QuizPlayers.Where(a => a.QuizID == quizId && a.UserID == UserId).OrderByDescending(a => a.PlayedDate).FirstOrDefault();
-                if (existingData != null)
-                {
-                    quizQuestionResultMain.AlreadyPlayed = true;
-                    quizQuestionResultMain.IsCompleted = existingData.IsCompleted.Value;
-                    quizQuestionResultMain.IsWon = existingData.IsWon.Value;
-                    quizQuestionResultMain.PlayedDate = existingData.PlayedDate.Value.ToString("dd MMM, yyyy");
-                    quizQuestionResultMain.PlayerID = existingData.PlayerID;
-                    quizQuestionResultMain.PointEarn = existingData.PointEarn.Value;
-                }
-                else
-                {
-                    quizQuestionResultMain.AlreadyPlayed = false;
-                }
+                //if (existingData != null)
+                //{
+                //    quizQuestionResultMain.AlreadyPlayed = true;
+                //    quizQuestionResultMain.IsCompleted = existingData.IsCompleted.Value;
+                //    quizQuestionResultMain.IsWon = existingData.IsWon.Value;
+                //    quizQuestionResultMain.PlayedDate = existingData.PlayedDate.Value.ToString("dd MMM, yyyy");
+                //    quizQuestionResultMain.PlayerID = existingData.PlayerID;
+                //    quizQuestionResultMain.PointEarn = existingData.PointEarn.Value;
+                //}
+                //else
+                //{
+                //    quizQuestionResultMain.AlreadyPlayed = false;
+                //}
                 return quizQuestionResultMain;
             }
             return null;
         }
-
-        #endregion
-
-        #region Get Quize PlayerID
 
         #endregion
 
@@ -119,86 +131,6 @@ namespace QuizApp.Models
             var data = entities.QuizPlayers.Add(model);
             entities.SaveChanges();
             return data.PlayerID;
-        }
-        #endregion
-
-        #region Set Quize Player
-        public QuizPlayerResult SetQuizePlayer(QuizPlayerResult model)
-        {
-
-            int PlayerID = SetQuizPlayermodle(new QuizPlayer()
-            {
-                UserID = model.UserID,
-                QuizID = model.QuizID,
-                PlayedDate = model.PlayedDate,
-                Language = "English",
-                CreatedDate = DateTime.Now
-            });
-
-            foreach (var item in model.UserAnswer)
-            {
-                var quizQuestion = entities.QuizQuestions.Where(a => a.QuizQuestionID == item.QuizQuestionID).FirstOrDefault();
-                item.PointEarn = 0;
-                if (quizQuestion.CorrectOption == item.SelectedOption)
-                {
-                    item.PointEarn = quizQuestion.QuestionPoint.Value;
-                    item.IsCorrect = true;
-                }
-                entities.UserAnswers.Add(new UserAnswer()
-                {
-                    PlayerID = PlayerID,
-                    QuizQuestionID = item.QuizQuestionID,
-                    SelectedOption = item.SelectedOption,
-                    TimeTaken = item.TimeTaken,
-                    IsCorrect = item.IsCorrect,
-                    PointEarn = item.PointEarn,
-                    CreatedDate = DateTime.Now
-                });
-            }
-            entities.SaveChanges();
-            model.PointEarn = Convert.ToInt32(entities.UserAnswers.Where(x => x.PlayerID == PlayerID).Sum(x => x.PointEarn));
-            model.PercentageEarn = model.PointEarn * 100 / Convert.ToInt32(entities.QuizQuestions.Where(x => x.QuizID == model.QuizID).Sum(x => x.QuestionPoint));
-            int WinPrecentage = entities.QuizDatas.Where(x => x.QuizID == model.QuizID).Select(s => s.WinPrecentage).FirstOrDefault();
-            if(model.PercentageEarn>=WinPrecentage)
-            {
-                model.IsWon = true;
-            }
-            else
-            {
-                model.IsWon = false;
-            }
-           
-            int UserAnswerCount = entities.UserAnswers.Where(x => x.PlayerID == PlayerID).Count();
-            int QuizQuestionCount = entities.QuizQuestions.Where(x => x.QuizID == model.QuizID).Count();
-            if (UserAnswerCount == QuizQuestionCount)
-            {
-                model.IsCompleted = true;
-            }
-
-            var data = entities.QuizPlayers.Where(x => x.PlayerID == PlayerID).FirstOrDefault();
-            if (data!=null)
-            {
-                data.IsCompleted = model.IsCompleted;
-                data.IsWon = model.IsWon;
-                data.PointEarn = entities.UserAnswers.Where(a => a.PlayerID == PlayerID).Sum(s => s.PointEarn);
-                data.PercentageEarn = model.PercentageEarn;
-            }
-
-            var FinalResult = entities.QuizPlayers.Where(x => x.PlayerID == PlayerID).FirstOrDefault();
-            int second = entities.UserAnswers.Where(x => x.PlayerID == PlayerID).Sum(s => s.TimeTaken);
-            TimeSpan time = TimeSpan.FromSeconds(second);
-            string str = time.ToString(@"hh\:mm\:ss\:fff");
-            return new QuizPlayerResult()
-            {
-                UserID = FinalResult.UserID,
-                QuizID = FinalResult.QuizID,
-                IsCompleted = Convert.ToBoolean(FinalResult.IsCompleted),
-                IsWon = Convert.ToBoolean(FinalResult.IsWon),
-                PointEarn = Convert.ToInt32(FinalResult.PointEarn),
-                PercentageEarn = Convert.ToInt32(FinalResult.PercentageEarn),
-                TotalTimeTaken = str,
-                Language=FinalResult.Language
-            };
         }
         #endregion
 
@@ -223,33 +155,39 @@ namespace QuizApp.Models
         }
         #endregion
 
-                #region Set Question Answer
-        //public int SetQuestionAnswer(SetQuestionAnswerBindingModel model)
-        //{
-        //    var quizQuestion = entities.QuizQuestions.Where(a => a.QuizQuestionID == model.QuizQuestionID).FirstOrDefault();
-
-        //    var IsCorrect = (quizQuestion.CorrectOption == model.SelectedOption);
-        //    var PointEarn = 0;
-        //    if (IsCorrect)
-        //    {
-        //        PointEarn = quizQuestion.QuestionPoint.Value;
-        //    }
-
-
-        //    var player = new UserAnswer()
-        //    {
-        //        CreatedDate = DateTime.Now,
-        //        PlayerID = model.PlayerID,
-        //        IsCorrect = IsCorrect,
-        //        PointEarn = PointEarn,
-        //        QuizQuestionID = model.QuizQuestionID,
-        //        SelectedOption = model.SelectedOption,
-        //        TimeTaken = model.TimeTakeninSeconds
-        //    };
-        //    entities.UserAnswers.Add(player);
-        //    entities.SaveChanges();
-        //    return player.ID;
-        //}
+        #region Set Quize Player
+        public EndGameResult SetQuizePlayer(QuizPlayerResult model)
+        {
+            #region Set User Answer
+            foreach (var item in model.UserAnswer)
+            {
+                var quizQuestion = entities.QuizQuestions.Where(a => a.QuizQuestionID == item.QuizQuestionID).FirstOrDefault();
+                item.PointEarn = 0;
+                if (quizQuestion.CorrectOption == item.SelectedOption)
+                {
+                    item.PointEarn = quizQuestion.QuestionPoint.Value;
+                    item.IsCorrect = true;
+                }
+                entities.UserAnswers.Add(new UserAnswer()
+                {
+                    PlayerID = model.PlayerId,
+                    QuizQuestionID = item.QuizQuestionID,
+                    SelectedOption = item.SelectedOption,
+                    TimeTaken = item.TimeTaken,
+                    IsCorrect = item.IsCorrect,
+                    PointEarn = item.PointEarn,
+                    CreatedDate = DateTime.Now
+                });
+            }
+            entities.SaveChanges();
+            #endregion
+            return EndGame(new EndGameBindingModel()
+            {
+                PlayerID = model.PlayerId,
+                QuizID = model.QuizID,
+                UserID = model.UserID
+            });
+        }
         #endregion
 
         #region End Game
@@ -260,16 +198,13 @@ namespace QuizApp.Models
 
             if (quizData != null)
             {
-                int minPoint = (int)quizData.MinPoint;
-
-                int maxPoint = (int)quizData.MinPoint;
 
                 int userAnswerTotal = (int)entities.UserAnswers.Where(x => x.PlayerID == model.PlayerID).Sum(x => x.PointEarn);
 
-                int totalGetPointEarned = minPoint + userAnswerTotal;
+
 
                 //Get percentage earn
-                int percentageEarn = (totalGetPointEarned * 100) / maxPoint;
+                int percentageEarn = (userAnswerTotal * 100) / (int)entities.QuizQuestions.Where(x => x.QuizID == model.QuizID).Sum(x => x.QuestionPoint);
 
                 //Get IsWon
                 bool isWon = false;
@@ -283,48 +218,47 @@ namespace QuizApp.Models
                 {
                     UserID = model.UserID,
                     TransactionDate = DateTime.Now,
-                    PointsEarned = totalGetPointEarned,
+                    PointsEarned = userAnswerTotal,
                     PointsWithdraw = 0,
                     Description = "Point earnd from quiz id : " + model.QuizID,
                     CreatedDate = DateTime.Now
                 };
-
                 entities.UserPoints.Add(userPoint);
 
-                //Update or Insert Userwallet
-                var userWallet = entities.UserWallets.Where(x => x.UserID == model.UserID).FirstOrDefault();
+                ////Update or Insert Userwallet
+                //var userWallet = entities.UserWallets.Where(x => x.UserID == model.UserID).FirstOrDefault();
 
-                if (userWallet != null)
-                {
-                    UserWallet wallet = new UserWallet()
-                    {
-                        CurrentBalance = userWallet.CurrentBalance + totalGetPointEarned,
-                        CurrentPoint = userWallet.CurrentPoint + totalGetPointEarned,
-                        LastUpdated = DateTime.Now,
-                        TotalEarn = userWallet.TotalEarn + totalGetPointEarned,
-                        TotalWithdraw = userWallet.TotalWithdraw + totalGetPointEarned,
-                        PendingWithdraw = userWallet.PendingWithdraw + totalGetPointEarned,
-                        CreatedDate = userWallet.CreatedDate,
-                        WalletID = userWallet.WalletID,
-                        UserID = userWallet.UserID
-                    };
-                    entities.Entry(userWallet).CurrentValues.SetValues(wallet);
-                }
-                else
-                {
-                    UserWallet wallet = new UserWallet()
-                    {
-                        UserID = model.UserID,
-                        CurrentBalance = totalGetPointEarned,
-                        CurrentPoint = totalGetPointEarned,
-                        LastUpdated = DateTime.Now,
-                        TotalEarn = totalGetPointEarned,
-                        TotalWithdraw = totalGetPointEarned,
-                        PendingWithdraw = totalGetPointEarned,
-                        CreatedDate = DateTime.Now,
-                    };
-                    entities.UserWallets.Add(wallet);
-                }
+                //if (userWallet != null)
+                //{
+                //    UserWallet wallet = new UserWallet()
+                //    {
+                //        CurrentBalance = userWallet.CurrentBalance + userAnswerTotal,
+                //        CurrentPoint = userWallet.CurrentPoint + userAnswerTotal,
+                //        LastUpdated = DateTime.Now,
+                //        TotalEarn = userWallet.TotalEarn + userAnswerTotal,
+                //        TotalWithdraw = userWallet.TotalWithdraw + userAnswerTotal,
+                //        PendingWithdraw = userWallet.PendingWithdraw + userAnswerTotal,
+                //        CreatedDate = userWallet.CreatedDate,
+                //        WalletID = userWallet.WalletID,
+                //        UserID = userWallet.UserID
+                //    };
+                //    entities.Entry(userWallet).CurrentValues.SetValues(wallet);
+                //}
+                //else
+                //{
+                //    UserWallet wallet = new UserWallet()
+                //    {
+                //        UserID = model.UserID,
+                //        CurrentBalance = userAnswerTotal,
+                //        CurrentPoint = userAnswerTotal,
+                //        LastUpdated = DateTime.Now,
+                //        TotalEarn = userAnswerTotal,
+                //        TotalWithdraw = userAnswerTotal,
+                //        PendingWithdraw = userAnswerTotal,
+                //        CreatedDate = DateTime.Now,
+                //    };
+                //    entities.UserWallets.Add(wallet);
+                //}
 
                 //Update QuizPlayer
                 var quizPlayer = entities.QuizPlayers.Where(x => x.PlayerID == model.PlayerID).FirstOrDefault();
@@ -337,7 +271,7 @@ namespace QuizApp.Models
                         QuizID = model.QuizID,
                         IsCompleted = true,
                         IsWon = isWon,
-                        PointEarn = totalGetPointEarned,
+                        PointEarn = userAnswerTotal,
                         PlayedDate = DateTime.Now,
                         PercentageEarn = percentageEarn,
                         Language = "English",
@@ -348,13 +282,15 @@ namespace QuizApp.Models
                     entities.Entry(quizPlayer).CurrentValues.SetValues(player);
                 }
                 entities.SaveChanges();
-
+                int Second = entities.UserAnswers.Where(x => x.PlayerID == model.PlayerID).Sum(x => x.TimeTaken);
+                TimeSpan time = TimeSpan.FromSeconds(Second);
+                string str = time.ToString(@"mm\:ss");
                 return new EndGameResult()
                 {
                     PercentageEarn = percentageEarn,
-                    PointsEarned = totalGetPointEarned,
+                    PointsEarned = userAnswerTotal,
                     IsWon = isWon,
-                    TimeTakeninSeconds = entities.UserAnswers.Where(x => x.PlayerID == model.PlayerID).Sum(x => x.TimeTaken)
+                    TimeTakeninSeconds = str
                 };
             }
             else
@@ -389,6 +325,100 @@ namespace QuizApp.Models
             }
         }
 
+        #endregion
+
+        #region Get Wallet Information
+        public UserWalletModel GetWalletInfo(string UserId)
+        {
+            UserWalletModel userWallet = new UserWalletModel();
+            var data = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
+            List<TransactionModel> transactionModels = new List<TransactionModel>();
+            var transactions = entities.Transactions.Where(x => x.UserID == UserId).ToList();
+            foreach (var a in transactions)
+            {
+                var Tran = new TransactionModel();
+                Tran.transactionDateTime = string.Format("{0: dd MMMM }", a.transactionDateTime) + " " + string.Format("{0:hh:mm tt}", a.transactionDateTime);
+                Tran.amount = (int)a.amount;
+                Tran.paymentStatus = a.paymentStatus;
+                transactionModels.Add(Tran);
+            }
+            userWallet.TransactionModels = transactionModels;
+            userWallet.CurrentBalance = data.CurrentBalance != null ? (double)data.CurrentBalance : 0;
+            userWallet.MothlyIncome = data.MothlyIncome != null ? (double)data.MothlyIncome : 0;
+            userWallet.TotalWithdraw = data.TotalWithdraw != null ? (double)data.TotalWithdraw : 0;
+            userWallet.TotalPoins = (int)data.CurrentPoint;
+            return userWallet;
+        }
+        #endregion
+
+        #region Get Level Base Earning Amount
+        public string GetLevelBaseEarningAmount()
+        {
+           // var dd= "y,a,d,f";
+           // int level = 0;
+           // var split = dd.Split(',').ToList();
+                
+
+           //var split1 = split.Select(s=> new SetLevelForParentUser(){ 
+           // UserId = s,
+           // Level = split.IndexOf(s)+1
+           // }).ToList();
+
+            var activeUsers = entities.Users.Where(x => x.isActive == true).ToList();
+            if (activeUsers != null)
+            {
+                //D:\Yuvraj\Working Projects\Asp.Net\quizapp123\QuizApp\Models\JsonFile\LevelEarningMasterUser.json
+
+
+                EaningHeadModel earningHeads = new EaningHeadModel();
+                var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
+                using (StreamReader r = new StreamReader(jsonFilePath))
+                {
+                    string json = r.ReadToEnd();
+                     earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
+                }
+                //var earningHeads= JsonConvert.DeserializeObject<EaningHeadModel>(jsonFilePath);
+                foreach (var item in activeUsers)
+                {
+                    
+                    //var Level = entities.Users.Where(x => x.ParentIDs ).ToList();
+                    if (item.ParentIDs != null)
+                    {
+                        var parentIDs = item.ParentIDs.Split(',').ToList();
+                        var parentUserWithLevel = parentIDs.Select(s => new SetLevelForParentUser()
+                        {
+                            UserId = s,
+                            Level = parentIDs.IndexOf(s) + 1
+                        }).ToList();
+
+                        foreach(var pu in parentUserWithLevel)
+                        {
+
+                            if(pu.Level == 1)
+                            {
+                                var earning = earningHeads.Level1Income;
+                            }
+                            else if (pu.Level == 2)
+                            {
+                                var earning = earningHeads.Level1Income;
+                            }
+                        }
+
+                        //var parentUserLevelEarning = (from ac in activeUsers
+                        //                              join ul in userWithLevel on ac.UserID equals ul.UserId
+                        //                              select new { ac, ul
+                        //                              }).ToList();
+
+                        
+                    }
+                }
+            }
+            else
+            {
+                return null;
+            }
+                return string.Empty;
+        }
         #endregion
     }
 }
