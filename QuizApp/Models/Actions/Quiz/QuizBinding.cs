@@ -352,24 +352,88 @@ namespace QuizApp.Models
         #endregion
 
         #region Get Level Base Earning Amount
-        public string GetLevelBaseEarningAmount()
+        public LevelEarningModelMaster GetLevelBaseEarningAmount(string Users)
         {
-           // var dd= "y,a,d,f";
-           // int level = 0;
-           // var split = dd.Split(',').ToList();
-                
-
-           //var split1 = split.Select(s=> new SetLevelForParentUser(){ 
-           // UserId = s,
-           // Level = split.IndexOf(s)+1
-           // }).ToList();
-
-            var activeUsers = entities.Users.Where(x => x.isActive == true).ToList();
-            if (activeUsers != null)
+            var data = entities.LevelEarnings.Where(x => x.UserID == Users).FirstOrDefault();
+            if (data != null)
             {
-                //D:\Yuvraj\Working Projects\Asp.Net\quizapp123\QuizApp\Models\JsonFile\LevelEarningMasterUser.json
+                return new LevelEarningModelMaster()
+                {
+                    Level1ActiveUsers = data.Level1Users != null ? data.Level1Users : 0,
+                    Level1Amount = data.Level1 != null ? data.Level1Users : 0,
 
+                    Level2ActiveUsers = data.Level2Users != null ? data.Level2Users : 0,
+                    Level2Amount = data.Level2 != null ? data.Level2Users : 0,
 
+                    Level3ActiveUsers = data.Level3Users != null ? data.Level3Users : 0,
+                    Level3Amount = data.Level3 != null ? data.Level3Users : 0,
+
+                    Level4ActiveUsers = data.Level4Users != null ? data.Level4Users : 0,
+                    Level4Amount = data.Level4 != null ? data.Level4Users : 0,
+
+                    Level5ActiveUsers = data.Level5Users != null ? data.Level5Users : 0,
+                    Level5Amount = data.Level5 != null ? data.Level5Users : 0,
+
+                    Level6ActiveUsers = data.Level6Users != null ? data.Level6Users : 0,
+                    Level6Amount = data.Level6 != null ? data.Level6Users : 0,
+
+                    Level7ActiveUsers = data.Level7Users != null ? data.Level7Users : 0,
+                    Level7Amount = data.Level7 != null ? data.Level7Users : 0,
+
+                    Level8ActiveUsers = data.Level8Users != null ? data.Level8Users : 0,
+                    Level8Amount = data.Level8 != null ? data.Level8Users : 0,
+
+                    Level9ActiveUsers = data.Level9Users != null ? data.Level9Users : 0,
+                    Level9Amount = data.Level9 != null ? data.Level1Users : 0,
+
+                    Level10ActiveUsers = data.Level10Users != null ? data.Level10Users : 0,
+                    Level10Amount = data.Level10 != null ? data.Level10Users : 0,
+                };
+            }
+            else
+            {
+                return new LevelEarningModelMaster()
+                {
+                    Level1ActiveUsers =  0,
+                    Level1Amount =  0,
+
+                    Level2ActiveUsers =  0,
+                    Level2Amount =  0,
+
+                    Level3ActiveUsers =  0,
+                    Level3Amount = 0,
+
+                    Level4ActiveUsers =  0,
+                    Level4Amount =  0,
+
+                    Level5ActiveUsers =  0,
+                    Level5Amount =  0,
+
+                    Level6ActiveUsers =  0,
+                    Level6Amount =  0,
+
+                    Level7ActiveUsers =  0,
+                    Level7Amount =  0,
+
+                    Level8ActiveUsers =  0,
+                    Level8Amount =  0,
+
+                    Level9ActiveUsers =  0,
+                    Level9Amount =  0,
+
+                    Level10ActiveUsers = 0,
+                    Level10Amount =  0,
+                };
+            }
+        }
+        #endregion
+
+        #region Add Level Base Earning Amount
+        public string ADDLevelBaseEarningAmount()
+        {
+            var activeUsers = entities.Users.Where(x => x.isActive == true).ToList();
+            if (activeUsers.Any())
+            {
                 EaningHeadModel earningHeads = new EaningHeadModel();
                 var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
                 using (StreamReader r = new StreamReader(jsonFilePath))
@@ -377,40 +441,62 @@ namespace QuizApp.Models
                     string json = r.ReadToEnd();
                      earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
                 }
-                //var earningHeads= JsonConvert.DeserializeObject<EaningHeadModel>(jsonFilePath);
                 foreach (var item in activeUsers)
-                {
-                    
-                    //var Level = entities.Users.Where(x => x.ParentIDs ).ToList();
-                    if (item.ParentIDs != null)
+                { 
+                    var childUsers = activeUsers.Where(x => x.ParentIDs.Contains(item.UserID) && x.LastActiveDate == DateTime.Now.AddDays(-1)).ToList();
+
+                    if(childUsers.Any())
                     {
-                        var parentIDs = item.ParentIDs.Split(',').ToList();
-                        var parentUserWithLevel = parentIDs.Select(s => new SetLevelForParentUser()
+                        foreach (var level in childUsers)
                         {
-                            UserId = s,
-                            Level = parentIDs.IndexOf(s) + 1
-                        }).ToList();
-
-                        foreach(var pu in parentUserWithLevel)
-                        {
-
-                            if(pu.Level == 1)
+                            var parentIDs = level.ParentIDs.Split(',').ToList();
+                            var parentUserWithLevel = parentIDs.Select(x => new SetLevelForParentUser()
                             {
-                                var earning = earningHeads.Level1Income;
-                            }
-                            else if (pu.Level == 2)
-                            {
-                                var earning = earningHeads.Level1Income;
-                            }
+                                UserId = x,
+                                Level = parentIDs.IndexOf(x) + 1,
+                                Count = parentIDs.Count()
+                            }).ToList();
+
+                            var firtLevel= parentUserWithLevel.Where(x => x.UserId == item.UserID && x.Level == 1).FirstOrDefault();
+
+
+                            //string[] s = level.ParentIDs.Split(',');
+                            //if(s.Length==1)
+                            //{
+                            //    int data = 1;
+                            //}
                         }
+                    }
 
-                        //var parentUserLevelEarning = (from ac in activeUsers
-                        //                              join ul in userWithLevel on ac.UserID equals ul.UserId
-                        //                              select new { ac, ul
-                        //                              }).ToList();
+                    //if (item.ParentIDs != null)
+                    //{
+                    //    var parentIDs = item.ParentIDs.Split(',').ToList();
+                    //    var parentUserWithLevel = parentIDs.Select(s => new SetLevelForParentUser()
+                    //    {
+                    //        UserId = s,
+                    //        Level = parentIDs.IndexOf(s) + 1
+                    //    }).ToList();
+
+                    //    foreach(var pu in parentUserWithLevel)
+                    //    {
+
+                    //        if(pu.Level == 1)
+                    //        {
+                    //            var earning = earningHeads.Level1Income;
+                    //        }
+                    //        else if (pu.Level == 2)
+                    //        {
+                    //            var earning = earningHeads.Level1Income;
+                    //        }
+                    //    }
+
+                    //    //var parentUserLevelEarning = (from ac in activeUsers
+                    //    //                              join ul in userWithLevel on ac.UserID equals ul.UserId
+                    //    //                              select new { ac, ul
+                    //    //                              }).ToList();
 
                         
-                    }
+                    //}
                 }
             }
             else

@@ -27,6 +27,7 @@ namespace QuizApp.Models.Output.QuizData
     {
         public string UserId { get; set; }
         public int Level { get; set; }
+        public int Count { get; set; }
     }
 
     public class EaningHeadModel
@@ -47,5 +48,15 @@ namespace QuizApp.Models.Output.QuizData
         public int MinimumCharges { get; set; }
         public int MaximumWithdrawLimit { get; set; }
         public int ActiveHourLimit { get; set; }
+    }
+
+    public class LevelWithUser
+    {
+        public int Level { get; set; }
+        public List<ChildUser> ChildUsers { get; set; }
+    }
+    public class ChildUser
+    {
+
     }
 }

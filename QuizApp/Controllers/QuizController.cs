@@ -46,7 +46,7 @@ namespace QuizApp.Controllers
                 return new ResultClass()
                 {
                     Result = false,
-                    Message = ex.Message,
+                    Message = ex.Message +"---"+ex.StackTrace,
                     Data = null
                 };
             }
@@ -343,13 +343,13 @@ namespace QuizApp.Controllers
 
         #region Get Level Base Earning Amount
         [HttpPost]
-        public ResultClass GetLevelBaseEarningAmount()
+        public ResultClass GetLevelBaseEarningAmount(LevelUsers model)
         {
             ResultClass result = null;
             try
             {
                 QuizBinding quizBinding = new QuizBinding();
-                var data = quizBinding.GetLevelBaseEarningAmount();
+                var data = quizBinding.GetLevelBaseEarningAmount(model.UserID);
                 if(data!=null)
                 {
                     result = new ResultClass()

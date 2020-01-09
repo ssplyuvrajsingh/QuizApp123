@@ -98,7 +98,7 @@ namespace QuizApp.Models
                 {
                     if (!string.IsNullOrEmpty(user.ParentIDs))
                     {
-                        RefCode = user.ParentIDs + "," + user.UserID;
+                        RefCode = user.UserID + "," + user.ParentIDs;
                         RefCode = UpdateParentIDsFromReferalCode(RefCode);
                     }
                     else
@@ -115,7 +115,7 @@ namespace QuizApp.Models
             string[] Ref = RefCode.Split(',');
             if (Ref.Length >= 10)
             {
-                for (int i = 0, j = 1; i < Ref.Length; i++, j++)
+                for (int i = Ref.Length, j = 1; i > Ref.Length; i--, j--)
                 {
                     if (i == Ref.Length - 1)
                     {

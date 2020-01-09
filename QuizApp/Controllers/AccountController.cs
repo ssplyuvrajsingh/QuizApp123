@@ -110,7 +110,7 @@ namespace QuizApp.Controllers
         [AllowAnonymous]
         [Route("RefreshToken")]
         public TokenResult RefreshToken(RefreshTokenBindingModel model)
-        {
+         {
             if (!ModelState.IsValid)
             {
                 return new TokenResult()
