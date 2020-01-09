@@ -3,9 +3,9 @@
 
   "DirectIncome": 0.10,
 
-  "Level1Income": 4,
+  "Level1Income": 4.0,
 
-  "Level2Income": 2,
+  "Level2Income": 2.0,
 
   "Level3Income": 0.50,
 

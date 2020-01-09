@@ -24,5 +24,6 @@ namespace QuizApp.Models
 
         //Other
         public string UserId { get; set; }
+        public string Passcode { get; set; }
     }
 }

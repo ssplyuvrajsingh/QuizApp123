@@ -13,6 +13,10 @@ namespace QuizApp.Models
 {
     public class AccountBinding
     {
+        #region Database Entities Declaration
+        QuizAppEntities entities = new QuizAppEntities();
+        #endregion
+
         #region Register
         public TokenResult RegisterUser(RegisterBindingModel model)
         {
@@ -73,6 +77,22 @@ namespace QuizApp.Models
                 result.result = false;
                 result.error_message = ex.Message;
                 return result;
+            }
+        }
+        #endregion
+
+        #region Pass Code Save
+        public bool PassCodeSave(RegisterBindingModel model)
+        {
+            var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
+            if (data != null)
+            {
+                data.Passcode = model.Passcode;
+                return entities.SaveChanges() > 1;
+            }
+            else
+            {
+                return false;
             }
         }
         #endregion
@@ -188,6 +208,85 @@ namespace QuizApp.Models
                 {
                     return false;
                 }
+            }
+        }
+        #endregion
+
+        #region Add Bank Account Details
+        public bool AddBankAccountDetails(AddBankAccountDetailsModel model)
+        {
+            var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
+            if (data != null)
+            {
+                data.AccountNumber = model.AccountNumber;
+                data.NameInAccount = model.NameInAccount;
+                data.Bank = model.Bank;
+                data.IFSCCode = model.IFSCCode;
+                return entities.SaveChanges() > 0;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region Withdrawal Amount
+        public bool WithdrawalAmount(WithdrawalAmountModel model)
+        {
+
+            var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
+            var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserId).FirstOrDefault();
+            if (data != null)
+            {
+                Transaction transaction = new Transaction()
+                {
+                    UserID = model.UserId,
+                    transactionDateTime = DateTime.Now,
+                    UniqueKey = model.UserId + DateTime.Now,
+                    paymentStatus = "Withdraw",
+                    amount = model.amount,
+                    comment = "",
+                    username = data.Name,
+                    mobilenumber = data1.UserName,
+                    WithdrawType = model.WithdrawType,
+                    AccountNumber = model.AccountNumber,
+                    NameInAccount = model.NameInAccount,
+                    Bank = model.Bank,
+                    IFSCCode = model.IFSCCode
+                };
+                entities.Transactions.Add(transaction);
+                return entities.SaveChanges() > 1;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region Point Redeem
+        public bool PointRedeem(PointsRedeemModel model)
+        {
+
+            var data = entities.Users.Where(x => x.UserID == model.UserID).FirstOrDefault();
+
+            if (data != null)
+            {
+                UserPoint Point = new UserPoint()
+                {
+                    UserID = model.UserID,
+                    TransactionDate = DateTime.Now,
+                    PointsWithdraw=model.PointsWithdraw,
+                    Description = "Point Withdrawal to Account",
+                    CreatedDate=DateTime.Now
+                };
+                entities.UserPoints.Add(Point);
+                return entities.SaveChanges() > 1;
+            }
+            else
+            {
+                return false;
             }
         }
         #endregion

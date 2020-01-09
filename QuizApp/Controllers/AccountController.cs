@@ -192,6 +192,50 @@ namespace QuizApp.Controllers
 
         #endregion
 
+        #region Save Pass Code
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("SavePassCode")]
+        public ResultClass SavePassCode(RegisterBindingModel model)
+        {
+            ResultClass result = new ResultClass();
+            try
+            {
+                if (model.UserId != null)
+                {
+                    AccountBinding accountBinding = new AccountBinding();
+                    bool data = accountBinding.PassCodeSave(model);
+                    if (data)
+                    {
+                        result = new ResultClass()
+                        {
+                            Message = "Save Passcode Successfuly",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        result = new ResultClass()
+                        {
+                            Message = "Not Save",
+                            Result = false
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+        }
+        #endregion
+
         #region OTP Verification
 
         // POST api/Account/OTP Verification
@@ -508,6 +552,162 @@ namespace QuizApp.Controllers
             }
         }
 
+        #endregion
+
+        #region Add Bank Account Details
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("AddAccountDetails")]
+        public ResultClass AddBankAccountDetails(AddBankAccountDetailsModel model)
+        {
+            ResultClass result = new ResultClass();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    result = new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    AccountBinding accountBinding = new AccountBinding();
+                    bool data = accountBinding.AddBankAccountDetails(model);
+                    if (data)
+                    {
+                        result = new ResultClass()
+                        {
+                            Message = "Save Bank Account Successfuly",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        result = new ResultClass()
+                        {
+                            Message = "Not Save Bank Account Details",
+                            Result = false
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+        }
+        #endregion
+
+        #region Withdrawal Amount
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("AddAccountDetails")]
+        public ResultClass WithdrawalAmount(WithdrawalAmountModel model)
+        {
+            ResultClass result = new ResultClass();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    result = new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    AccountBinding accountBinding = new AccountBinding();
+                    bool data = accountBinding.WithdrawalAmount(model);
+                    if (data)
+                    {
+                        result = new ResultClass()
+                        {
+                            Message = "Thank you,your payment was successful",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        result = new ResultClass()
+                        {
+                            Message = "Sorry Something Wrong",
+                            Result = false
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+        }
+        #endregion
+
+        #region Withdrawal Amount
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("AddAccountDetails")]
+        public ResultClass PointsRedeem(WithdrawalAmountModel model)
+        {
+            ResultClass result = new ResultClass();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    result = new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    AccountBinding accountBinding = new AccountBinding();
+                    bool data = accountBinding.WithdrawalAmount(model);
+                    if (data)
+                    {
+                        result = new ResultClass()
+                        {
+                            Message = "Thank you,your payment was successful",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        result = new ResultClass()
+                        {
+                            Message = "Sorry Something Wrong",
+                            Result = false
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+        }
         #endregion
     }
 }

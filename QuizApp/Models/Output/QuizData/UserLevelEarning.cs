@@ -34,8 +34,8 @@ namespace QuizApp.Models.Output.QuizData
     {
         public int RegistrationIncome { get; set; }
         public double DirectIncome { get; set; }
-        public int Level1Income { get; set; }
-        public int Level2Income { get; set; }
+        public double Level1Income { get; set; }
+        public double Level2Income { get; set; }
         public double Level3Income { get; set; }
         public double Level4Income { get; set; }
         public double Level5Income { get; set; }
@@ -57,6 +57,6 @@ namespace QuizApp.Models.Output.QuizData
     }
     public class ChildUser
     {
-
+        public string UserId { get; set; }
     }
 }
