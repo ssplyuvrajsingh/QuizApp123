@@ -8,6 +8,7 @@ namespace QuizApp.Models
     public class UserWalletModel
     {
         public double CurrentBalance { get; set; }
+
         public double MothlyIncome { get; set; }
         public double TotalWithdraw { get; set; }
         public int TotalPoins { get; set; }

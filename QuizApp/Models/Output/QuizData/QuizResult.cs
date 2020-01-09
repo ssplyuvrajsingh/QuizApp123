@@ -19,4 +19,5 @@ namespace QuizApp.Models
         public int NoOfQuestion { get; set; }
         public bool isActive { get; set; }
     }
+
 }

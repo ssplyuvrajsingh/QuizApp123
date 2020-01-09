@@ -194,7 +194,6 @@ namespace QuizApp.Controllers
 
         #region Save Pass Code
         [HttpPost]
-        [AllowAnonymous]
         [Route("SavePassCode")]
         public ResultClass SavePassCode(RegisterBindingModel model)
         {
@@ -556,8 +555,6 @@ namespace QuizApp.Controllers
 
         #region Add Bank Account Details
         [HttpPost]
-        [AllowAnonymous]
-        [Route("AddAccountDetails")]
         public ResultClass AddBankAccountDetails(AddBankAccountDetailsModel model)
         {
             ResultClass result = new ResultClass();
@@ -579,7 +576,7 @@ namespace QuizApp.Controllers
                     {
                         result = new ResultClass()
                         {
-                            Message = "Save Bank Account Successfuly",
+                            Message = "Your bank details added successfully",
                             Result = true
                         };
                     }
@@ -608,8 +605,6 @@ namespace QuizApp.Controllers
 
         #region Withdrawal Amount
         [HttpPost]
-        [AllowAnonymous]
-        [Route("AddAccountDetails")]
         public ResultClass WithdrawalAmount(WithdrawalAmountModel model)
         {
             ResultClass result = new ResultClass();
@@ -639,7 +634,7 @@ namespace QuizApp.Controllers
                     {
                         result = new ResultClass()
                         {
-                            Message = "Sorry Something Wrong",
+                            Message = "sorry your balance is insufficient to complete the transaction ",
                             Result = false
                         };
                     }
@@ -658,10 +653,8 @@ namespace QuizApp.Controllers
         }
         #endregion
 
-        #region Withdrawal Amount
+        #region Points Redeem
         [HttpPost]
-        [AllowAnonymous]
-        [Route("AddAccountDetails")]
         public ResultClass PointsRedeem(WithdrawalAmountModel model)
         {
             ResultClass result = new ResultClass();

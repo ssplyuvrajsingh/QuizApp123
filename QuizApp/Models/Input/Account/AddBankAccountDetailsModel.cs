@@ -12,7 +12,5 @@ namespace QuizApp.Models
         public string NameInAccount { get; set; }
         public string Bank { get; set; }
         public string IFSCCode { get; set; }
-        public double amount { get; set; }
-        public string WithdrawType { get; set; }
     }
 }

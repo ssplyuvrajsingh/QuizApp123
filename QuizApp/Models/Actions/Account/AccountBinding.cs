@@ -88,7 +88,8 @@ namespace QuizApp.Models
             if (data != null)
             {
                 data.Passcode = model.Passcode;
-                return entities.SaveChanges() > 1;
+                entities.SaveChanges();
+                return true;
             }
             else
             {
@@ -237,7 +238,7 @@ namespace QuizApp.Models
 
             var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
             var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserId).FirstOrDefault();
-            if (data != null)
+            if (data.CurrentBalance>=model.amount)
             {
                 Transaction transaction = new Transaction()
                 {

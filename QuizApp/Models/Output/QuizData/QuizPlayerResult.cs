@@ -8,6 +8,7 @@ namespace QuizApp.Models
     public class QuizPlayerResult
     {
         public string UserID { get; set; }
+
         public System.Guid QuizID { get; set; }
         public bool IsCompleted { get; set; }
         public bool IsWon { get; set; }
