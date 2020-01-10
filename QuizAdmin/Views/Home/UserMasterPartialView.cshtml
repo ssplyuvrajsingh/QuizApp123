@@ -1,4 +1,5 @@
 ﻿@using QuizAdmin.Models.Output;
+
 <!-- /.row -->
 <div class="row">
     <div class="col-md-12">
@@ -6,20 +7,20 @@
             <div class="panel-heading">
                 <h2>User Master</h2>
             </div>
-            <div class="panel-highlight-action">
-            </div>
+           
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <div class="table-responsive">
                     <table class="table datatable">
                         <thead>
                             <tr>
-                                <th>
-                                    Name
-                                </th>
+                                <th>Name</th>
                                 <th> Email</th>
                                 <th>Platform</th>
                                 <th>Phone Number</th>
+                                <th>Referal Code</th>
+                                <th>Used Referal Code</th>
+                                <th>Parent IDs</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,22 +36,25 @@
                                             @user.Name
                                         </td>
                                         <td>
-                                          @user.Email
+                                            @user.Email
                                         </td>
                                         <td>@user.Platform</td>
                                         <td>@user.PhoneNumber</td>
+                                        <td>@user.ReferalCode</td>
+                                        <td>@user.UsedReferalCode</td>
+                                        <td>@user.ParentIDs</td>
                                         <td>
-                                                <a href="/Home/UsersGame/@user.UserId">
-                                                    <button class="btn btn-primary btn-round">
-                                                        <i class="fa fa-edit"></i>
-                                                    </button>
-                                                </a>
-                                                @*<a href="/Home/DeleteQuiz/@item.QuizID" onclick="return confirm('Do you want to Delete ?')">
+                                            <a href="/Home/UsersGame/@user.UserId">
+                                                <button class="btn btn-primary btn-round">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                            </a>
+                                            @*<a href="/Home/DeleteQuiz/@item.QuizID" onclick="return confirm('Do you want to Delete ?')">
                                                     <button class="btn btn-danger btn-round">
                                                         <i class="fa fa-times"></i>
                                                     </button>
                                                 </a>*@
-                                            </td>
+                                        </td>
                                     </tr>
                                 }
                             }

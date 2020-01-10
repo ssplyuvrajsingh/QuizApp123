@@ -24,7 +24,10 @@ namespace QuizAdmin.Models
                                 Email = au.Email,
                                 PhoneNumber = au.UserName,
                                 Platform = u.Platform,
-                                UserId = u.UserID
+                                UserId = u.UserID,
+                                ReferalCode=u.ReferalCode,
+                                UsedReferalCode = u.UsedReferalCode,
+                                
                             }).ToList();
             return allusers;
         }
