@@ -372,5 +372,38 @@ namespace QuizApp.Controllers
             return result;
         }
         #endregion
+
+        #region Get Level Base Earning Amount
+        [AllowAnonymous]
+        [HttpPost]
+        public ResultClass AddLevelBaseEarningAmount()
+        {
+            ResultClass result = null;
+            try
+            {
+                QuizBinding quizBinding = new QuizBinding();
+                var data = quizBinding.AddLevelBaseEarningAmount();
+                if (data)
+                {
+                    result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "added user level",
+                        Result = true
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+        }
+        #endregion
     }
 }

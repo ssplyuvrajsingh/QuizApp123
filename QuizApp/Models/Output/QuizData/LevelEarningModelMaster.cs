@@ -7,10 +7,10 @@ namespace QuizApp.Models
 {
     public class LevelEarningModelMaster
     {
-        public List<LevelEarning> levelEarnings { get; set; }
+        public List<LevelEarningModel> levelEarnings { get; set; }
     }
 
-    public class LevelEarning
+    public class LevelEarningModel
     {
         public string Title { get; set; }
         public double Amount { get; set; }
