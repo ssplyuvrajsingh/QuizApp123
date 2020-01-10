@@ -256,11 +256,12 @@ namespace QuizApp.Models
                 var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserId).FirstOrDefault();
                 if (data.CurrentBalance >= model.amount)
                 {
+                    var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
                     Transaction transaction = new Transaction()
                     {
                         UserID = model.UserId,
                         transactionDateTime = DateTime.Now,
-                        UniqueKey = model.UserId + DateTime.Now,
+                        UniqueKey = uniqueKey,
                         paymentStatus = "Withdraw",
                         amount = model.amount,
                         comment = "",
