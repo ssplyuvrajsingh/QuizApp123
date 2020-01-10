@@ -15,7 +15,6 @@ namespace QuizApp.Models.Output.QuizData
         public Nullable<System.DateTime> LastActiveDate { get; set; }
         public string ReferalCode { get; set; }
         public string UsedReferalCode { get; set; }
-
         public Nullable<bool> isActive { get; set; }
     }
 
