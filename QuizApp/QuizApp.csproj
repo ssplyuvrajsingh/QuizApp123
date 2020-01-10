@@ -334,6 +334,7 @@
     <Compile Include="Models\Input\Account\RegisterBindingModel.cs" />
     <Compile Include="Models\Input\Account\SetPasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\TokenBindingModel.cs" />
+    <Compile Include="Models\Input\Account\UserModel.cs" />
     <Compile Include="Models\Input\Account\WithdrawalAmountModel.cs" />
     <Compile Include="Models\Input\Quiz\EndGameBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\GetYourHighScoreByQuiz.cs" />
@@ -342,6 +343,7 @@
     <Compile Include="Models\Input\Quiz\SetQuestionAnswer.cs" />
     <Compile Include="Models\Input\Quiz\StartGameBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\WalletClass.cs" />
+    <Compile Include="Models\Output\Account\CurrentAmountDetailsModel.cs" />
     <Compile Include="Models\Output\Account\TokenResult.cs" />
     <Compile Include="Models\Output\Common\ResultClass.cs" />
     <Compile Include="Models\Output\QuizData\EndGameResult.cs" />

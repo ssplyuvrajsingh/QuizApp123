@@ -232,32 +232,50 @@ namespace QuizApp.Models
         }
         #endregion
 
+        #region Current Amount Details
+        public CurrentAmountDetailsModel CurrentAmountDetails(string UserId)
+        {
+            var data = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
+            return new CurrentAmountDetailsModel()
+            {
+                AccountNumber = data.AccountNumber != null ? data.AccountNumber : "",
+                NameInAccount = data.NameInAccount != null ? data.NameInAccount : "",
+                IFSCCode = data.IFSCCode != null ? data.IFSCCode : "",
+                amount = data.CurrentBalance != null ? (double)data.CurrentBalance : 0,
+            };
+        }
+        #endregion
+
         #region Withdrawal Amount
         public bool WithdrawalAmount(WithdrawalAmountModel model)
         {
-
-            var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
-            var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserId).FirstOrDefault();
-            if (data.CurrentBalance>=model.amount)
+            string passcode = entities.Users.Where(x => x.Passcode == model.Passcode).Select(x => x.Passcode).FirstOrDefault();
+            if (passcode != null)
             {
-                Transaction transaction = new Transaction()
+                var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
+                var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserId).FirstOrDefault();
+                if (data.CurrentBalance >= model.amount)
                 {
-                    UserID = model.UserId,
-                    transactionDateTime = DateTime.Now,
-                    UniqueKey = model.UserId + DateTime.Now,
-                    paymentStatus = "Withdraw",
-                    amount = model.amount,
-                    comment = "",
-                    username = data.Name,
-                    mobilenumber = data1.UserName,
-                    WithdrawType = model.WithdrawType,
-                    AccountNumber = model.AccountNumber,
-                    NameInAccount = model.NameInAccount,
-                    Bank = model.Bank,
-                    IFSCCode = model.IFSCCode
-                };
-                entities.Transactions.Add(transaction);
-                return entities.SaveChanges() > 1;
+                    Transaction transaction = new Transaction()
+                    {
+                        UserID = model.UserId,
+                        transactionDateTime = DateTime.Now,
+                        UniqueKey = model.UserId + DateTime.Now,
+                        paymentStatus = "Withdraw",
+                        amount = model.amount,
+                        comment = "",
+                        username = data.Name,
+                        mobilenumber = data1.UserName,
+                        WithdrawType = model.WithdrawType,
+                        AccountNumber = model.AccountNumber,
+                        NameInAccount = model.NameInAccount,
+                        Bank = model.Bank,
+                        IFSCCode = model.IFSCCode
+                    };
+                    entities.Transactions.Add(transaction);
+                    entities.SaveChanges();
+                }
+                return true;
             }
             else
             {

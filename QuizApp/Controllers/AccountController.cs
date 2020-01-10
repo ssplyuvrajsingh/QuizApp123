@@ -194,6 +194,7 @@ namespace QuizApp.Controllers
 
         #region Save Pass Code
         [HttpPost]
+        [AllowAnonymous]
         [Route("SavePassCode")]
         public ResultClass SavePassCode(RegisterBindingModel model)
         {
@@ -585,6 +586,57 @@ namespace QuizApp.Controllers
                         result = new ResultClass()
                         {
                             Message = "Not Save Bank Account Details",
+                            Result = false
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+        }
+        #endregion
+
+        #region Current Amount Details
+        [HttpPost]
+        public ResultClass CurrentAmountDetails(UserModel model)
+        {
+            ResultClass result = new ResultClass();
+            try
+            {
+                if (model.UserId == null && model.UserId == "")
+                {
+                    result = new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    AccountBinding accountBinding = new AccountBinding();
+                    var data = accountBinding.CurrentAmountDetails(model.UserId);
+                    if (data!=null)
+                    {
+                        result = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data Found",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        result = new ResultClass()
+                        {
+                            Message = "sorry your balance is insufficient to complete the transaction ",
                             Result = false
                         };
                     }
