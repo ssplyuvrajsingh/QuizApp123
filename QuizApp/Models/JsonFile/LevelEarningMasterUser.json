@@ -29,5 +29,7 @@
 
   "MaximumWithdrawLimit": 1000,
 
-  "ActiveHourLimit": 30
+  "ActiveHourLimit": 30,
+
+  "PointAmount" : 0.01
 }

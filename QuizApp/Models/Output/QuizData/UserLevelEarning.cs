@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace QuizApp.Models.Output.QuizData
+namespace QuizApp.Models
 {
    
     public class UserLevelEarning
@@ -48,6 +48,7 @@ namespace QuizApp.Models.Output.QuizData
         public int MinimumCharges { get; set; }
         public int MaximumWithdrawLimit { get; set; }
         public int ActiveHourLimit { get; set; }
+        public double PointAmount { get; set; }
     }
 
     public class LevelWithUser

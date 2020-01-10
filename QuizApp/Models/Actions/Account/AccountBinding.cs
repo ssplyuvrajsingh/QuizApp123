@@ -1,7 +1,9 @@
-﻿using QuizApp.Models.Entities;
+﻿using Newtonsoft.Json;
+using QuizApp.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -241,7 +243,8 @@ namespace QuizApp.Models
                 AccountNumber = data.AccountNumber != null ? data.AccountNumber : "",
                 NameInAccount = data.NameInAccount != null ? data.NameInAccount : "",
                 IFSCCode = data.IFSCCode != null ? data.IFSCCode : "",
-                amount = data.CurrentBalance != null ? (double)data.CurrentBalance : 0,
+                Bank =data.Bank != null ? data.Bank : "",
+                amount = data.CurrentBalance != null ? (double)data.CurrentBalance : 0
             };
         }
         #endregion
@@ -289,28 +292,55 @@ namespace QuizApp.Models
         }
         #endregion
 
-        #region Point Redeem
-        public bool PointRedeem(PointsRedeemModel model)
+        #region Points Redeem
+        public string PointRedeem(PointsRedeemModel model)
         {
 
             var data = entities.Users.Where(x => x.UserID == model.UserID).FirstOrDefault();
-
-            if (data != null)
+            var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserID).FirstOrDefault();
+            if (data.CurrentPoint >= model.PointsWithdraw)
             {
+                EaningHeadModel earningHeads = new EaningHeadModel();
+                var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
+                using (StreamReader r = new StreamReader(jsonFilePath))
+                {
+                    string json = r.ReadToEnd();
+                    earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
+                }
+                //Insert User Point Table
                 UserPoint Point = new UserPoint()
                 {
                     UserID = model.UserID,
                     TransactionDate = DateTime.Now,
-                    PointsWithdraw=model.PointsWithdraw,
-                    Description = "Point Withdrawal to Account",
-                    CreatedDate=DateTime.Now
+                    PointsWithdraw = model.PointsWithdraw,
+                    PointsEarned = 0,
+                    Description = "Point Withdrawal in Account",
+                    CreatedDate = DateTime.Now
                 };
                 entities.UserPoints.Add(Point);
-                return entities.SaveChanges() > 1;
+                entities.SaveChanges();
+
+                //Insert Transaction Table
+                double balance = model.PointsWithdraw * earningHeads.PointAmount;
+                var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
+                Transaction transaction = new Transaction()
+                {
+                    UserID = model.UserID,
+                    transactionDateTime = DateTime.Now,
+                    UniqueKey = uniqueKey,
+                    paymentStatus = "points",
+                    amount = balance,
+                    comment = "Point Withdrawal in Account",
+                    username = data.Name,
+                    mobilenumber = data1.UserName,
+                };
+                entities.Transactions.Add(transaction);
+                entities.SaveChanges();
+                return "True";
             }
             else
             {
-                return false;
+                return "insufficient";
             }
         }
         #endregion

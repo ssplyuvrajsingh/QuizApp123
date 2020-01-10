@@ -10,6 +10,7 @@ namespace QuizApp.Models
         public string AccountNumber { get; set; }
         public string NameInAccount { get; set; } 
         public string IFSCCode { get; set; }
+        public string Bank { get; set; }
         public double amount { get; set; }
     }
 }

@@ -716,7 +716,7 @@ namespace QuizApp.Controllers
 
         #region Points Redeem
         [HttpPost]
-        public ResultClass PointsRedeem(WithdrawalAmountModel model)
+        public ResultClass PointsRedeem(PointsRedeemModel model)
         {
             ResultClass result = new ResultClass();
             try
@@ -732,13 +732,13 @@ namespace QuizApp.Controllers
                 else
                 {
                     AccountBinding accountBinding = new AccountBinding();
-                    string data = accountBinding.WithdrawalAmount(model);
+                    string data = accountBinding.PointRedeem(model);
                     switch (data)
                     {
                         case "True":
                             result = new ResultClass()
                             {
-                                Message = "Thank you,your payment was successful",
+                                Message = "Thank you,your points redeem was successful",
                                 Result = true
                             };
                             break;
@@ -746,14 +746,7 @@ namespace QuizApp.Controllers
                         case "insufficient":
                             result = new ResultClass()
                             {
-                                Message = "sorry your balance is insufficient to complete the transaction ",
-                                Result = false
-                            };
-                            break;
-                        case "Passcode":
-                            result = new ResultClass()
-                            {
-                                Message = "sorry your balance is insufficient to complete the transaction ",
+                                Message = "sorry your points is insufficient to complete the transaction ",
                                 Result = false
                             };
                             break;
