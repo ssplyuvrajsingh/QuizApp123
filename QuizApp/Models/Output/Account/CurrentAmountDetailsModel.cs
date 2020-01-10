@@ -13,4 +13,4 @@ namespace QuizApp.Models
         public string Bank { get; set; }
         public double amount { get; set; }
     }
-}
+} 
