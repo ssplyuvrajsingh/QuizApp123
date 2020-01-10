@@ -673,22 +673,31 @@ namespace QuizApp.Controllers
                 else
                 {
                     AccountBinding accountBinding = new AccountBinding();
-                    bool data = accountBinding.WithdrawalAmount(model);
-                    if (data)
+                    string data = accountBinding.WithdrawalAmount(model);
+                    switch (data)
                     {
-                        result = new ResultClass()
-                        {
-                            Message = "Thank you,your payment was successful",
-                            Result = true
-                        };
-                    }
-                    else
-                    {
-                        result = new ResultClass()
-                        {
-                            Message = "sorry your balance is insufficient to complete the transaction ",
-                            Result = false
-                        };
+                        case "True":
+                            result = new ResultClass()
+                            {
+                                Message = "Thank you,your payment was successful",
+                                Result = true
+                            };
+                            break;
+
+                        case "insufficient":
+                            result = new ResultClass()
+                            {
+                                Message = "sorry your balance is insufficient to complete the transaction ",
+                                Result = false
+                            };
+                            break;
+                        case "Passcode":
+                            result = new ResultClass()
+                            {
+                                Message = "Sorry your passcode is wrong ",
+                                Result = false
+                            };
+                            break;
                     }
                 }
             }
@@ -723,22 +732,31 @@ namespace QuizApp.Controllers
                 else
                 {
                     AccountBinding accountBinding = new AccountBinding();
-                    bool data = accountBinding.WithdrawalAmount(model);
-                    if (data)
+                    string data = accountBinding.WithdrawalAmount(model);
+                    switch (data)
                     {
-                        result = new ResultClass()
-                        {
-                            Message = "Thank you,your payment was successful",
-                            Result = true
-                        };
-                    }
-                    else
-                    {
-                        result = new ResultClass()
-                        {
-                            Message = "Sorry Something Wrong",
-                            Result = false
-                        };
+                        case "True":
+                            result = new ResultClass()
+                            {
+                                Message = "Thank you,your payment was successful",
+                                Result = true
+                            };
+                            break;
+
+                        case "insufficient":
+                            result = new ResultClass()
+                            {
+                                Message = "sorry your balance is insufficient to complete the transaction ",
+                                Result = false
+                            };
+                            break;
+                        case "Passcode":
+                            result = new ResultClass()
+                            {
+                                Message = "sorry your balance is insufficient to complete the transaction ",
+                                Result = false
+                            };
+                            break;
                     }
                 }
             }

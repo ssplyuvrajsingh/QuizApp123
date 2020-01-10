@@ -247,7 +247,7 @@ namespace QuizApp.Models
         #endregion
 
         #region Withdrawal Amount
-        public bool WithdrawalAmount(WithdrawalAmountModel model)
+        public string WithdrawalAmount(WithdrawalAmountModel model)
         {
             string passcode = entities.Users.Where(x => x.Passcode == model.Passcode).Select(x => x.Passcode).FirstOrDefault();
             if (passcode != null)
@@ -274,12 +274,16 @@ namespace QuizApp.Models
                     };
                     entities.Transactions.Add(transaction);
                     entities.SaveChanges();
+                    return "True";
                 }
-                return true;
+                else
+                {
+                    return "insufficient";
+                }
             }
             else
             {
-                return false;
+                return "Passcode";
             }
         }
         #endregion
