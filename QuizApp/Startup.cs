@@ -31,9 +31,9 @@ namespace QuizApp
         /// <param name="jsonFilePath">Read json file</param>
         private void GetHangfireServers(IAppBuilder app, string jsonFilePath)
         {
-            GlobalConfiguration.Configuration.UseSqlServerStorage("Data Source=SSPL36-PC\\SQLEXPRESS,1433;Initial Catalog=QuizApp;User ID=sa;Password=sumedha123$;");
+            GlobalConfiguration.Configuration.UseSqlServerStorage("DefaultConnection");
             QuizBinding quizBinding = new QuizBinding();
-            RecurringJob.AddOrUpdate(() => quizBinding.AddLevelBaseEarningAmount(jsonFilePath),Cron.Daily(20,30));
+            RecurringJob.AddOrUpdate(() => quizBinding.AddLevelBaseEarningAmount(jsonFilePath), Cron.Daily(20, 30));
 
             app.UseHangfireServer();
             app.UseHangfireDashboard();

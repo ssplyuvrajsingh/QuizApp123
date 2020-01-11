@@ -904,7 +904,7 @@ namespace QuizApp.Models
             catch (Exception ex1)
             {
                 MailSenderRepo mailSenderRepo = new MailSenderRepo();
-                mailSenderRepo.MailSender("sspl.user67@gmail.com", ex1.Message + ex1.StackTrace, "Quiz Exception");
+                mailSenderRepo.MailSender("rajkumar@sumedhasoftech.com", ex1.Message + ex1.StackTrace, "Quiz Exception");
             }
 
             return false;
