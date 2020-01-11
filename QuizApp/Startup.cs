@@ -27,7 +27,7 @@ namespace QuizApp
         /// <summary>
         /// This function will be callled every day at 2.00 am
         /// </summary>
-        /// <param name="app"></param>
+        /// <param name="app"></param> 
         /// <param name="jsonFilePath">Read json file</param>
         private void GetHangfireServers(IAppBuilder app, string jsonFilePath)
         {
