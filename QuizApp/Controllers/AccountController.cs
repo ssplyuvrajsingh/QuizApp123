@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -70,7 +72,15 @@ namespace QuizApp.Controllers
                 else
                 {
                     var user = UserManager.Find(model.PhoneNumber, model.Password);
-                    if (user != null && !user.EmailConfirmed)
+                    if (user == null)
+                    {
+                        return new TokenResult()
+                        {
+                            error_message = "Your user name && password is incorrect",
+                            result = false
+                        };
+                    }
+                    else if (user.PhoneNumberConfirmed != true )
                     {
                         return new TokenResult()
                         {
@@ -81,7 +91,10 @@ namespace QuizApp.Controllers
                     else if (user != null)
                     {
                         AuthRepository authRepository = new AuthRepository();
-                        return authRepository.GenerateToken(model.PhoneNumber, model.Password, user.Id, "");
+                        var data= authRepository.GenerateToken(model.PhoneNumber, model.Password, user.Id, "");
+                        AccountBinding ac = new AccountBinding();
+                        data.RefferalCode = ac.GetRefferlCode(data.id);
+                        return data;
                     }
                     else
                     {
@@ -97,7 +110,7 @@ namespace QuizApp.Controllers
             {
                 return new TokenResult()
                 {
-                    error_message = ex.Message + "--"+ ex.StackTrace,
+                    error_message = ex.Message + "--" + ex.StackTrace,
                     result = false
                 };
             }
@@ -110,7 +123,7 @@ namespace QuizApp.Controllers
         [AllowAnonymous]
         [Route("RefreshToken")]
         public TokenResult RefreshToken(RefreshTokenBindingModel model)
-         {
+        {
             if (!ModelState.IsValid)
             {
                 return new TokenResult()
@@ -166,7 +179,7 @@ namespace QuizApp.Controllers
                     return result;
                 }
 
-                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email };
+                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber=model.PhoneNumber,EmailConfirmed=true,PhoneNumberConfirmed=true };
 
 
                 IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
@@ -623,7 +636,7 @@ namespace QuizApp.Controllers
                 {
                     AccountBinding accountBinding = new AccountBinding();
                     var data = accountBinding.CurrentAmountDetails(model.UserId);
-                    if (data!=null)
+                    if (data != null)
                     {
                         result = new ResultClass()
                         {
@@ -662,43 +675,41 @@ namespace QuizApp.Controllers
             ResultClass result = new ResultClass();
             try
             {
-                if (!ModelState.IsValid)
+                AccountBinding accountBinding = new AccountBinding();
+                var data = accountBinding.WithdrawalAmount(model);
+                string res = data.State;
+                switch (res)
                 {
-                    result = new ResultClass()
-                    {
-                        Message = "Please send all required fields",
-                        Result = false
-                    };
-                }
-                else
-                {
-                    AccountBinding accountBinding = new AccountBinding();
-                    string data = accountBinding.WithdrawalAmount(model);
-                    switch (data)
-                    {
-                        case "True":
-                            result = new ResultClass()
-                            {
-                                Message = "Thank you,your payment was successful",
-                                Result = true
-                            };
-                            break;
+                    case "True":
+                        result = new ResultClass()
+                        {
+                            Data = data.Balance,
+                            Message = "Thank you,your payment was successful",
+                            Result = true
+                        };
+                        break;
 
-                        case "insufficient":
-                            result = new ResultClass()
-                            {
-                                Message = "sorry your balance is insufficient to complete the transaction ",
-                                Result = false
-                            };
-                            break;
-                        case "Passcode":
-                            result = new ResultClass()
-                            {
-                                Message = "Sorry your passcode is wrong ",
-                                Result = false
-                            };
-                            break;
-                    }
+                    case "insufficient":
+                        result = new ResultClass()
+                        {
+                            Message = "sorry your balance is insufficient to complete the transaction ",
+                            Result = false
+                        };
+                        break;
+                    case "model":
+                        result = new ResultClass()
+                        {
+                            Message = "Please send all required fields",
+                            Result = false
+                        };
+                        break;
+                    case "Passcode":
+                        result = new ResultClass()
+                        {
+                            Message = "Sorry your passcode is wrong ",
+                            Result = false
+                        };
+                        break;
                 }
             }
             catch (Exception ex)
@@ -732,12 +743,14 @@ namespace QuizApp.Controllers
                 else
                 {
                     AccountBinding accountBinding = new AccountBinding();
-                    string data = accountBinding.PointRedeem(model);
-                    switch (data)
+                    var data = accountBinding.PointRedeem(model);
+                    string Res = data.State;
+                    switch (Res)
                     {
                         case "True":
                             result = new ResultClass()
                             {
+                                Data = data.RedeemBalance,
                                 Message = "Thank you,your points redeem was successful",
                                 Result = true
                             };
@@ -746,7 +759,15 @@ namespace QuizApp.Controllers
                         case "insufficient":
                             result = new ResultClass()
                             {
+                                Data = data.RedeemBalance,
                                 Message = "sorry your points is insufficient to complete the transaction ",
+                                Result = false
+                            };
+                            break;
+                        case "Passcode":
+                            result = new ResultClass()
+                            {
+                                Message = "Sorry your passcode is wrong ",
                                 Result = false
                             };
                             break;
@@ -763,6 +784,94 @@ namespace QuizApp.Controllers
                 };
             }
             return result;
+        }
+        #endregion
+
+        #region Test
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("TestPaytm")]
+        public ResultClass TestPaytm()
+        {
+            ResultClass result = null;
+            try
+            {
+                var data = PaytmApi();
+                result = new ResultClass()
+                {
+                    Data=data,
+                    Message="Success",
+                    Result=true
+                };
+            }
+            catch(Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+                 
+        }
+        #endregion
+
+        #region Paytm
+        public string PaytmApi()
+        {
+            string merchantguid = "7f1c79d3-5386-47d7-ac46-707ae6126842";
+            string orderid = DateTime.Now.Ticks.ToString();
+            string AesKey = "ZBVhw3s0alzVds@k"; // 16 digits Merchant Key or Aes Key
+            string saleswalletid = "b6961cdb-cc23-4d74-927e-5555f9ba52a2";
+            string phone = "9785507506";
+            string postData = "{\"request\":{\"requestType\":\"null\",\"merchantGuid\":\"" + merchantguid + "\",\"merchantOrderId\":\"" + orderid + "\",\"salesWalletName\":\"\",\"salesWalletGuid\":\"" + saleswalletid + "\",\"payeeEmailId\":\"email@paytm.com\",\"payeePhoneNumber\":\"" + phone + "\",\"payeeSsoId\":\"\",\"appliedToNewUsers\":\"N\",\"amount\":\"1\",\"currencyCode\":\"INR\"},\"metadata\":\"Testing Data\",\"ipAddress\":\"192.168.1.1\",\"operationType\":\"SALES_TO_USER_CREDIT\",\"platformName\":\"PayTM\"}";
+
+            string checksum = paytm.CheckSum.generateCheckSumByJson(AesKey, postData);
+            string uri = "https://trust.paytm.in/wallet-web/salesToUserCredit";
+
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(uri);
+            webRequest.Method = "POST";
+            webRequest.Accept = "application/json";
+            webRequest.ContentType = "application/json";
+            webRequest.Headers.Add("mid", merchantguid);
+            webRequest.Headers.Add("checksumhash", checksum); 
+
+            webRequest.ContentLength = postData.Length;
+            try
+            {
+                using (StreamWriter requestWriter2 = new StreamWriter(webRequest.GetRequestStream()))
+                {
+                    requestWriter2.Write(postData);
+                }
+
+                //  This actually does the request and gets the response back;
+
+                string responseData = string.Empty;
+
+                using (StreamReader responseReader = new StreamReader(webRequest.GetResponse().GetResponseStream()))
+                {
+                    responseData = responseReader.ReadToEnd();
+                    return responseData;
+                }
+            }
+            catch (WebException web)
+            {
+                HttpWebResponse res = web.Response as HttpWebResponse;
+                Stream s = res.GetResponseStream();
+                string message;
+                using (StreamReader sr = new StreamReader(s))
+                {
+                    message = sr.ReadToEnd();
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return "False";
         }
         #endregion
     }
