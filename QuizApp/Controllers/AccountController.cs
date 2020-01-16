@@ -71,36 +71,44 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    var user = UserManager.Find(model.PhoneNumber, model.Password);
-                    if (user == null)
+                    var User = UserManager.FindByName(model.PhoneNumber);
+                    if(User!=null)
                     {
-                        return new TokenResult()
+                        User= UserManager.Find(model.PhoneNumber, model.Password);
+                        if(User!=null)
                         {
-                            error_message = "Your user name and password is incorrect",
-                            result = false
-                        };
-                    }
-                    else if (user.PhoneNumberConfirmed != true )
-                    {
-                        return new TokenResult()
+                            AccountBinding ac = new AccountBinding();
+                            var userinfo = ac.GetUserInformation(User.Id);
+                            if (userinfo.isActive != false && userinfo.isBlocked != true)
+                            {
+                                AuthRepository authRepository = new AuthRepository();
+                                var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
+                                data.RefferalCode = ac.GetRefferlCode(data.id);
+                                return data;
+                            }
+                            else
+                            {
+                                return new TokenResult()
+                                {
+                                    error_message = "This User is not Actice or Blocked",
+                                    result = false
+                                };
+                            }
+                        }
+                        else
                         {
-                            error_message = "User not active. Please verify your mobile number",
-                            result = false
-                        };
-                    }
-                    else if (user != null)
-                    {
-                        AuthRepository authRepository = new AuthRepository();
-                        var data= authRepository.GenerateToken(model.PhoneNumber, model.Password, user.Id, "");
-                        AccountBinding ac = new AccountBinding();
-                        data.RefferalCode = ac.GetRefferlCode(data.id);
-                        return data;
+                            return new TokenResult()
+                            {
+                                error_message = "Your password is incorrect",
+                                result = false
+                            };
+                        }  
                     }
                     else
                     {
                         return new TokenResult()
                         {
-                            error_message = "Phone Number password is not match.",
+                            error_message = "Your user name is incorrect",
                             result = false
                         };
                     }
