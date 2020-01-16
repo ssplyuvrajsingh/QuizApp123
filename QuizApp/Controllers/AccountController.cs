@@ -76,7 +76,7 @@ namespace QuizApp.Controllers
                     {
                         return new TokenResult()
                         {
-                            error_message = "Your user name && password is incorrect",
+                            error_message = "Your user name and password is incorrect",
                             result = false
                         };
                     }
