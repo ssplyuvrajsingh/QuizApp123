@@ -19,10 +19,26 @@ namespace QuizApp.Models
         #endregion
 
         #region Quiz
-        public List<QuizResult> GetQuiz()
+        public List<QuizResult> GetQuiz(string userId)
         {
             var ImageSource = ConfigurationManager.AppSettings["ImageSource"].ToString();
-            var data = entities.QuizDatas.Where(x => x.isActive == true).Select(a => new QuizResult()
+            //var data = (from a in entities.QuizDatas
+            //            join qp in entities.QuizPlayers on a.QuizID equals qp.QuizID
+            //            where   (qp.IsCompleted != true &&  qp.QuizID == a.QuizID && qp.UserID == userId) || a.isActive ==true
+            //            select new QuizResult()
+            //            {
+            //                QuizID = a.QuizID,
+            //                QuizTitle = a.QuizTitle,
+            //                QuizBannerImage = ImageSource + a.QuizBannerImage,
+            //                NoOfQuestion = a.NoOfQuestion.Value,
+            //                PlayingDescriptionImg = ImageSource + a.PlayingDescriptionImg,
+            //                StartDate = a.StartDate.Value,
+            //                WinPrecentage = a.WinPrecentage
+            //            }).ToList();
+
+            // Filter data that match with today date
+            var quizDatas = entities.QuizDatas.ToList();
+            var data = quizDatas.Where(x => x.isActive == true && x.StartDate.Value.Date == DateTime.Now.Date).Select(a => new QuizResult()
             {
                 QuizID = a.QuizID,
                 QuizTitle = a.QuizTitle,
@@ -33,50 +49,31 @@ namespace QuizApp.Models
                 WinPrecentage = a.WinPrecentage
             }).ToList();
 
-            //var data = (from QuizDatas in entities.QuizDatas
-            //            join QuizPlayer in entities.QuizPlayers on QuizDatas.QuizID equals QuizPlayer.QuizID
-            //            join Users in entities.Users on QuizPlayer.UserID equals Users.UserID
+            List<QuizResult> quizResults = new List<QuizResult>();
 
-            //            select new QuizResult()
-            //            {
-            //                QuizID = QuizDatas.QuizID,
-            //                QuizTitle = QuizDatas.QuizTitle,
-            //                QuizBannerImage = ImageSource + QuizDatas.QuizBannerImage,
-            //                NoOfQuestion = QuizDatas.NoOfQuestion.Value,
-            //                PlayingDescriptionImg = ImageSource + QuizDatas.PlayingDescriptionImg,
-            //                StartDate = QuizDatas.StartDate.Value,
-            //                WinPrecentage = QuizDatas.WinPrecentage
-            //            }).ToList();
-
+            foreach (var item in data)
+            {
+                var f = new QuizResult();
+                var data1 = entities.QuizPlayers.Where(x => x.UserID == userId && x.QuizID == item.QuizID && x.IsCompleted == true).FirstOrDefault();
+                if (data1 == null)
+                {
+                    quizResults.Add(item);
+                }
+            }
+            if (quizResults.Count == 0)
+            {
+                User user = new User()
+                {
+                    LastActiveDate = DateTime.Now
+                };
+            }
             data.ForEach(a =>
             {
                 a.StartDateStr = a.StartDate.ToString("dd MMM hh:mm tt");
                 a.isActive = DateTime.Compare(a.StartDate, DateTime.Now) <= 0;
             });
 
-            return data;
-        }
-
-        public int SetQuiz(QuizBindingModel model)
-        {
-            QuizAppEntities entities = new QuizAppEntities();
-            QuizData quizData = new QuizData()
-            {
-                CreatedDate = DateTime.Now,
-                isActive = true,
-                MaxPoint = model.MaxPoint,
-                MinPoint = model.MinPoint,
-                NoOfQuestion = model.NoOfQuestion,
-                PlayingDescriptionImg = model.PlayingDescriptionImg,
-                QuizBannerImage = model.QuizBannerImage,
-                StartDate = model.StartDate,
-                QuizID = Guid.NewGuid(),
-                QuizTitle = model.QuizTitle,
-                WinPrecentage = model.WinPrecentage
-            };
-
-            entities.QuizDatas.Add(quizData);
-            return entities.SaveChanges();
+            return quizResults;
         }
         #endregion
 
@@ -328,25 +325,25 @@ namespace QuizApp.Models
         #endregion
 
         #region Get Wallet Information
-        public UserWalletModel GetWalletInfo(string UserId)
+        public UserWalletModel GetWalletInfo(UserModel model)
         {
             UserWalletModel userWallet = new UserWalletModel();
-            var data = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
+            var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
             List<TransactionModel> transactionModels = new List<TransactionModel>();
-            var transactions = entities.Transactions.Where(x => x.UserID == UserId).ToList();
+            var transactions = entities.Transactions.Where(x => x.UserID == model.UserId).ToList();
             foreach (var a in transactions)
             {
-                var Tran = new TransactionModel();
-                Tran.transactionDateTime = string.Format("{0: dd MMMM }", a.transactionDateTime) + " " + string.Format("{0:hh:mm tt}", a.transactionDateTime);
-                Tran.amount = (int)a.amount;
-                Tran.paymentStatus = a.paymentStatus;
-                transactionModels.Add(Tran);
+                    var Tran = new TransactionModel();
+                    Tran.transactionDateTime = string.Format("{0: dd MMMM }", a.transactionDateTime) + " " + string.Format("{0:hh:mm tt}", a.transactionDateTime);
+                    Tran.amount = Math.Truncate((double)a.amount);
+                    Tran.paymentStatus = a.paymentStatus;
+                    transactionModels.Add(Tran);  
             }
             userWallet.TransactionModels = transactionModels;
-            userWallet.CurrentBalance = data.CurrentBalance != null ? (double)data.CurrentBalance : 0;
-            userWallet.MothlyIncome = data.MothlyIncome != null ? (double)data.MothlyIncome : 0;
-            userWallet.TotalWithdraw = data.TotalWithdraw != null ? (double)data.TotalWithdraw : 0;
-            userWallet.TotalPoins = (int)data.CurrentPoint;
+            userWallet.CurrentBalance = Math.Truncate(data.CurrentBalance != null ? (double)data.CurrentBalance : 0);
+            userWallet.MothlyIncome = Math.Truncate(data.MothlyIncome != null ? (double)data.MothlyIncome : 0);
+            userWallet.TotalWithdraw = Math.Truncate(data.TotalWithdraw != null ? (double)data.TotalWithdraw : 0);
+            userWallet.TotalPoins = data.CurrentPoint!=null?(int)data.CurrentPoint:0;
             return userWallet;
         }
         #endregion
@@ -364,8 +361,8 @@ namespace QuizApp.Models
                 {
                     case 1:
                         lvl.Title = "Level 1";
-                        lvl.Activeuser = data!=null ? data.Level1Users != null ? (int)data.Level1Users : 0 : 0;
-                        lvl.Amount = data != null ? data.Level1 != null ? (double)data.Level1 : 0 : 0; 
+                        lvl.Activeuser = data != null ? data.Level1Users != null ? (int)data.Level1Users : 0 : 0;
+                        lvl.Amount = data != null ? data.Level1 != null ? (double)data.Level1 : 0 : 0;
                         break;
 
                     case 2:
@@ -417,7 +414,7 @@ namespace QuizApp.Models
                 levelEarnings.Add(lvl);
             }
             levelEarningModelMaster.levelEarnings = levelEarnings;
-            return levelEarningModelMaster;   
+            return levelEarningModelMaster;
         }
         #endregion
 

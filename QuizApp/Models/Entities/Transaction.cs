@@ -29,6 +29,9 @@ namespace QuizApp.Models.Entities
         public string NameInAccount { get; set; }
         public string Bank { get; set; }
         public string IFSCCode { get; set; }
+        public string PaytmOrderId { get; set; }
+        public Nullable<double> PaytmWithdrawCharges { get; set; }
+        public string PaytmResponse { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
     }

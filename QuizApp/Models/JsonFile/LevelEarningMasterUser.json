@@ -31,5 +31,7 @@
 
   "ActiveHourLimit": 30,
 
-  "PointAmount" : 0.01
+  "PointAmount": 0.01,
+
+  "WithdrawCharges": 5
 }

@@ -14,5 +14,6 @@ namespace QuizApp.Models
         public string expires_in { get; set; }
         public string error_message { get; set; }
         public string id { get; set; }
+        public string RefferalCode { get; set; }
     }
 }

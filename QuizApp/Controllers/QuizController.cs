@@ -16,12 +16,12 @@ namespace QuizApp.Controllers
 
         //POST api/Quiz/GetQuiz
         [HttpPost]
-        public ResultClass GetQuiz()
+        public ResultClass GetQuiz(UserModel model)
         {
             try
             {
                 QuizBinding quiz = new QuizBinding();
-                var data = quiz.GetQuiz();
+                var data = quiz.GetQuiz(model.UserId);
                 if (data.Count() > 0)
                 {
                     return new ResultClass()
@@ -46,44 +46,9 @@ namespace QuizApp.Controllers
                 return new ResultClass()
                 {
                     Result = false,
-                    Message = ex.Message +"---"+ex.StackTrace,
+                    Message = ex.Message + "---" + ex.StackTrace,
                     Data = null
                 };
-            }
-        }
-
-        #endregion
-
-        #region Set Quiz
-
-        //POST api/Quiz/SetQuiz
-        [HttpPost]
-        public ResultClass SetQuiz(QuizBindingModel model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return new ResultClass()
-                    {
-                        Result = false,
-                        Message = "Please send required fields"
-                    };
-                }
-                QuizBinding quiz = new QuizBinding();
-                return new ResultClass()
-                {
-                    Data = quiz.SetQuiz(model),
-                    Message = "Set quiz successfully",
-                    Result = true
-                };
-            }
-            catch (Exception ex)
-            {
-                ResultClass result = new ResultClass();
-                result.Result = false;
-                result.Message = ex.Message;
-                return result;
             }
         }
 
@@ -302,13 +267,13 @@ namespace QuizApp.Controllers
         #region Get Wallet Information
         // POST api/Quiz/GetWalletInformation
         [HttpPost]
-        public ResultClass GetWalletInformation(UserWalletInput model)
+        public ResultClass GetWalletInformation(UserModel model)
         {
             ResultClass resultClass = null;
             try
             {
                 QuizBinding quizBinding = new QuizBinding();
-                var data = quizBinding.GetWalletInfo(model.UserId);
+                var data = quizBinding.GetWalletInfo(model);
                 if (data != null)
                 {
                     resultClass = new ResultClass()
@@ -373,9 +338,9 @@ namespace QuizApp.Controllers
         }
         #endregion
 
-        #region Get Level Base Earning Amount
+        #region Add Level Base Earning Amount
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
         public ResultClass AddLevelBaseEarningAmount()
         {
             ResultClass result = null;
