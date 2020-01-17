@@ -274,7 +274,6 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    result.Message = "OTP verification failed";
                     var user = UserManager.FindByName(model.PhoneNumber);
                     if (user != null)
                     {
@@ -286,6 +285,11 @@ namespace QuizApp.Controllers
                             result.Result = true;
                             user.EmailConfirmed = true;
                             UserManager.Update(user);
+                        }
+                        else
+                        {
+                            result.Message = "Your OTP is Wrong";
+                            result.Result = true;
                         }
                     }
                 }
@@ -324,7 +328,7 @@ namespace QuizApp.Controllers
                     return new ResultClass()
                     {
                         Result = addOTPResult,
-                        Message = addOTPResult ? "OTP send successfully" : "OTP send failure"
+                        Message = addOTPResult ? "OTP send successfully" : "Your Mobile Number is Wrong"
                     };
                 }
             }

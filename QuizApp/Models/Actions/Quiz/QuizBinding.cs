@@ -87,7 +87,7 @@ namespace QuizApp.Models
             if (quiz != null)
             {
                 List<QuizQuestionResult> lstQuizQuestionResult = new List<QuizQuestionResult>();
-                var QuizQuestions = entities.QuizQuestions.Where(x => x.QuizID == quizId).OrderBy(r => Guid.NewGuid()).Take(quiz.NoOfQuestion.Value).ToList();
+                var QuizQuestions = entities.QuizQuestions.Where(x => x.QuizID == quizId).OrderBy(X => X.CreatedDate).ToList();/*OrderBy(r => Guid.NewGuid()).Take(quiz.NoOfQuestion.Value).ToList();*/
                 foreach (var a in QuizQuestions)
                 {
                     var quizQuestionResult = new QuizQuestionResult();
