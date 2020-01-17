@@ -772,14 +772,14 @@ namespace QuizApp.Controllers
                             result = new ResultClass()
                             {
                                 Data = data.RedeemBalance,
-                                Message = "sorry your points is insufficient to complete the transaction ",
+                                Message = "Your points is insufficient to complete this transaction",
                                 Result = false
                             };
                             break;
                         case "Passcode":
                             result = new ResultClass()
                             {
-                                Message = "Sorry your passcode is wrong ",
+                                Message = "Sorry your passcode is wrong",
                                 Result = false
                             };
                             break;

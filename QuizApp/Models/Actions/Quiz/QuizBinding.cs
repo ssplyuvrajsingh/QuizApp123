@@ -38,13 +38,16 @@ namespace QuizApp.Models
 
             // Filter data that match with today date
             var quizDatas = entities.QuizDatas.ToList();
-            var data = quizDatas.Where(x => x.isActive == true && x.StartDate.Value.Date == DateTime.Now.Date).Select(a => new QuizResult()
+            var data = quizDatas.Where(x => x.isActive == true).OrderBy(x=>x.StartDate).Select(a => new QuizResult()
             {
                 QuizID = a.QuizID,
                 QuizTitle = a.QuizTitle,
-                QuizBannerImage = ImageSource + a.QuizBannerImage,
+                
+                QuizBannerImage =  a.QuizBannerImage!=null? ImageSource + a.QuizBannerImage:ImageSource + "/Content/attachment/bd574fd3-1faa-4884-a152-fd55e6dffe3a_Untitled-1.png",
                 NoOfQuestion = a.NoOfQuestion.Value,
-                PlayingDescriptionImg = ImageSource + a.PlayingDescriptionImg,
+                
+                PlayingDescriptionImg =  a.PlayingDescriptionImg != null ? ImageSource + a.PlayingDescriptionImg : ImageSource + "/Content/attachment/bd574fd3-1faa-4884-a152-fd55e6dffe3a_Untitled-1.png",
+
                 StartDate = a.StartDate.Value,
                 WinPrecentage = a.WinPrecentage
             }).ToList();
