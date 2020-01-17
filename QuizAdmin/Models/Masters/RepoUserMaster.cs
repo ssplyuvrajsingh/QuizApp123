@@ -21,12 +21,29 @@ namespace QuizAdmin.Models
                             select new AllUser
                             {
                                 Name = u.Name,
-                                Email = au.Email,
-                                PhoneNumber = au.UserName,
+                                ParentIDs = u.ParentIDs,
+                                Passcode=u.Passcode,
+                                Password=u.Password,
+                                LastActiveDate=u.LastActiveDate,
+                                ReferalCode = u.ReferalCode,
+                                UsedReferalCode = u.UsedReferalCode,
+                                isActive=u.isActive,
+                                isBlocked=u.isBlocked,
+                                CurrentPoint=u.CurrentPoint,
+                                TotalEarn=u.TotalEarn,
+                                TotalWithdraw=u.TotalWithdraw,
+                                PendingWithdraw=u.PendingWithdraw,
+                                MothlyIncome=u.MothlyIncome,
+                                AccountNumber=u.AccountNumber,
+                                NameInAccount=u.NameInAccount,
+                                Bank=u.Bank,
+                                IFSCCode=u.IFSCCode,
+                               
+                                PhoneNumber = u.,
                                 Platform = u.Platform,
                                 UserId = u.UserID,
-                                ReferalCode=u.ReferalCode,
-                                UsedReferalCode = u.UsedReferalCode,
+                                
+                                
                                 
                             }).ToList();
             return allusers;

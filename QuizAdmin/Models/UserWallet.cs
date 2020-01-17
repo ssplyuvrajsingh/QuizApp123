@@ -23,6 +23,7 @@ namespace QuizAdmin.Models
         public Nullable<int> TotalWithdraw { get; set; }
         public Nullable<int> PendingWithdraw { get; set; }
         public System.DateTime CreatedDate { get; set; }
+        public Nullable<int> MothlyIncome { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
     }

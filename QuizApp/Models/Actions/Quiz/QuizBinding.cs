@@ -38,7 +38,7 @@ namespace QuizApp.Models
 
             // Filter data that match with today date
             var quizDatas = entities.QuizDatas.ToList();
-            var data = quizDatas.Where(x => x.isActive == true).OrderBy(x=>x.StartDate).Select(a => new QuizResult()
+            var data = quizDatas.Where(x => x.isActive == true).OrderBy(x=>x.CreatedDate).Select(a => new QuizResult()
             {
                 QuizID = a.QuizID,
                 QuizTitle = a.QuizTitle,

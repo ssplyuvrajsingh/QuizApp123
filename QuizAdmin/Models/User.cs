@@ -31,6 +31,17 @@ namespace QuizAdmin.Models
         public string otp { get; set; }
         public string IP { get; set; }
         public System.DateTime LastUpdateDate { get; set; }
+        public Nullable<int> CurrentPoint { get; set; }
+        public Nullable<double> CurrentBalance { get; set; }
+        public Nullable<double> TotalEarn { get; set; }
+        public Nullable<double> TotalWithdraw { get; set; }
+        public Nullable<double> PendingWithdraw { get; set; }
+        public Nullable<double> MothlyIncome { get; set; }
+        public string AccountNumber { get; set; }
+        public string NameInAccount { get; set; }
+        public string Bank { get; set; }
+        public string IFSCCode { get; set; }
+        public string Passcode { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
     }
