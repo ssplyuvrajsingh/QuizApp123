@@ -704,7 +704,7 @@ namespace QuizApp.Controllers
                     case "insufficient":
                         result = new ResultClass()
                         {
-                            Message = "sorry your balance is insufficient to complete the transaction ",
+                            Message = "sorry your balance is insufficient to complete the transaction (Maximum Withdrawal Limit 1000 and Minimum Withdrawal Limit 110)",
                             Result = false
                         };
                         break;
