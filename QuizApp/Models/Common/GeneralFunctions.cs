@@ -20,6 +20,7 @@ namespace QuizApp.Models
 
         public static string GetReferalCode()
         {
+            Random rnd = new Random();
             int length = random.Next(6, 6);
             
             string referalCode = RandomString(length);
@@ -105,10 +106,23 @@ namespace QuizApp.Models
 
         public static string RandomString(int length)
         {
+            const string alphabetCharacters = "abcdefghijklmnopqrstuvwxyz";
+            const string numCharacters = "0123456789";
+            StringBuilder Code = new StringBuilder(length);
             //ABCDEFGHIJKLMNOPQRSTUVWXYZ
-            const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-            return new string(Enumerable.Repeat(chars, 6)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
+
+            // Format -> A NN AA N  
+            Code.Append(alphabetCharacters[random.Next(alphabetCharacters.Length)]);
+            Code.Append(numCharacters[random.Next(numCharacters.Length)]);
+            Code.Append(numCharacters[random.Next(numCharacters.Length)]);
+            Code.Append(alphabetCharacters[random.Next(alphabetCharacters.Length)]);
+            Code.Append(alphabetCharacters[random.Next(alphabetCharacters.Length)]);
+            Code.Append(numCharacters[random.Next(numCharacters.Length)]);
+            return Code.ToString();
+
+            //const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            //return new string(Enumerable.Repeat(chars, 6)
+            //  .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }
