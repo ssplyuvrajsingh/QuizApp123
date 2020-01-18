@@ -240,5 +240,19 @@ namespace QuizAdmin.Controllers
             return View(db.UsersQuizList(id));
         }
         #endregion
+
+        #region Transaction
+        public ActionResult Transaction()
+        {
+            return View();
+        }
+
+        public ActionResult TransactionPartialView()
+        {
+            RepoUserMaster db = new RepoUserMaster();
+
+            return PartialView(db.GetTransactions());
+        }
+        #endregion
     }
 }

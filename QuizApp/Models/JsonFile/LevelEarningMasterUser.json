@@ -23,7 +23,7 @@
 
   "Level10Income": 0.06,
 
-  "MinimumWithdrawlLimit": 110,
+  "MinimumWithdrawlLimit": 1,//110,
 
   "MinimumCharges": 10,
 

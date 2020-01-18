@@ -52,31 +52,31 @@ namespace QuizApp.Models
                 WinPrecentage = a.WinPrecentage
             }).ToList();
 
-            List<QuizResult> quizResults = new List<QuizResult>();
+            //List<QuizResult> quizResults = new List<QuizResult>();
 
-            foreach (var item in data)
-            {
-                var f = new QuizResult();
-                var data1 = entities.QuizPlayers.Where(x => x.UserID == userId && x.QuizID == item.QuizID && x.IsCompleted == true).FirstOrDefault();
-                if (data1 == null)
-                {
-                    quizResults.Add(item);
-                }
-            }
-            if (quizResults.Count == 0)
-            {
-                User user = new User()
-                {
-                    LastActiveDate = DateTime.Now
-                };
-            }
+            //foreach (var item in data)
+            //{
+            //    var f = new QuizResult();
+            //    var data1 = entities.QuizPlayers.Where(x => x.UserID == userId && x.QuizID == item.QuizID && x.IsCompleted == true).FirstOrDefault();
+            //    if (data1 == null)
+            //    {
+            //        quizResults.Add(item);
+            //    }
+            //}
+            //if (quizResults.Count == 0)
+            //{
+            //    User user = new User()
+            //    {
+            //        LastActiveDate = DateTime.Now
+            //    };
+            //}
             //data.foreach(a =>
             //{
             //    a.startdatestr = a.startdate.tostring("dd mmm hh:mm tt");
             //    a.isactive = datetime.compare(a.startdate, datetime.now) <= 0;
             //});
 
-            return quizResults;
+            return data;
         }
         #endregion
 
