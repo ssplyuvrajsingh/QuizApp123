@@ -65,7 +65,7 @@ namespace QuizApp.Controllers
                 {
                     return new TokenResult()
                     {
-                        error_message = "Phone Number password is required.",
+                        error_message = "Mobile Number and password is required.",
                         result = false
                     };
                 }
