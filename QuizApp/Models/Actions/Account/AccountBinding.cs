@@ -22,12 +22,17 @@ namespace QuizApp.Models
         #endregion
 
         #region GetRefferal Code
-        public string GetRefferlCode(string userId)
+        public TokenResult GetRefferlCode(string userId)
         {
-            var data = entities.Users.Where(x => x.UserID == userId).Select(s => s.ReferalCode).FirstOrDefault();
-            return data = data ?? "";
+            return entities.Users.Where(x => x.UserID == userId).Select(x=> new TokenResult() {
+            RefferalCode=x.ReferalCode,
+            UserName=x.Name
+            }).FirstOrDefault();
+           
         }
         #endregion
+
+
 
         #region Register
         public TokenResult RegisterUser(RegisterBindingModel model)

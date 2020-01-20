@@ -70,11 +70,11 @@ namespace QuizApp.Models
             //        LastActiveDate = DateTime.Now
             //    };
             //}
-            //data.foreach(a =>
-            //{
-            //    a.startdatestr = a.startdate.tostring("dd mmm hh:mm tt");
-            //    a.isactive = datetime.compare(a.startdate, datetime.now) <= 0;
-            //});
+            data.ForEach(a =>
+            {
+                a.StartDateStr = a.StartDate.ToString("dd MMM hh:mm tt");
+                a.isActive = DateTime.Compare(a.StartDate, DateTime.Now) <= 0;
+            });
 
             return data;
         }

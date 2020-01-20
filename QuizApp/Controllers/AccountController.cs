@@ -83,7 +83,10 @@ namespace QuizApp.Controllers
                             {
                                 AuthRepository authRepository = new AuthRepository();
                                 var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
-                                data.RefferalCode = ac.GetRefferlCode(data.id);
+                                var data1 = ac.GetRefferlCode(data.id);
+                                data.RefferalCode = data1.RefferalCode;
+                                data.UserName = data1.UserName;
+                                data.MobileNumber = model.PhoneNumber;
                                 return data;
                             }
                             else

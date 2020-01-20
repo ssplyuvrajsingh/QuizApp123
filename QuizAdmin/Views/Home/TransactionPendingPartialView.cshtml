@@ -5,7 +5,7 @@
     <div class="col-md-12">
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h2>Transaction Withdrawal and Earning List</h2>
+                <h2>Transaction Pending List</h2>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -64,54 +64,54 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.username)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.transactionDateTime)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.paymentStatus)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.amount)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.comment)
-                                </td>
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.username)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.transactionDateTime)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.paymentStatus)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.amount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.comment)
+                                    </td>
 
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.mobilenumber)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ConvertedPoints)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.WithdrawType)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.AccountNumber)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.NameInAccount)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Bank)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.IFSCCode)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PaytmOrderId)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PaytmWithdrawCharges)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PaytmResponse)
-                                </td>
-                            </tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.mobilenumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ConvertedPoints)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.WithdrawType)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AccountNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.NameInAccount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Bank)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IFSCCode)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PaytmOrderId)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PaytmWithdrawCharges)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PaytmResponse)
+                                    </td>
+                                </tr>
                             }
                         </tbody>
                     </table>
@@ -128,4 +128,5 @@
         $('table.datatable').dataTable();
     });
 </script>
+
 

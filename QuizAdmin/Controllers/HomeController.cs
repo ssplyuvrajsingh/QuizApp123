@@ -241,17 +241,29 @@ namespace QuizAdmin.Controllers
         }
         #endregion
 
-        #region Transaction
+        #region Transaction Withdrawal and Earning Lists
         public ActionResult Transaction()
         {
             return View();
         }
-
         public ActionResult TransactionPartialView()
         {
             RepoUserMaster db = new RepoUserMaster();
 
             return PartialView(db.GetTransactions());
+        }
+        #endregion
+
+        #region Transaction Withdrawal and Earning Lists
+        public ActionResult TransactionPending()
+        {
+            return View();
+        }
+        public ActionResult TransactionPendingPartialView()
+        {
+            RepoUserMaster db = new RepoUserMaster();
+
+            return PartialView(db.GetTransactionsPending());
         }
         #endregion
     }

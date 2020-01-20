@@ -15,5 +15,7 @@ namespace QuizApp.Models
         public string error_message { get; set; }
         public string id { get; set; }
         public string RefferalCode { get; set; }
+        public string MobileNumber { get; set; }
+        public string UserName { get; set; }
     }
 }

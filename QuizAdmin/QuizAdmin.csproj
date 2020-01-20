@@ -46,6 +46,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="paytm">
+      <HintPath>C:\Users\sspl2\Downloads\Paytm_Gratification_Kit-master\Paytm_Gratification_Kit-master\C#\Bin\paytm.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -224,6 +227,9 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Input\Quiz\QuizBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\QuizQuestionBindingModel.cs" />
+    <Compile Include="Models\LevelEarning.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Masters\RepoQuiz.cs" />
     <Compile Include="Models\Masters\RepoUserMaster.cs" />
@@ -231,6 +237,7 @@
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Output\Quiz\QuizUserCount.cs" />
+    <Compile Include="Models\Output\Transaction\TransactionModel.cs" />
     <Compile Include="Models\Output\Users\AllUser.cs" />
     <Compile Include="Models\Output\Quiz\QuizQuestionResult.cs" />
     <Compile Include="Models\Output\Quiz\QuizResult.cs" />
@@ -261,6 +268,9 @@
     <Compile Include="Models\RefreshToken.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Transaction.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
@@ -277,31 +287,13 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\attachment\07a7584d-85bb-41d0-94af-3ce1a6c5239d_images %281%29.jpg" />
-    <Content Include="Content\attachment\07ea20ec-9809-4f1a-834e-aeb6d1bf85f7_1900x1068_herolead_quiz.adapt.1900.1 %281%29.jpg" />
-    <Content Include="Content\attachment\09648a07-c883-4dd9-ba4a-433c1fb752e6_1900x1068_herolead_quiz.adapt.1900.1 %281%29.jpg" />
-    <Content Include="Content\attachment\1ad8ab57-ad0f-4de6-b86a-09d073c5dc8d_images.jpg" />
-    <Content Include="Content\attachment\2d66d757-d344-4a0c-8afc-d221609dbc8e_images %281%29.jpg" />
-    <Content Include="Content\attachment\363aa664-11dc-48fb-a087-7e1b7c840fa8_Chrysanthemum - Copy %282%29.png" />
-    <Content Include="Content\attachment\4683d012-1eb4-4e5b-b30b-71aeda6fd07e_1900x1068_herolead_quiz.adapt.1900.1 %281%29.jpg" />
-    <Content Include="Content\attachment\476a80e4-620b-4b83-95b9-41f243f4353e_images.jpg" />
-    <Content Include="Content\attachment\4b043937-035a-4eff-8fed-a30a6abbc791_1900x1068_herolead_quiz.adapt.1900.1 %281%29.jpg" />
-    <Content Include="Content\attachment\51b836a0-d010-47a8-8ee4-176268749c64_images.jpg" />
-    <Content Include="Content\attachment\521d828e-e182-4df0-9128-3126135fa475_images.jpg" />
-    <Content Include="Content\attachment\57f5d737-242d-4b67-b7dd-70be73d52693_images %281%29.jpg" />
-    <Content Include="Content\attachment\6dea403a-ea7c-4c3d-9cec-529b661d5291_download.jpg" />
-    <Content Include="Content\attachment\790fc0f1-7a80-4ce2-9148-c84222cee5da_images %281%29.jpg" />
-    <Content Include="Content\attachment\9305524d-6665-4645-8fd9-f237141a0058_1900x1068_herolead_quiz.adapt.1900.1 %281%29.jpg" />
-    <Content Include="Content\attachment\b19b0ef3-943f-49fa-9c04-aa307e76b1fa_images %281%29.jpg" />
-    <Content Include="Content\attachment\b5d785d3-ec85-4dfa-a797-3c436c97547a_1900x1068_herolead_quiz.adapt.1900.1 %281%29.jpg" />
-    <Content Include="Content\attachment\b60f8c38-371d-4a60-a950-7e9c167c3666_game4.png" />
-    <Content Include="Content\attachment\bb052588-eca6-4c8f-ac23-72bfe012ce12_1900x1068_herolead_quiz.adapt.1900.1 %281%29.jpg" />
-    <Content Include="Content\attachment\bf668a24-552f-421b-8319-e425edabca26_images.jpg" />
-    <Content Include="Content\attachment\c313ade6-bf94-4006-8577-9f31b31b80b1_images %281%29.jpg" />
-    <Content Include="Content\attachment\c51e4f76-bd32-43c9-9a28-175f86191b61_images %281%29.jpg" />
-    <Content Include="Content\attachment\e1daa901-d297-4042-b78c-1e2c478ab119_images.jpg" />
-    <Content Include="Content\attachment\e92344c5-24de-4a32-820c-c3fea37f3ac1_images.jpg" />
-    <Content Include="Content\attachment\fd8761fa-b753-4063-9d6d-655a27a72123_images %281%29.jpg" />
+    <Content Include="Content\attachment\01a61386-796a-4475-8753-949926b93394_Untitled-2.png" />
+    <Content Include="Content\attachment\1c7be23e-bf9a-485f-8572-c7aec11dc4de_Untitled-1.png" />
+    <Content Include="Content\attachment\7bdeee4e-6526-4a1f-b464-23f31039bc3e_Untitled-3.png" />
+    <Content Include="Content\attachment\97bd0a6f-b742-4e7c-ab6c-f66c8aa7c962_Untitled-2.png" />
+    <Content Include="Content\attachment\b79742c7-efd1-4654-a817-b9a3b2c16e4a_Untitled-1.png" />
+    <Content Include="Content\attachment\bd574fd3-1faa-4884-a152-fd55e6dffe3a_Untitled-1.png" />
+    <Content Include="Content\attachment\d485b4d7-90d9-47c7-bd62-9b3a714ed96a_Untitled-4.png" />
     <Content Include="Content\cancel.png" />
     <Content Include="Content\ckeditor\adapters\jquery.js" />
     <Content Include="Content\ckeditor\CHANGES.html" />
@@ -1198,6 +1190,7 @@
     <Content Include="js\jquery.fineuploader-3.7.0.min.js" />
     <Content Include="js\jquery.validate.min.js" />
     <Content Include="js\jquery.validate.unobtrusive.min.js" />
+    <Content Include="js\QuizActive.js" />
     <Content Include="Models\Quiz.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Quiz.edmx</DependentUpon>
@@ -1366,6 +1359,10 @@
     <Content Include="Views\Home\UserMaster.cshtml" />
     <Content Include="Views\Home\UserMasterPartialView.cshtml" />
     <Content Include="Views\Home\UsersGame.cshtml" />
+    <Content Include="Views\Home\Transaction.cshtml" />
+    <Content Include="Views\Home\TransactionPartialView.cshtml" />
+    <Content Include="Views\Home\TransactionPending.cshtml" />
+    <Content Include="Views\Home\TransactionPendingPartialView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

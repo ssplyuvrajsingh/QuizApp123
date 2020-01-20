@@ -7,62 +7,87 @@
             <div class="panel-heading">
                 <h2>User Master</h2>
             </div>
-           
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="table datatable">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th> Email</th>
-                                <th>Platform</th>
-                                <th>Phone Number</th>
-                                <th>Referal Code</th>
-                                <th>Used Referal Code</th>
-                                <th>Parent IDs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (ViewBag.allusers.Count > 0)
-                            {
-                                {
-                                    List<AllUser> listallusers = (List<AllUser>)ViewBag.allusers;
-                                }
-                                foreach (AllUser user in ViewBag.allusers)
-                                {
+                <!-- /.panel-heading -->
+                        <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            @user.Name
-                                        </td>
-                                        <td>
-                                            @user.Email
-                                        </td>
-                                        <td>@user.Platform</td>
-                                        <td>@user.PhoneNumber</td>
-                                        <td>@user.ReferalCode</td>
-                                        <td>@user.UsedReferalCode</td>
-                                        <td>@user.ParentIDs</td>
-                                        <td>
-                                            <a href="/Home/UsersGame/@user.UserId">
-                                                <button class="btn btn-primary btn-round">
-                                                    <i class="fa fa-edit"></i>
-                                                </button>
-                                            </a>
-                                            @*<a href="/Home/DeleteQuiz/@item.QuizID" onclick="return confirm('Do you want to Delete ?')">
-                                                    <button class="btn btn-danger btn-round">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-                                                </a>*@
-                                        </td>
+                                        <th>Name</th>
+                                        <th>Phone Number</th>
+                                        <th>Referal Code</th>
+                                        <th>Used Referal Code</th>
+                                        <th>Password </th>
+                                        <th>Created Date</th>
+                                        <th>Last Active Date</th>
+                                        <th>Active</th>
+                                        <th>Blocked</th>
+                                        <th>LastUpdateDate</th>
+                                        <th>Currnet Point</th>
+                                        <th>Current Balance</th>
+                                        <th>Total Earn</th>
+                                        <th>Total Withdrawal</th>
+                                        <th>Pending Withdrawal</th>
+                                        <th>Monthly Income</th>
+                                        <th>Account Number</th>
+                                        <th>Name in Account</th>
+                                        <th>Bank</th>
+                                        <th>IFSC Code</th>
+                                        <th>Passcode</th>
+                                        <th>Parent IDs</th>
+                                        <th></th>
                                     </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- /.panel -->
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.allusers.Count > 0)
+                                    {
+                                        {
+                                            List<AllUser> listallusers = (List<AllUser>)ViewBag.allusers;
+                                        }
+                                        foreach (AllUser user in ViewBag.allusers)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @user.Name
+                                                </td>
+
+                                                <td>@user.PhoneNumber</td>
+                                                <td>@user.ReferalCode</td>
+                                                <td>@user.UsedReferalCode</td>
+                                                <td>@user.Password</td>
+                                                <td>@user.CreatedDate</td>
+                                                <td>@user.LastActiveDate</td>
+                                                <td>@user.isActive</td>
+                                                <td>@user.isBlocked</td>
+                                                <td>@user.LastUpdateDate</td>
+                                                <td>@user.CurrentPoint</td>
+                                                <td>@user.CurrentBalance</td>
+                                                <td>@user.TotalEarn</td>
+                                                <td>@user.TotalWithdraw</td>
+                                                <td>@user.PendingWithdraw</td>
+                                                <td>@user.MothlyIncome</td>
+                                                <td>@user.AccountNumber</td>
+                                                <td>@user.NameInAccount</td>
+                                                <td>@user.Bank</td>
+                                                <td>@user.IFSCCode</td>
+                                                <td>@user.Passcode</td>
+                                                <td>@user.ParentIDs</td>
+                                                <td>
+                                                    <a href="/Home/UsersGame/@user.UserId">
+                                                        <button class="btn btn-primary btn-round">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                    </a>
+
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+           <!-- /.panel -->
         </div>
     </div>
 </div>
@@ -70,6 +95,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('table.datatable').dataTable();
+        $('table.datatable').DataTable();
     });
 </script>

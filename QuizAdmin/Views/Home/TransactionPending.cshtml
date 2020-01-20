@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "TransactionPending";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var loadDataOnPage = admin.LoadPartialView('TransactionPendingPartialView');
+    });
+</script>
+
+<header class="ribbon">
+    <h2>&nbsp;</h2>
+</header>
+<div class="page-content">
+    <div class="container-fluid">
+        @{Html.RenderPartial("alerts");}
+        <div id="main-content">
+        </div>
+    </div>
+</div>
+
