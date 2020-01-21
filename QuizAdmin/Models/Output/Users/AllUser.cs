@@ -8,17 +8,12 @@ namespace QuizAdmin.Models.Output
     public class AllUser
     {
         public string Name { get; set; }
-        public string Email { get; set; }
-        public string Platform { get; set; }
         public string PhoneNumber { get; set; }
         public string UserId { get; set; }
-        public string ReferalCode { get; set; }
-        public string UsedReferalCode { get; set; }
 
-         public int ID { get; set; }
-        public string UserID { get; set; }
+
+
         public string ParentIDs { get; set; }
-        public string Name { get; set; }
         public string Password { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public string DeviceID { get; set; }
@@ -43,5 +38,6 @@ namespace QuizAdmin.Models.Output
         public string Bank { get; set; }
         public string IFSCCode { get; set; }
         public string Passcode { get; set; }
+       
     }
 }

@@ -9,17 +9,21 @@ namespace QuizAdmin.Models
     {
         QuizAppEntities db = new QuizAppEntities();
 
-        #region Quiz Add Edit Delete
+        #region Quiz List
         public List<QuizData> getQuiz()
         {
-            return db.QuizDatas.ToList();
+            return db.QuizDatas.OrderByDescending(x=>x.CreatedDate).ToList();
         }
+        #endregion
 
+        #region Get Quiz By Id
         public QuizData getQuizById(Guid QuizId)
         {
             return db.QuizDatas.Where(a => a.QuizID == QuizId).FirstOrDefault();
         }
+        #endregion
 
+        #region Add Update Quiz
         public bool addUpdateQuiz(QuizData model)
         {
             var old = db.QuizDatas.Where(a => a.QuizID == model.QuizID).FirstOrDefault();
@@ -27,6 +31,7 @@ namespace QuizAdmin.Models
             {
                 model.QuizID = Guid.NewGuid();
                 model.CreatedDate = DateTime.Now;
+                model.isActive = false;
                 db.QuizDatas.Add(model);
                 db.SaveChanges();
                 return true;
@@ -37,7 +42,9 @@ namespace QuizAdmin.Models
                 return db.SaveChanges() > 0;
             }
         }
+        #endregion
 
+        #region Delete Quiz
         public bool deleteQuiz(Guid id)
         {
             var old = db.QuizDatas.Where(a => a.QuizID == id).FirstOrDefault();
@@ -51,12 +58,40 @@ namespace QuizAdmin.Models
         }
         #endregion
 
-        #region Quiz Answer Add Edit Delete
+        #region ActiveQuiz
+        public string ActiveQuiz(Guid id)
+        {
+            var old = db.QuizDatas.Where(a => a.QuizID == id).FirstOrDefault();
+            if (old != null)
+            {
+                if ((bool)old.isActive)
+                {
+                    old.isActive = false;
+                    db.SaveChanges();
+                    return "De-Active";
+                }
+                else
+                {
+                    old.isActive = true;
+                    db.SaveChanges();
+                    return "Active";
+                }
+            }
+            else
+            {
+                return "False";
+            }
+        }
+        #endregion
+
+        #region Get Quiz Answer
         public List<QuizQuestion> getQuizAnswer()
         {
             return db.QuizQuestions.ToList();
         }
+        #endregion
 
+        #region Get Quiz Answer By Id
         public QuizQuestion getQuizAnswerById(int QuizQuestionId)
         {
             return db.QuizQuestions.Where(a => a.QuizQuestionID == QuizQuestionId).FirstOrDefault();
@@ -78,7 +113,9 @@ namespace QuizAdmin.Models
                 return db.SaveChanges() > 0;
             }
         }
+        #endregion
 
+        #region Delete Quiz Answer
         public bool deleteQuizAnswer(int id)
         {
             var old = db.QuizQuestions.Where(a => a.QuizQuestionID == id).FirstOrDefault();
@@ -90,7 +127,9 @@ namespace QuizAdmin.Models
             db.SaveChanges();
             return true;
         }
+        #endregion
 
+        #region Users Quiz List
         public List<QuizUserCount> UsersQuizList(string id)
         {
             var old = db.QuizPlayers.Where(a => a.UserID == id).GroupBy(a => a.QuizID).ToList();

@@ -189,6 +189,9 @@
           <Property Name="NameInAccount" Type="nvarchar" MaxLength="100" />
           <Property Name="Bank" Type="nvarchar" MaxLength="100" />
           <Property Name="IFSCCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="PaytmOrderId" Type="nvarchar(max)" />
+          <Property Name="PaytmWithdrawCharges" Type="float" />
+          <Property Name="PaytmResponse" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -958,6 +961,9 @@
           <Property Name="NameInAccount" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Bank" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="IFSCCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="PaytmOrderId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PaytmWithdrawCharges" Type="Double" />
+          <Property Name="PaytmResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AspNetUsers_Id">
           <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
@@ -1267,6 +1273,9 @@
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="QuizAppModel.Transaction">
               <MappingFragment StoreEntitySet="Transactions">
+                <ScalarProperty Name="PaytmResponse" ColumnName="PaytmResponse" />
+                <ScalarProperty Name="PaytmWithdrawCharges" ColumnName="PaytmWithdrawCharges" />
+                <ScalarProperty Name="PaytmOrderId" ColumnName="PaytmOrderId" />
                 <ScalarProperty Name="IFSCCode" ColumnName="IFSCCode" />
                 <ScalarProperty Name="Bank" ColumnName="Bank" />
                 <ScalarProperty Name="NameInAccount" ColumnName="NameInAccount" />

@@ -28,6 +28,7 @@ namespace QuizApp.Models
         public string UserId { get; set; }
         public int Level { get; set; }
         public int Count { get; set; }
+        public DateTime LastUpdate {get;set;}
     }
 
     public class EaningHeadModel
@@ -49,6 +50,7 @@ namespace QuizApp.Models
         public int MaximumWithdrawLimit { get; set; }
         public int ActiveHourLimit { get; set; }
         public double PointAmount { get; set; }
+        public int WithdrawCharges { get; set; }
     }
 
     public class LevelWithUser

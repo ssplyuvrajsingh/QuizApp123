@@ -132,10 +132,38 @@ namespace QuizAdmin.Controllers
                 return RedirectToAction("Quiz", "Home");
             }
         }
+
+        public ActionResult ActiveQuiz(Guid Id)
+        {
+            try
+            {
+                RepoQuiz db = new RepoQuiz();
+                var data = db.ActiveQuiz(Id);
+                switch(data)
+                {
+                    case "Active":
+                        TempData["success"] = "Quiz is Active";
+                        break;
+                    case "De-Active":
+                        TempData["success"] = "Quiz is De-Active";
+                        break;
+                    case "False":
+                        TempData["error"] = "Quiz is not Activated";
+                        break;
+                }
+                return RedirectToAction("Quiz", "Home");
+            }
+
+            catch (Exception ee)
+            {
+                TempData["error"] = "Record Not Found or Deleted by Another user";
+                return RedirectToAction("Quiz", "Home");
+            }
+        }
         #endregion
 
         #region QuizQuestion
-        public ActionResult QuizQuestion()
+            public ActionResult QuizQuestion()
         {
             return View();
         }
@@ -254,7 +282,7 @@ namespace QuizAdmin.Controllers
         }
         #endregion
 
-        #region Transaction Withdrawal and Earning Lists
+        #region Transaction Pending List
         public ActionResult TransactionPending()
         {
             return View();

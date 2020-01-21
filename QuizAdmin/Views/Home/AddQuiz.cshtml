@@ -175,21 +175,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Quiz Banner Image</label>
-                                        <div class="controls">
-                                            <div id="QuizBannerImageUploader">
-                                            </div>
-                                            @Html.HiddenFor(a => a.isActive, new { @class = "form-control" })
-                                            @if (Model != null && !string.IsNullOrEmpty(Model.QuizBannerImage))
-                                            {
-                                                <button>Active</button>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary">Submit</button>

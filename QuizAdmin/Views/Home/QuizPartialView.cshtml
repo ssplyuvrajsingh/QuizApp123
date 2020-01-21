@@ -38,6 +38,7 @@
                                     Win Precentage
                                 </th>
                                 <th>
+                                    Actions
                                 </th>
                             </tr>
                         </thead>
@@ -72,6 +73,11 @@
                                     <a href="/Home/DeleteQuiz/@item.QuizID" onclick="return confirm('Do you want to Delete ?')">
                                         <button class="btn btn-danger btn-round">
                                             <i class="fa fa-times"></i>
+                                        </button>
+                                    </a>
+                                    <a href="/Home/ActiveQuiz/@item.QuizID" onclick="return confirm('Do you want  @(item.isActive==true ?"De-Active":"Active") this Quiz ?')">
+                                        <button class="btn btn-danger btn-round">
+                                            @(item.isActive==true ? "De-Active":"Active")
                                         </button>
                                     </a>
                                 </td>
