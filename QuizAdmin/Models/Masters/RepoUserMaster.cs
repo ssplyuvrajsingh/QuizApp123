@@ -12,7 +12,8 @@ namespace QuizAdmin.Models
     public class RepoUserMaster
     {
         QuizAppEntities db = new QuizAppEntities();
-        #region User list
+        #region User Master
+        #region User Maseter List
         public List<AllUser> getUser()
         {
             var allusers = (from u in db.Users
@@ -43,10 +44,38 @@ namespace QuizAdmin.Models
                                 Passcode = u.Passcode,
                                 UserId = u.UserID,
                                 ParentIDs = u.ParentIDs,
-
-                            }).ToList();
+                            }).OrderByDescending(x=>x.CreatedDate).ToList();
             return allusers;
         }
+        #endregion
+
+        #region User Master Blocked/Re-Active
+        public string ActiveUser(string id)
+        {
+            var old = db.Users.Where(a => a.UserID == id).FirstOrDefault();
+            if (old != null)
+            {
+                if ((bool)old.isActive)
+                {
+                    old.isActive = false;
+                    old.isBlocked = true;
+                    db.SaveChanges();
+                    return "Blocked";
+                }
+                else
+                {
+                    old.isActive = true;
+                    old.isBlocked = false;
+                    db.SaveChanges();
+                    return "Re-Active";
+                }
+            }
+            else
+            {
+                return "False";
+            }
+        }
+        #endregion
         #endregion
 
         #region Transaction List

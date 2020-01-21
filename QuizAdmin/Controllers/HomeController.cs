@@ -259,6 +259,34 @@ namespace QuizAdmin.Controllers
                 return PartialView();
             }
         }
+
+        public ActionResult ActiveUser(string Id)
+        {
+            try
+            {
+                RepoUserMaster db = new RepoUserMaster();
+                var data = db.ActiveUser(Id);
+                switch (data)
+                {
+                    case "Blocked":
+                        TempData["success"] = "This User is Blocked";
+                        break;
+                    case "Re-Active":
+                        TempData["success"] = "This User is Re-Active";
+                        break;
+                    case "False":
+                        TempData["error"] = "Connection Error!";
+                        break;
+                }
+                return RedirectToAction("UserMaster", "Home");
+            }
+
+            catch (Exception ee)
+            {
+                TempData["error"] = "Record Not Found or Deleted by Another user";
+                return RedirectToAction("UserMaster", "Home");
+            }
+        }
         #endregion
 
         #region Game
