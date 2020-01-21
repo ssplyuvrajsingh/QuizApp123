@@ -90,7 +90,7 @@ namespace QuizApp.Models
             if (quiz != null)
             {
                 List<QuizQuestionResult> lstQuizQuestionResult = new List<QuizQuestionResult>();
-                var QuizQuestions = entities.QuizQuestions.Where(x => x.QuizID == quizId).OrderBy(X => X.CreatedDate).ToList();/*OrderBy(r => Guid.NewGuid()).Take(quiz.NoOfQuestion.Value).ToList();*/
+                var QuizQuestions = entities.QuizQuestions.Where(x => x.QuizID == quizId).OrderBy(X => X.CreatedDate).ToList();
                 foreach (var a in QuizQuestions)
                 {
                     var quizQuestionResult = new QuizQuestionResult();
@@ -105,19 +105,19 @@ namespace QuizApp.Models
                 }
                 quizQuestionResultMain.Questions = lstQuizQuestionResult;
                 var existingData = entities.QuizPlayers.Where(a => a.QuizID == quizId && a.UserID == UserId).OrderByDescending(a => a.PlayedDate).FirstOrDefault();
-                //if (existingData != null)
-                //{
-                //    quizQuestionResultMain.AlreadyPlayed = true;
-                //    quizQuestionResultMain.IsCompleted = existingData.IsCompleted.Value;
-                //    quizQuestionResultMain.IsWon = existingData.IsWon.Value;
-                //    quizQuestionResultMain.PlayedDate = existingData.PlayedDate.Value.ToString("dd MMM, yyyy");
-                //    quizQuestionResultMain.PlayerID = existingData.PlayerID;
-                //    quizQuestionResultMain.PointEarn = existingData.PointEarn.Value;
-                //}
-                //else
-                //{
-                //    quizQuestionResultMain.AlreadyPlayed = false;
-                //}
+                if (existingData != null)
+                {
+                    quizQuestionResultMain.AlreadyPlayed = true;
+                    quizQuestionResultMain.IsCompleted = existingData.IsCompleted.Value;
+                    quizQuestionResultMain.IsWon = existingData.IsWon.Value;
+                    quizQuestionResultMain.PlayedDate = existingData.PlayedDate.Value.ToString("dd mmm, yyyy");
+                    quizQuestionResultMain.PlayerID = existingData.PlayerID;
+                    quizQuestionResultMain.PointEarn = existingData.PointEarn.Value;
+                }
+                else
+                {
+                    quizQuestionResultMain.AlreadyPlayed = false;
+                }
                 return quizQuestionResultMain;
             }
             return null;
