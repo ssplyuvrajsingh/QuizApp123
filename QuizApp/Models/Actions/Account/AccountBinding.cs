@@ -310,7 +310,7 @@ namespace QuizApp.Models
             }
 
             WithdrawalAmountBalance withdrawal = new WithdrawalAmountBalance();
-            string passcode = entities.Users.Where(x => x.Passcode == model.Passcode).Select(x => x.Passcode).FirstOrDefault();
+            string passcode = entities.Users.Where(x => x.UserID == model.UserId).Select(x => x.Passcode).FirstOrDefault();
             if (passcode != null)
             { 
                 var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
@@ -349,7 +349,7 @@ namespace QuizApp.Models
                                 UniqueKey = uniqueKey,
                                 paymentStatus = "Withdraw",
                                 amount = WithdrawalCharges,
-                                comment = "Withdrawal Amount in Bank Charges",
+                                comment = "Withdrawal Amount Bank Charges",
                                 username = data.Name,
                                 mobilenumber = data1.UserName,
                                 WithdrawType = model.WithdrawType,
@@ -397,7 +397,7 @@ namespace QuizApp.Models
                                 UserID = model.UserId,
                                 transactionDateTime = DateTime.Now,
                                 UniqueKey = uniqueKey,
-                                paymentStatus = "Panding",
+                                paymentStatus = "Withdraw",
                                 amount = WithdrawalAmount,
                                 comment = "Withdrawal Amount in Paytm",
                                 username = data.Name,
@@ -411,7 +411,7 @@ namespace QuizApp.Models
                                 UserID = model.UserId,
                                 transactionDateTime = DateTime.Now,
                                 UniqueKey = uniqueKey,
-                                paymentStatus = "Panding",
+                                paymentStatus = "Withdraw",
                                 amount = WithdrawalCharges,
                                 comment = "Withdrawal Amount in Paytm Charges",
                                 username = data.Name,
