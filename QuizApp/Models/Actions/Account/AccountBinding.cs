@@ -32,8 +32,6 @@ namespace QuizApp.Models
         }
         #endregion
 
-
-
         #region Register
         public TokenResult RegisterUser(RegisterBindingModel model)
         {
@@ -62,7 +60,7 @@ namespace QuizApp.Models
                         Platform = model.Platform,
                         UsedReferalCode = model.UsedReferalCode
                     };
-                   
+
                     MobileOTP mobileOTP = new MobileOTP()
                     {
                         PhoneNumber = model.PhoneNumber,
@@ -207,6 +205,7 @@ namespace QuizApp.Models
         #endregion
 
         #region OTP
+        #region OTP Verification at Register Time
         public bool OTPVerification(OTPVerificationBindingModel model)
         {
             using (QuizAppEntities entities = new QuizAppEntities())
@@ -222,7 +221,9 @@ namespace QuizApp.Models
                 }
             }
         }
+        #endregion
 
+        #region Add OTP ForgotPassword
         public bool AddOTP(ForgotPasswordBindingModel model)
         {
             using (QuizAppEntities entities = new QuizAppEntities())
@@ -231,13 +232,15 @@ namespace QuizApp.Models
                 {
                     PhoneNumber = model.PhoneNumber,
                     OTP = GeneralFunctions.GetOTP(),
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+
                 };
 
                 entities.MobileOTPs.Add(mobileOTP);
                 return entities.SaveChanges() > 0;
             }
         }
+        #endregion
         #endregion
 
         #region Password
@@ -286,13 +289,14 @@ namespace QuizApp.Models
         public CurrentAmountDetailsModel CurrentAmountDetails(string UserId)
         {
             var data = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
+            GeneralFunctions generalFunctions = new GeneralFunctions();
             return new CurrentAmountDetailsModel()
             {
                 AccountNumber = data.AccountNumber != null ? data.AccountNumber : "",
                 NameInAccount = data.NameInAccount != null ? data.NameInAccount : "",
                 IFSCCode = data.IFSCCode != null ? data.IFSCCode : "",
                 Bank =data.Bank != null ? data.Bank : "",
-                amount = Math.Round(data.CurrentBalance != null ? (double)data.CurrentBalance : 0)
+                amount = data.CurrentBalance != null ? Convert.ToDouble(generalFunctions.GetDecimalvalue(data.CurrentBalance.ToString())) : 0
             };
         }
         #endregion
@@ -310,95 +314,98 @@ namespace QuizApp.Models
             }
 
             WithdrawalAmountBalance withdrawal = new WithdrawalAmountBalance();
-            string passcode = entities.Users.Where(x => x.UserID == model.UserId).Select(x => x.Passcode).FirstOrDefault();
+            string passcode = entities.Users.Where(x => x.UserID == model.UserId && x.Passcode==model.Passcode).Select(x => x.Passcode).FirstOrDefault();
             if (passcode != null)
-            { 
+            {
                 var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
                 var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserId).FirstOrDefault();
-                if (earningHeads.MaximumWithdrawLimit >= model.amount && model.amount >= earningHeads.MinimumWithdrawlLimit)
+                if (data.CurrentBalance > model.amount)
                 {
-                    var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
-                    if (model.WithdrawType == "Bank")
+                    if (earningHeads.MaximumWithdrawLimit >= model.amount && model.amount >= earningHeads.MinimumWithdrawlLimit)
                     {
-                        var WithdrawalAmount = model.amount - earningHeads.WithdrawCharges;
-                        var WithdrawalCharges = earningHeads.WithdrawCharges;
-
-                        if (model.AccountNumber != null && model.NameInAccount != null && model.IFSCCode != null && model.Bank != null && model.amount.ToString() != null)
+                        var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
+                        if (model.WithdrawType == "Bank")
                         {
+                            //var WithdrawalAmount = model.amount - earningHeads.WithdrawCharges;
+                            //var WithdrawalCharges = earningHeads.WithdrawCharges;
 
-                            Transaction transaction = new Transaction()
+                            if (model.AccountNumber != null && model.NameInAccount != null && model.IFSCCode != null && model.Bank != null && model.amount.ToString() != null)
                             {
-                                UserID = model.UserId,
-                                transactionDateTime = DateTime.Now,
-                                UniqueKey = uniqueKey,
-                                paymentStatus = "Withdraw",
-                                amount = WithdrawalAmount,
-                                comment = "Withdrawal Amount in Bank",
-                                username = data.Name,
-                                mobilenumber = data1.UserName,
-                                WithdrawType = model.WithdrawType,
-                                AccountNumber = model.AccountNumber,
-                                NameInAccount = model.NameInAccount,
-                                Bank = model.Bank,
-                                IFSCCode = model.IFSCCode
-                            };
-                            Transaction charges = new Transaction()
+                                //Entery in Transaction Table for Withdrawal Amount in Bank
+                                Transaction transaction = new Transaction()
+                                {
+                                    UserID = model.UserId,
+                                    transactionDateTime = DateTime.Now,
+                                    UniqueKey = uniqueKey,
+                                    paymentStatus = "Pending",
+                                    amount = model.amount,
+                                    comment = "Withdrawal Amount in Bank",
+                                    username = data.Name,
+                                    mobilenumber = data1.UserName,
+                                    WithdrawType = model.WithdrawType,
+                                    AccountNumber = model.AccountNumber,
+                                    NameInAccount = model.NameInAccount,
+                                    Bank = model.Bank,
+                                    IFSCCode = model.IFSCCode
+                                };
+                                ////Entery in Transaction Table for Bank Charges
+                                //Transaction charges = new Transaction()
+                                //{
+                                //    UserID = model.UserId,
+                                //    transactionDateTime = DateTime.Now,
+                                //    UniqueKey = uniqueKey,
+                                //    paymentStatus = "Pending",
+                                //    amount = WithdrawalCharges,
+                                //    comment = "Withdrawal Amount Bank Charges",
+                                //    username = data.Name,
+                                //    mobilenumber = data1.UserName,
+                                //    WithdrawType = model.WithdrawType,
+                                //    AccountNumber = model.AccountNumber,
+                                //    NameInAccount = model.NameInAccount,
+                                //    Bank = model.Bank,
+                                //    IFSCCode = model.IFSCCode
+                                //};
+                                entities.Transactions.Add(transaction);
+                                //entities.Transactions.Add(charges);
+                                entities.SaveChanges();
+                                withdrawal = new WithdrawalAmountBalance()
+                                {
+                                    State = "True",
+                                    Balance = model.amount,
+                                    status = "Pending"
+                                };
+                            }
+                            else
                             {
-                                UserID = model.UserId,
-                                transactionDateTime = DateTime.Now,
-                                UniqueKey = uniqueKey,
-                                paymentStatus = "Withdraw",
-                                amount = WithdrawalCharges,
-                                comment = "Withdrawal Amount Bank Charges",
-                                username = data.Name,
-                                mobilenumber = data1.UserName,
-                                WithdrawType = model.WithdrawType,
-                                AccountNumber = model.AccountNumber,
-                                NameInAccount = model.NameInAccount,
-                                Bank = model.Bank,
-                                IFSCCode = model.IFSCCode
-                            };
-                            entities.Transactions.Add(transaction);
-                            entities.Transactions.Add(charges);
-                            entities.SaveChanges();
-                            withdrawal = new WithdrawalAmountBalance()
-                            {
-                                State = "True",
-                                Balance = model.amount
-                            };
+                                withdrawal = new WithdrawalAmountBalance()
+                                {
+                                    State = "model",
+                                    Balance = model.amount
+                                };
+                            }
                         }
-                        else
+                        else if (model.WithdrawType == "Paytm")
                         {
-                            withdrawal = new WithdrawalAmountBalance()
-                            {
-                                State = "model",
-                                Balance = model.amount
-                            };
-                        }
-                    }
-                    else if (model.WithdrawType == "Paytm")
-                    {
-                        string hostName = Dns.GetHostName();// Retrive the Name of HOST  
-                                                            // Get the IP  
-                        string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
+                            string hostName = Dns.GetHostName();// Retrive the Name of HOST  
+                                                                // Get the IP  
+                            string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
 
-                        var WithdrawalAmount = model.amount - earningHeads.WithdrawCharges;
-                        var WithdrawalCharges = earningHeads.WithdrawCharges;
+                            //var WithdrawalAmount = model.amount - earningHeads.WithdrawCharges;
+                            //var WithdrawalCharges = earningHeads.WithdrawCharges;
 
 
-                        var pay = "any";
-                        //PaytmBinding paytmBinding = new PaytmBinding();
-                        //var pay = paytmBinding.PaytmResponse(data1.UserName, "Withdrawal Amount in Paytm", Convert.ToString(model.amount), myIP);
-                        if (pay.Any())
-                        {
+                            string pay = "Pending";
+                            //PaytmBinding paytmBinding = new PaytmBinding();
+                            //var pay = paytmBinding.PaytmResponse(data1.UserName, "Withdrawal Amount in Paytm", Convert.ToString(model.amount), myIP);
+
                             string orderId = pay;
                             Transaction transaction = new Transaction()
                             {
                                 UserID = model.UserId,
                                 transactionDateTime = DateTime.Now,
                                 UniqueKey = uniqueKey,
-                                paymentStatus = "Withdraw",
-                                amount = WithdrawalAmount,
+                                paymentStatus = pay,
+                                amount = model.amount,
                                 comment = "Withdrawal Amount in Paytm",
                                 username = data.Name,
                                 mobilenumber = data1.UserName,
@@ -406,27 +413,37 @@ namespace QuizApp.Models
                                 PaytmOrderId = orderId,
                                 PaytmResponse = pay
                             };
-                            Transaction charges = new Transaction()
-                            {
-                                UserID = model.UserId,
-                                transactionDateTime = DateTime.Now,
-                                UniqueKey = uniqueKey,
-                                paymentStatus = "Withdraw",
-                                amount = WithdrawalCharges,
-                                comment = "Withdrawal Amount in Paytm Charges",
-                                username = data.Name,
-                                mobilenumber = data1.UserName,
-                                PaytmWithdrawCharges = earningHeads.WithdrawCharges,
-                                PaytmOrderId = orderId,
-                                PaytmResponse = pay
-                            };
+                            //Transaction charges = new Transaction()
+                            //{
+                            //    UserID = model.UserId,
+                            //    transactionDateTime = DateTime.Now,
+                            //    UniqueKey = uniqueKey,
+                            //    paymentStatus = pay,
+                            //    amount = WithdrawalCharges,
+                            //    comment = "Withdrawal Amount in Paytm Charges",
+                            //    username = data.Name,
+                            //    mobilenumber = data1.UserName,
+                            //    PaytmWithdrawCharges = earningHeads.WithdrawCharges,
+                            //    PaytmOrderId = orderId,
+                            //    PaytmResponse = pay
+                            //};
                             entities.Transactions.Add(transaction);
-                            entities.Transactions.Add(charges);
+                            //entities.Transactions.Add(charges);
                             entities.SaveChanges();
+
+                            withdrawal = new WithdrawalAmountBalance()
+                            {
+                                State = "True",
+                                Balance = model.amount,
+                                status = pay
+                            };
                         }
+                    }
+                    else
+                    {
                         withdrawal = new WithdrawalAmountBalance()
                         {
-                            State = "True",
+                            State = "insufficient",
                             Balance = model.amount
                         };
                     }
@@ -435,11 +452,12 @@ namespace QuizApp.Models
                 {
                     withdrawal = new WithdrawalAmountBalance()
                     {
-                        State = "insufficient",
+                        State = "CurrentBalance",
                         Balance = model.amount
                     };
                 }
             }
+            
             else
             {
                 withdrawal = new WithdrawalAmountBalance()
@@ -484,6 +502,8 @@ namespace QuizApp.Models
 
                     //Insert Transaction Table
                     double balance = model.PointsWithdraw * earningHeads.PointAmount;
+                    GeneralFunctions generalFunctions = new GeneralFunctions();
+                    balance = Convert.ToDouble(generalFunctions.GetDecimalvalue(balance.ToString()));
                     var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
                     Transaction transaction = new Transaction()
                     {
@@ -492,9 +512,10 @@ namespace QuizApp.Models
                         UniqueKey = uniqueKey,
                         paymentStatus = "points",
                         amount = balance,
-                        comment = "Point Withdrawal in Paytm",
+                        comment = "Point Withdrawal in Your Current Balance",
                         username = data.Name,
                         mobilenumber = data1.UserName,
+                        ConvertedPoints=model.PointsWithdraw
                     };
                     entities.Transactions.Add(transaction);
                     entities.SaveChanges();
@@ -528,6 +549,44 @@ namespace QuizApp.Models
         public User GetUserInformation(string UserId)
         {
             return entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
+        }
+        #endregion
+
+        #region Get User Profile
+        public UserProfileModel GetUserProfile(UserModel model)
+        {
+            var UserInfo = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
+            if(UserInfo!=null)
+            {
+                var data = new UserProfileModel();
+
+                var UserInfoPhoneNumber = entities.AspNetUsers.Where(x => x.Id == model.UserId).Select(x => x.PhoneNumber).FirstOrDefault();
+                //User Information
+                data.ReferalCode = UserInfo.ReferalCode;
+                data.Name = UserInfo.Name;
+                data.PhoneNumber = UserInfoPhoneNumber;
+
+                var ParentUserInfo = entities.Users.Where(x => x.ReferalCode == UserInfo.UsedReferalCode).FirstOrDefault();
+                if(ParentUserInfo!=null)
+                {
+                    var ParentPhoneNumber = entities.AspNetUsers.Where(x => x.Id == ParentUserInfo.UserID).Select(x => x.PhoneNumber).FirstOrDefault();
+                    data.ParentName = ParentUserInfo.Name;
+                    data.ParentPhoneNumber = ParentPhoneNumber;
+                }
+                return data;
+                //return new UserProfileModel()
+                //{
+                //    ReferalCode = UserInfo.ReferalCode,
+                //    Name = UserInfo.Name,
+                //    PhoneNumber = entities.AspNetUsers.Where(x => x.Id == model.UserId).Select(x => x.PhoneNumber).FirstOrDefault(),
+                //    ParentName = ParentUserInfo.Name!=null?ParentUserInfo.Name:string.Empty,
+                //    ParentPhoneNumber = entities.AspNetUsers.Where(x => x.Id == ParentUserInfo.UserID).Select(x => x.PhoneNumber).FirstOrDefault(),
+                //};
+            }
+            else
+            {
+                return null;
+            }
         }
         #endregion
     }

@@ -349,6 +349,7 @@ namespace QuizApp.Controllers
                 QuizBinding quizBinding = new QuizBinding();
                 var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
                 var data = quizBinding.AddLevelBaseEarningAmount(jsonFilePath);
+                quizBinding.LevelFirebaseUpdates(data);
                 if (data)
                 {
                     result = new ResultClass()
@@ -360,6 +361,58 @@ namespace QuizApp.Controllers
                 }
             }
             catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+        }
+        #endregion
+
+        #region Top Ten Results on QuizId
+        [HttpPost]
+        public ResultClass TopTenResultsonQuizId(QuizIDModel model)
+        {
+            ResultClass result = null;
+            try
+            {
+                if(!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Message = "Please send all required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    QuizBinding quizBinding = new QuizBinding();
+                    var data = quizBinding.TopTenResultsonQuizId(model);
+                    if(data.Any())
+                    {
+                        result = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data Found",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        result = new ResultClass()
+                        {
+                            Data = null,
+                            Message = "Data Not Found",
+                            Result = false
+                        };
+                    }
+                }
+            }
+            catch(Exception ex)
             {
                 result = new ResultClass()
                 {

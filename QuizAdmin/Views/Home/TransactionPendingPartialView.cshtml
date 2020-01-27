@@ -59,6 +59,9 @@
                                 <th>
                                     Paytm Response
                                 </th>
+                                <th>
+                                    Confirm Withdrawal
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -110,6 +113,13 @@
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.PaytmResponse)
+                                    </td>
+                                    <td>
+                                        <a  href="/Home/ConfirmWithdrawal/@Convert.ToInt32(item.TransactionID)" onclick="return confirm('Do you want confirm withdrawal this transaction @item.TransactionID ?')">
+                                            <button class="btn btn-success btn-round">
+                                                <i class="fa fa-check-circle"></i>
+                                            </button>
+                                        </a>
                                     </td>
                                 </tr>
                             }

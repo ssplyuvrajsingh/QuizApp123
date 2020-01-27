@@ -25,7 +25,6 @@ namespace QuizApp.Models.Entities
             this.UserPoints = new HashSet<UserPoint>();
             this.AspNetRoles = new HashSet<AspNetRole>();
             this.Transactions = new HashSet<Transaction>();
-            this.UserWallets = new HashSet<UserWallet>();
             this.LevelEarnings = new HashSet<LevelEarning>();
             this.Users = new HashSet<User>();
         }
@@ -59,8 +58,6 @@ namespace QuizApp.Models.Entities
         public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Transaction> Transactions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserWallet> UserWallets { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<LevelEarning> LevelEarnings { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

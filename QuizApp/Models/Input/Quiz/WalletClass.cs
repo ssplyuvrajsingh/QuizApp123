@@ -18,7 +18,7 @@ namespace QuizApp.Models
     {
         public string transactionDateTime { get; set; }
         public string paymentStatus { get; set; }
-        public double amount { get; set; }
+        public string amount { get; set; }
     }
     public class UserWalletInput
     {

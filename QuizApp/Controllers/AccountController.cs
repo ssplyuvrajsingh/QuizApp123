@@ -72,28 +72,40 @@ namespace QuizApp.Controllers
                 else
                 {
                     var User = UserManager.FindByName(model.PhoneNumber);
+                    
                     if(User!=null)
                     {
-                        User= UserManager.Find(model.PhoneNumber, model.Password);
-                        if(User!=null)
+                        if (User.PhoneNumberConfirmed)
                         {
-                            AccountBinding ac = new AccountBinding();
-                            var userinfo = ac.GetUserInformation(User.Id);
-                            if (userinfo.isActive != false && userinfo.isBlocked != true)
+                            User = UserManager.Find(model.PhoneNumber, model.Password);
+                            if (User != null)
                             {
-                                AuthRepository authRepository = new AuthRepository();
-                                var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
-                                var data1 = ac.GetRefferlCode(data.id);
-                                data.RefferalCode = data1.RefferalCode;
-                                data.UserName = data1.UserName;
-                                data.MobileNumber = model.PhoneNumber;
-                                return data;
+                                AccountBinding ac = new AccountBinding();
+                                var userinfo = ac.GetUserInformation(User.Id);
+                                if (userinfo.isActive != false && userinfo.isBlocked != true)
+                                {
+                                    AuthRepository authRepository = new AuthRepository();
+                                    var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
+                                    var data1 = ac.GetRefferlCode(data.id);
+                                    data.RefferalCode = data1.RefferalCode;
+                                    data.UserName = data1.UserName;
+                                    data.MobileNumber = model.PhoneNumber;
+                                    return data;
+                                }
+                                else
+                                {
+                                    return new TokenResult()
+                                    {
+                                        error_message = "This User is not Actice or Blocked",
+                                        result = false
+                                    };
+                                }
                             }
                             else
                             {
                                 return new TokenResult()
                                 {
-                                    error_message = "This User is not Actice or Blocked",
+                                    error_message = "Your password is incorrect",
                                     result = false
                                 };
                             }
@@ -102,16 +114,16 @@ namespace QuizApp.Controllers
                         {
                             return new TokenResult()
                             {
-                                error_message = "Your password is incorrect",
+                                error_message = "Your mobile number is not Verify",
                                 result = false
                             };
-                        }  
+                        }
                     }
                     else
                     {
                         return new TokenResult()
                         {
-                            error_message = "Your user name is incorrect",
+                            error_message = "Invalid Credentials",
                             result = false
                         };
                     }
@@ -135,32 +147,45 @@ namespace QuizApp.Controllers
         [Route("RefreshToken")]
         public TokenResult RefreshToken(RefreshTokenBindingModel model)
         {
-            if (!ModelState.IsValid)
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new TokenResult()
+                    {
+                        error_message = "refresh token is required.",
+                        result = false
+                    };
+                }
+
+                var getClient = new User();
+                using (AuthRepository _repo = new AuthRepository())
+                {
+                    getClient = _repo.FindUserByRefreshToken(model.RefreshToken);
+                }
+
+                if (getClient == null)
+                {
+                    return new TokenResult()
+                    {
+                        error_message = "refresh token is expired",
+                        result = false
+                    };
+                }
+                AuthRepository auth = new AuthRepository()
+                string UserName = auth.GetUserName(getClient.UserID);
+                AuthRepository authRepository = new AuthRepository();
+                var data= authRepository.GenerateToken(getClient.AspNetUser.UserName, getClient.Password, getClient.UserID, model.RefreshToken);
+                return data;
+            }
+            catch(Exception ex)
             {
                 return new TokenResult()
                 {
-                    error_message = "refresh token is required.",
+                    error_message = ex.Message,
                     result = false
                 };
             }
-
-            var getClient = new User();
-            using (AuthRepository _repo = new AuthRepository())
-            {
-                getClient = _repo.FindUserByRefreshToken(model.RefreshToken);
-            }
-
-            if (getClient == null)
-            {
-                return new TokenResult()
-                {
-                    error_message = "refresh token is expired",
-                    result = false
-                };
-            }
-
-            AuthRepository authRepository = new AuthRepository();
-            return authRepository.GenerateToken(getClient.AspNetUser.UserName, getClient.Password, getClient.UserID, model.RefreshToken);
         }
         #endregion
 
@@ -190,7 +215,7 @@ namespace QuizApp.Controllers
                     return result;
                 }
 
-                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber=model.PhoneNumber,EmailConfirmed=true,PhoneNumberConfirmed=true };
+                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber=model.PhoneNumber,EmailConfirmed=true,PhoneNumberConfirmed=false };
 
 
                 IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
@@ -198,7 +223,7 @@ namespace QuizApp.Controllers
                 if (!identityResult.Succeeded)
                 {
                     result.result = identityResult.Succeeded;
-                    result.error_message = "Username or email is already exists";
+                    result.error_message = "Username is already exists";
                     return result;
                 }
 
@@ -273,7 +298,7 @@ namespace QuizApp.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    result.Message = "Phone Number, OTP is required";
+                    result.Message = "Phone Number and OTP is required";
                 }
                 else
                 {
@@ -286,13 +311,13 @@ namespace QuizApp.Controllers
                         {
                             result.Message = "OTP verification successfully";
                             result.Result = true;
-                            user.EmailConfirmed = true;
+                            user.PhoneNumberConfirmed = true;
                             UserManager.Update(user);
                         }
                         else
                         {
                             result.Message = "Your OTP is Wrong";
-                            result.Result = true;
+                            result.Result = false;
                         }
                     }
                 }
@@ -698,7 +723,7 @@ namespace QuizApp.Controllers
                     case "True":
                         result = new ResultClass()
                         {
-                            Data = data.Balance,
+                            Data = data,
                             Message = "Thank you,your payment was successful",
                             Result = true
                         };
@@ -722,6 +747,13 @@ namespace QuizApp.Controllers
                         result = new ResultClass()
                         {
                             Message = "Sorry your passcode is wrong ",
+                            Result = false
+                        };
+                        break;
+                    case "CurrentBalance":
+                        result = new ResultClass()
+                        {
+                            Message = "Sorry Your Current Balance is insufficient to complete this transaction",
                             Result = false
                         };
                         break;
@@ -887,6 +919,57 @@ namespace QuizApp.Controllers
                 throw ex;
             }
             return "False";
+        }
+        #endregion
+
+        #region Get User Profile
+        [HttpPost]
+        [Route("GetUserProfile")]
+        public ResultClass GetUserProfile(UserModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Message = "Please send required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    AccountBinding accountBinding = new AccountBinding();
+                    var data = accountBinding.GetUserProfile(model);
+                    if (data != null)
+                    {
+                        return new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data Found",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Data = null,
+                            Message = "Data Not Found",
+                            Result = false
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
         }
         #endregion
     }

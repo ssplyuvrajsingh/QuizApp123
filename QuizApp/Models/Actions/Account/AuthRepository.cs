@@ -27,15 +27,15 @@ namespace QuizApp.Models
             var RefreshToken = new RefreshToken();
             using (AuthRepository _repo = new AuthRepository())
             {
-                //if (string.IsNullOrEmpty(RefreshTokenStr))
-                //{
-                //    RefreshToken = _repo.AddRefreshToken(UserId, tokenResult.access_token);
-                //    tokenResult.refresh_token = RefreshToken.ProtectedTicket;
-                //}
-                //else
-                //{
-                //    tokenResult.refresh_token = RefreshTokenStr;
-                //}
+                if (string.IsNullOrEmpty(RefreshTokenStr))
+                {
+                    RefreshToken = _repo.AddRefreshToken(UserId, tokenResult.access_token);
+                    tokenResult.refresh_token = RefreshToken.ProtectedTicket;
+                }
+                else
+                {
+                    tokenResult.refresh_token = RefreshTokenStr;
+                }
 
                 tokenResult.id = UserId;
             }
@@ -83,13 +83,22 @@ namespace QuizApp.Models
             {
                 if (DateTime.Compare(refresh.ExpiresUtc.Value, DateTime.Now) > 0)
                 {
-                    return _ctx.Users.Where(a => a.UserID == refresh.UserId).FirstOrDefault();
+                   var data= _ctx.Users.Where(a => a.UserID == refresh.UserId).FirstOrDefault();
+                    return data;
                 }
                 else
                 {
                     return null;
                 }
             }
+        }
+        #endregion
+
+        #region
+        public string GetUserName(string UserId)
+        {
+            var data = _ctx.AspNetUsers.Where(x => x.Id == UserId).Select(x => x.UserName).FirstOrDefault();
+            return data;
         }
         #endregion
 

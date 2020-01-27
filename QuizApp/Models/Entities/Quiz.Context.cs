@@ -31,7 +31,6 @@ namespace QuizApp.Models.Entities
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<DailyUserLog> DailyUserLogs { get; set; }
-        public virtual DbSet<MobileOTP> MobileOTPs { get; set; }
         public virtual DbSet<QuizPlayer> QuizPlayers { get; set; }
         public virtual DbSet<QuizQuestion> QuizQuestions { get; set; }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
@@ -39,8 +38,9 @@ namespace QuizApp.Models.Entities
         public virtual DbSet<UserPoint> UserPoints { get; set; }
         public virtual DbSet<QuizData> QuizDatas { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
-        public virtual DbSet<UserWallet> UserWallets { get; set; }
         public virtual DbSet<LevelEarning> LevelEarnings { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<MobileOTP> MobileOTPs { get; set; }
+        public virtual DbSet<LevelEarningStatu> LevelEarningStatus { get; set; }
     }
 }

@@ -20,5 +20,6 @@ namespace QuizApp.Models
     {
         public double Balance { get; set; }
         public string State { get; set; }
+        public string status { get; set; }
     }
 }

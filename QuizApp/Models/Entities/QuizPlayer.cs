@@ -30,6 +30,7 @@ namespace QuizApp.Models.Entities
         public Nullable<int> PercentageEarn { get; set; }
         public string Language { get; set; }
         public System.DateTime CreatedDate { get; set; }
+        public Nullable<System.TimeSpan> TotalTimeTaken { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

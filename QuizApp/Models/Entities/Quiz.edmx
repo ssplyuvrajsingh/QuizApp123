@@ -103,6 +103,14 @@
           <Property Name="Level10" Type="float" />
           <Property Name="LastUpdate" Type="datetime" />
         </EntityType>
+        <EntityType Name="LevelEarningStatus">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LevelHangFireStatus" Type="bit" />
+          <Property Name="StatusTime" Type="datetime" />
+        </EntityType>
         <EntityType Name="MobileOTP">
           <Key>
             <PropertyRef Name="Id" />
@@ -142,6 +150,7 @@
           <Property Name="PercentageEarn" Type="int" />
           <Property Name="Language" Type="nvarchar" MaxLength="128" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="TotalTimeTaken" Type="time" Precision="7" />
         </EntityType>
         <EntityType Name="QuizQuestion">
           <Key>
@@ -251,22 +260,7 @@
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
         </EntityType>
-        <EntityType Name="UserWallet">
-          <Key>
-            <PropertyRef Name="WalletID" />
-          </Key>
-          <Property Name="WalletID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserID" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="CurrentPoint" Type="int" />
-          <Property Name="CurrentBalance" Type="int" />
-          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
-          <Property Name="TotalEarn" Type="int" />
-          <Property Name="TotalWithdraw" Type="int" />
-          <Property Name="PendingWithdraw" Type="int" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="MonthleyIncome" Type="int" />
-        </EntityType>
-        <Association Name="FK__LevelEarn__UserI__625A9A57">
+        <Association Name="FK__LevelEarn__UserI__6FE99F9F">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
           <End Role="LevelEarnings" Type="Self.LevelEarnings" Multiplicity="*" />
           <ReferentialConstraint>
@@ -454,18 +448,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_UserWallet_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="UserWallet" Type="Self.UserWallet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserWallet">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="QuizAppModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -475,6 +457,7 @@
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DailyUserLog" EntityType="Self.DailyUserLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LevelEarnings" EntityType="Self.LevelEarnings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LevelEarningStatus" EntityType="Self.LevelEarningStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileOTP" EntityType="Self.MobileOTP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QuizData" EntityType="Self.QuizData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QuizPlayer" EntityType="Self.QuizPlayer" Schema="dbo" store:Type="Tables" />
@@ -484,8 +467,7 @@
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserAnswer" EntityType="Self.UserAnswer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPoints" EntityType="Self.UserPoints" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UserWallet" EntityType="Self.UserWallet" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__LevelEarn__UserI__625A9A57" Association="Self.FK__LevelEarn__UserI__625A9A57">
+          <AssociationSet Name="FK__LevelEarn__UserI__6FE99F9F" Association="Self.FK__LevelEarn__UserI__6FE99F9F">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="LevelEarnings" EntitySet="LevelEarnings" />
           </AssociationSet>
@@ -545,10 +527,6 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="UserPoints" EntitySet="UserPoints" />
           </AssociationSet>
-          <AssociationSet Name="FK_UserWallet_AspNetUsers" Association="Self.FK_UserWallet_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="UserWallet" EntitySet="UserWallet" />
-          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -561,7 +539,6 @@
           <EntitySet Name="AspNetUserLogins" EntityType="QuizAppModel.AspNetUserLogin" />
           <EntitySet Name="AspNetUsers" EntityType="QuizAppModel.AspNetUser" />
           <EntitySet Name="DailyUserLogs" EntityType="QuizAppModel.DailyUserLog" />
-          <EntitySet Name="MobileOTPs" EntityType="QuizAppModel.MobileOTP" />
           <EntitySet Name="QuizPlayers" EntityType="QuizAppModel.QuizPlayer" />
           <EntitySet Name="QuizQuestions" EntityType="QuizAppModel.QuizQuestion" />
           <EntitySet Name="RefreshTokens" EntityType="QuizAppModel.RefreshToken" />
@@ -617,11 +594,6 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="Transaction" EntitySet="Transactions" />
           </AssociationSet>
-          <EntitySet Name="UserWallets" EntityType="QuizAppModel.UserWallet" />
-          <AssociationSet Name="FK_UserWallet_AspNetUsers" Association="QuizAppModel.FK_UserWallet_AspNetUsers">
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="UserWallet" EntitySet="UserWallets" />
-          </AssociationSet>
           <EntitySet Name="LevelEarnings" EntityType="QuizAppModel.LevelEarning" />
           <EntitySet Name="Users" EntityType="QuizAppModel.User" />
           <AssociationSet Name="FK__LevelEarn__UserI__625A9A57" Association="QuizAppModel.FK__LevelEarn__UserI__625A9A57">
@@ -632,6 +604,8 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
+          <EntitySet Name="MobileOTPs" EntityType="QuizAppModel.MobileOTP" />
+          <EntitySet Name="LevelEarningStatus" EntityType="QuizAppModel.LevelEarningStatu" />
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -696,7 +670,6 @@
           <NavigationProperty Name="UserPoints" Relationship="QuizAppModel.FK_UserPoints_AspNetUsers" FromRole="AspNetUser" ToRole="UserPoint" />
           <NavigationProperty Name="AspNetRoles" Relationship="QuizAppModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
           <NavigationProperty Name="Transactions" Relationship="QuizAppModel.FK_AspNetUsers_Id" FromRole="AspNetUser" ToRole="Transaction" />
-          <NavigationProperty Name="UserWallets" Relationship="QuizAppModel.FK_UserWallet_AspNetUsers" FromRole="AspNetUser" ToRole="UserWallet" />
           <NavigationProperty Name="LevelEarnings" Relationship="QuizAppModel.FK__LevelEarn__UserI__625A9A57" FromRole="AspNetUser" ToRole="LevelEarning" />
           <NavigationProperty Name="Users" Relationship="QuizAppModel.FK_UserID_UserID" FromRole="AspNetUser" ToRole="User" />
         </EntityType>
@@ -709,15 +682,6 @@
           <Property Name="LogDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="VideoWatched" Type="Boolean" />
           <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_DailyUserLog_AspNetUsers" FromRole="DailyUserLog" ToRole="AspNetUser" />
-        </EntityType>
-        <EntityType Name="MobileOTP">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PhoneNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="OTP" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="QuizPlayer">
           <Key>
@@ -736,6 +700,7 @@
           <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_QuizPlayer_AspNetUsers1" FromRole="QuizPlayer" ToRole="AspNetUser" />
           <NavigationProperty Name="UserAnswers" Relationship="QuizAppModel.FK_UserAnswer_QuizPlayer" FromRole="QuizPlayer" ToRole="UserAnswer" />
           <NavigationProperty Name="QuizData" Relationship="QuizAppModel.FK_QuizPlayer_QuizData" FromRole="QuizPlayer" ToRole="QuizData" />
+          <Property Name="TotalTimeTaken" Type="Time" Precision="7" />
         </EntityType>
         <EntityType Name="QuizQuestion">
           <Key>
@@ -977,34 +942,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="UserWallet">
-          <Key>
-            <PropertyRef Name="WalletID" />
-          </Key>
-          <Property Name="WalletID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="CurrentPoint" Type="Int32" />
-          <Property Name="CurrentBalance" Type="Int32" />
-          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TotalEarn" Type="Int32" />
-          <Property Name="TotalWithdraw" Type="Int32" />
-          <Property Name="PendingWithdraw" Type="Int32" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MonthleyIncome" Type="Int32" />
-          <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_UserWallet_AspNetUsers" FromRole="UserWallet" ToRole="AspNetUser" />
-        </EntityType>
-        <Association Name="FK_UserWallet_AspNetUsers">
-          <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
-          <End Type="QuizAppModel.UserWallet" Role="UserWallet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUser">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserWallet">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="LevelEarning">
           <Key>
             <PropertyRef Name="LevelID" />
@@ -1092,6 +1029,23 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="MobileOTP">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PhoneNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="OTP" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="LevelEarningStatu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LevelHangFireStatus" Type="Boolean" />
+          <Property Name="StatusTime" Type="DateTime" Precision="3" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1163,19 +1117,10 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MobileOTPs">
-            <EntityTypeMapping TypeName="QuizAppModel.MobileOTP">
-              <MappingFragment StoreEntitySet="MobileOTP">
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="OTP" ColumnName="OTP" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="QuizPlayers">
             <EntityTypeMapping TypeName="QuizAppModel.QuizPlayer">
               <MappingFragment StoreEntitySet="QuizPlayer">
+                <ScalarProperty Name="TotalTimeTaken" ColumnName="TotalTimeTaken" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Language" ColumnName="Language" />
                 <ScalarProperty Name="PercentageEarn" ColumnName="PercentageEarn" />
@@ -1294,22 +1239,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserWallets">
-            <EntityTypeMapping TypeName="QuizAppModel.UserWallet">
-              <MappingFragment StoreEntitySet="UserWallet">
-                <ScalarProperty Name="MonthleyIncome" ColumnName="MonthleyIncome" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="PendingWithdraw" ColumnName="PendingWithdraw" />
-                <ScalarProperty Name="TotalWithdraw" ColumnName="TotalWithdraw" />
-                <ScalarProperty Name="TotalEarn" ColumnName="TotalEarn" />
-                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
-                <ScalarProperty Name="CurrentBalance" ColumnName="CurrentBalance" />
-                <ScalarProperty Name="CurrentPoint" ColumnName="CurrentPoint" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="WalletID" ColumnName="WalletID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="LevelEarnings">
             <EntityTypeMapping TypeName="QuizAppModel.LevelEarning">
               <MappingFragment StoreEntitySet="LevelEarnings">
@@ -1369,6 +1298,25 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ParentIDs" ColumnName="ParentIDs" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileOTPs">
+            <EntityTypeMapping TypeName="QuizAppModel.MobileOTP">
+              <MappingFragment StoreEntitySet="MobileOTP">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="OTP" ColumnName="OTP" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LevelEarningStatus">
+            <EntityTypeMapping TypeName="QuizAppModel.LevelEarningStatu">
+              <MappingFragment StoreEntitySet="LevelEarningStatus">
+                <ScalarProperty Name="StatusTime" ColumnName="StatusTime" />
+                <ScalarProperty Name="LevelHangFireStatus" ColumnName="LevelHangFireStatus" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

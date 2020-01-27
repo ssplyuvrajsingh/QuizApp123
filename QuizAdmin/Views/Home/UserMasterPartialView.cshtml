@@ -79,8 +79,8 @@
                                                         </button>
                                                     </a>
                                  <a href="/Home/ActiveUser/@user.UserId" onclick="return confirm('Do you want  @(user.isActive == true ?"Blocked":"Re-Active") this User ?')">
-                                                        <button class="btn btn-danger btn-round">
-                                                            @(user.isActive==true ? "Blocked":"Re-Active")
+                                                        <button class="btn btn-success btn-round">
+                                                            <i class="fa fa-@(user.isActive == true ? "check-circle" :"times")"></i>
                                                         </button>
                                                     </a>
                                                 </td>

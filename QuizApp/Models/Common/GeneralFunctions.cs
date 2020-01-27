@@ -124,5 +124,14 @@ namespace QuizApp.Models
             //return new string(Enumerable.Repeat(chars, 6)
             //  .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        #region Get Decimal value
+        public string GetDecimalvalue(string amount)
+        {
+            double x;
+            Double.TryParse(amount, out x);
+           return x.ToString("0.00");
+        }
+        #endregion
     }
 }

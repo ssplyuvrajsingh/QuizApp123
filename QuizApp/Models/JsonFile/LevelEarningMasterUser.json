@@ -23,7 +23,7 @@
 
   "Level10Income": 0.06,
 
-  "MinimumWithdrawlLimit": 1,//110,
+  "MinimumWithdrawlLimit": 2, //110,
 
   "MinimumCharges": 10,
 
@@ -33,5 +33,7 @@
 
   "PointAmount": 0.01,
 
-  "WithdrawCharges": 5
+  "WithdrawCharges": 1, //5
+
+  "MinimumQuiz": 5
 }

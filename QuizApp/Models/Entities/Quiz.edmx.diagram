@@ -11,7 +11,6 @@
         <EntityTypeShape EntityType="QuizAppModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="8.25" />
         <EntityTypeShape EntityType="QuizAppModel.AspNetUser" Width="1.5" PointX="3" PointY="14" />
         <EntityTypeShape EntityType="QuizAppModel.DailyUserLog" Width="1.5" PointX="5.25" PointY="30" />
-        <EntityTypeShape EntityType="QuizAppModel.MobileOTP" Width="1.5" PointX="2.75" PointY="1.75" />
         <EntityTypeShape EntityType="QuizAppModel.QuizPlayer" Width="1.5" PointX="8.25" PointY="14.75" />
         <EntityTypeShape EntityType="QuizAppModel.QuizQuestion" Width="1.5" PointX="8.25" PointY="9.625" />
         <EntityTypeShape EntityType="QuizAppModel.RefreshToken" Width="1.5" PointX="5.25" PointY="5.25" />
@@ -31,12 +30,12 @@
         <AssociationConnector Association="QuizAppModel.FK_QuizQuestion_QuizData" />
         <EntityTypeShape EntityType="QuizAppModel.Transaction" Width="1.5" PointX="5.25" PointY="33.125" />
         <AssociationConnector Association="QuizAppModel.FK_AspNetUsers_Id" />
-        <EntityTypeShape EntityType="QuizAppModel.UserWallet" Width="1.5" PointX="5.25" PointY="15.125" />
-        <AssociationConnector Association="QuizAppModel.FK_UserWallet_AspNetUsers" />
         <EntityTypeShape EntityType="QuizAppModel.LevelEarning" Width="1.5" PointX="5.25" PointY="45.5" />
         <EntityTypeShape EntityType="QuizAppModel.User" Width="1.5" PointX="5.25" PointY="38.375" />
         <AssociationConnector Association="QuizAppModel.FK__LevelEarn__UserI__625A9A57" />
         <AssociationConnector Association="QuizAppModel.FK_UserID_UserID" />
+        <EntityTypeShape EntityType="QuizAppModel.MobileOTP" Width="1.5" PointX="3" PointY="2" />
+        <EntityTypeShape EntityType="QuizAppModel.LevelEarningStatu" Width="1.5" PointX="0.75" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -72,12 +72,12 @@
                                     </a>
                                     <a href="/Home/DeleteQuiz/@item.QuizID" onclick="return confirm('Do you want to Delete ?')">
                                         <button class="btn btn-danger btn-round">
-                                            <i class="fa fa-times"></i>
+                                            <i class="fa fa-trash"></i>
                                         </button>
                                     </a>
-                                    <a href="/Home/ActiveQuiz/@item.QuizID" onclick="return confirm('Do you want  @(item.isActive==true ?"De-Active":"Active") this Quiz ?')">
-                                        <button class="btn btn-danger btn-round">
-                                            @(item.isActive==true ? "De-Active":"Active")
+                                    <a href="/Home/ActiveQuiz/@item.QuizID" onclick="return confirm('Do you want  @(item.isActive==true ?"In-Active":"Active") this Quiz ?')">
+                                        <button class="btn btn-success btn-round">
+                                            <i class="fa fa-@(item.isActive == true ? "check-circle" :"times")"></i>
                                         </button>
                                     </a>
                                 </td>

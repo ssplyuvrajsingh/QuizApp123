@@ -18,6 +18,6 @@ namespace QuizApp.Models
         public int WinPrecentage { get; set; }
         public int NoOfQuestion { get; set; }
         public bool isActive { get; set; }
+        public bool AlreadyPlayed { get; set; }
     }
-
 }

@@ -293,6 +293,9 @@
     <Compile Include="Models\Entities\LevelEarning.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\LevelEarningStatu.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\MobileOTP.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
@@ -335,9 +338,6 @@
     <Compile Include="Models\Entities\UserPoint.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Entities\UserWallet.cs">
-      <DependentUpon>Quiz.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Input\Account\AddBankAccountDetailsModel.cs" />
     <Compile Include="Models\Input\Account\ChangePasswordBindingModel.cs" />
@@ -359,6 +359,7 @@
     <Compile Include="Models\Input\Quiz\WalletClass.cs" />
     <Compile Include="Models\Output\Account\CurrentAmountDetailsModel.cs" />
     <Compile Include="Models\Output\Account\TokenResult.cs" />
+    <Compile Include="Models\Output\Account\UserProfileModel.cs" />
     <Compile Include="Models\Output\Account\UserTransactionModel.cs" />
     <Compile Include="Models\Output\Common\ResultClass.cs" />
     <Compile Include="Models\Output\QuizData\EndGameResult.cs" />
@@ -367,6 +368,7 @@
     <Compile Include="Models\Output\QuizData\QuizPlayerResult.cs" />
     <Compile Include="Models\Output\QuizData\QuizQuestionResult.cs" />
     <Compile Include="Models\Output\QuizData\QuizResult.cs" />
+    <Compile Include="Models\Output\QuizData\TopResult.cs" />
     <Compile Include="Models\Output\QuizData\UserLevelEarning.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
