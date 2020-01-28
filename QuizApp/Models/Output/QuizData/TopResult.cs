@@ -17,4 +17,9 @@ namespace QuizApp.Models
         public string Time { get; set; }
         public bool status { get; set; }
     }
+
+    public class SortbyTime
+    {
+        public List<TopResult> topResults { get; set; }
+    }
 }

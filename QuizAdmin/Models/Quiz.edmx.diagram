@@ -7,6 +7,7 @@
       <Diagram DiagramId="2e31306ab0944c789fc90edacdff45ed" Name="Diagram1">
         <EntityTypeShape EntityType="QuizAppModel.LevelEarning" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="QuizAppModel.Transaction" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="QuizAppModel.Support" Width="1.5" PointX="6.875" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

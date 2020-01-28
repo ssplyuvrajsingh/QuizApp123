@@ -242,11 +242,13 @@
     </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Masters\RepoQuiz.cs" />
+    <Compile Include="Models\Masters\RepoSupport.cs" />
     <Compile Include="Models\Masters\RepoUserMaster.cs" />
     <Compile Include="Models\MobileOTP.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Output\Quiz\QuizUserCount.cs" />
+    <Compile Include="Models\Output\Support\SupportModel.cs" />
     <Compile Include="Models\Output\Transaction\TransactionModel.cs" />
     <Compile Include="Models\Output\Users\AllUser.cs" />
     <Compile Include="Models\Output\Quiz\QuizQuestionResult.cs" />
@@ -276,6 +278,9 @@
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RefreshToken.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Support.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Transaction.cs">
@@ -1374,6 +1379,7 @@
     <Content Include="Views\Home\TransactionPending.cshtml" />
     <Content Include="Views\Home\TransactionPendingPartialView.cshtml" />
     <Content Include="Views\Home\PrivacyPolicy.cshtml" />
+    <Content Include="Views\Home\Support.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -28,6 +28,7 @@ namespace QuizAdmin.Models
             this.AspNetRoles = new HashSet<AspNetRole>();
             this.LevelEarnings = new HashSet<LevelEarning>();
             this.Transactions = new HashSet<Transaction>();
+            this.Supports = new HashSet<Support>();
         }
     
         public string Id { get; set; }
@@ -65,5 +66,7 @@ namespace QuizAdmin.Models
         public virtual ICollection<LevelEarning> LevelEarnings { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Transaction> Transactions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Support> Supports { get; set; }
     }
 }

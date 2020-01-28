@@ -373,6 +373,47 @@ namespace QuizApp.Controllers
         }
         #endregion
 
+        #region Get Level Wise User Information 
+        [HttpPost]
+        public ResultClass GetLevelWiseUserInformation(LevelWiseModel model)
+        {
+            ResultClass result = null;
+            try
+            {
+                QuizBinding quizBinding = new QuizBinding();
+                var data = quizBinding.GetLevelWiseUserInformation(model);
+                if (data.Any())
+                {
+                    result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data Found",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data Not Found",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+            return result;
+        }
+        #endregion
+
         #region Top Ten Results on QuizId
         [HttpPost]
         public ResultClass TopTenResultsonQuizId(QuizIDModel model)

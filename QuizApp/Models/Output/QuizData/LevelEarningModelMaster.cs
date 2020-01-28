@@ -12,6 +12,7 @@ namespace QuizApp.Models
 
     public class LevelEarningModel
     {
+        public int Level { get; set; }
         public string Title { get; set; }
         public double Amount { get; set; }
         public int Activeuser { get; set; }

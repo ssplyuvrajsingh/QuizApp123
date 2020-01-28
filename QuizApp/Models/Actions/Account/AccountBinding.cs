@@ -38,7 +38,15 @@ namespace QuizApp.Models
             try
             {
                 var Otp = GeneralFunctions.GetOTP();
+                //Set By Defaulte Admin Refferal Code When User Not Use Any Refferal Code
+                if (model.UsedReferalCode == null)
+                {
+                    string AdminId = "1d0df4fa-6139-4216-8947-b68d24a3b68c";
+                    model.UsedReferalCode = entities.Users.Where(x => x.UserID == AdminId).Select(x => x.ReferalCode).FirstOrDefault();
+                }
+
                 var ParentIDs = GetParentsIDsFromReferalCode(model.UsedReferalCode, model.UserId);
+               
                 using (QuizAppEntities entities = new QuizAppEntities())
                 {
                     User registerUser = new User()

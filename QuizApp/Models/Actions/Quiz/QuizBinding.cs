@@ -355,52 +355,62 @@ namespace QuizApp.Models
                 switch (i)
                 {
                     case 1:
+                        lvl.Level = 1;
                         lvl.Title = "Level 1";
                         lvl.Activeuser = data != null ? data.Level1Users != null ? (int)data.Level1Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level1 != null ? (double)data.Level1 : 0 : 0;
                         break;
 
                     case 2:
+                        lvl.Level = 2;
                         lvl.Title = "Level 2";
                         lvl.Activeuser = data != null ? data.Level2Users != null ? (int)data.Level2Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level2 != null ? (double)data.Level2 : 0 : 0;
                         break;
                     case 3:
+                        lvl.Level = 3;
                         lvl.Title = "Level 3";
                         lvl.Activeuser = data != null ? data.Level3Users != null ? (int)data.Level3Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level3 != null ? (double)data.Level3 : 0 : 0;
                         break;
                     case 4:
+                        lvl.Level = 4;
                         lvl.Title = "Level 4";
                         lvl.Activeuser = data != null ? data.Level4Users != null ? (int)data.Level4Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level4 != null ? (double)data.Level4 : 0 : 0;
                         break;
                     case 5:
+                        lvl.Level = 5;
                         lvl.Title = "Level 5";
                         lvl.Activeuser = data != null ? data.Level5Users != null ? (int)data.Level5Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level5 != null ? (double)data.Level5 : 0 : 0;
                         break;
                     case 6:
+                        lvl.Level = 6;
                         lvl.Title = "Level 6";
                         lvl.Activeuser = data != null ? data.Level6Users != null ? (int)data.Level6Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level6 != null ? (double)data.Level6 : 0 : 0;
                         break;
                     case 7:
+                        lvl.Level = 7;
                         lvl.Title = "Level 7";
                         lvl.Activeuser = data != null ? data.Level7Users != null ? (int)data.Level7Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level7 != null ? (double)data.Level7 : 0 : 0;
                         break;
                     case 8:
+                        lvl.Level = 8;
                         lvl.Title = "Level 8";
                         lvl.Activeuser = data != null ? data.Level8Users != null ? (int)data.Level8Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level8 != null ? (double)data.Level8 : 0 : 0;
                         break;
                     case 9:
+                        lvl.Level = 9;
                         lvl.Title = "Level 9";
                         lvl.Activeuser = data != null ? data.Level9Users != null ? (int)data.Level9Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level9 != null ? (double)data.Level9 : 0 : 0;
                         break;
                     case 10:
+                        lvl.Level = 10;
                         lvl.Title = "Level 10";
                         lvl.Activeuser = data != null ? data.Level10Users != null ? (int)data.Level10Users : 0 : 0;
                         lvl.Amount = data != null ? data.Level10 != null ? (double)data.Level10 : 0 : 0;
@@ -1203,13 +1213,49 @@ namespace QuizApp.Models
         }
         #endregion
 
+        #region Get Level Wise User Information 
+        public List<LevelWiseActiveUsers> GetLevelWiseUserInformation(LevelWiseModel model)
+        {
+            var activeUsers = entities.Users.Where(x=>x.ParentIDs.Contains(model.UserId)).ToList();
+            activeUsers = activeUsers.Where(x => x.LastActiveDate != null && (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date).ToList();
+            List<LevelWiseActiveUsers> levelsUsers = new List<LevelWiseActiveUsers>();
+            foreach(var childUsers in activeUsers)
+            {
+                string[] Sort = childUsers.ParentIDs.Split(',');
+                if(Sort.Count()==model.Level)
+                {
+                    var data = new LevelWiseActiveUsers();
+                    var User = entities.AspNetUsers.Where(x => x.Id == childUsers.UserID).FirstOrDefault();
+                    data.Name = childUsers.Name;
+                    data.PhoneNumber = User.PhoneNumber;
+                    levelsUsers.Add(data);
+                }
+            }
+            return levelsUsers;
+        }
+        #endregion
+
         #region Top Ten Results on QuizId
         public List<TopResult> TopTenResultsonQuizId(QuizIDModel model)
         {
             var QuizPlayers = entities.QuizPlayers.Where(a => a.QuizID == model.QuizId && a.IsCompleted == true).OrderByDescending(x => x.PointEarn).Take(10).ToList();
+            List<TopResult> TopTen = new List<TopResult>();
+
+            //Sorting According To Consume Time
+               for(int i=0,j=1;j<QuizPlayers.Count();i++,j++)
+                {
+                    if(QuizPlayers[i].PointEarn == QuizPlayers[j].PointEarn && QuizPlayers[i].TotalTimeTaken>QuizPlayers[j].TotalTimeTaken)
+                    {
+                        var data = QuizPlayers[i];
+                        QuizPlayers[i] = QuizPlayers[j];
+                        QuizPlayers[j] = data; 
+                    }
+                }
+            
             List<TopResult> TopTenUsers = new List<TopResult>();
             foreach (var Top in QuizPlayers)
             {
+                
                 var TopData = new TopResult();
                 TopData.Name = entities.Users.Where(a => a.UserID == Top.UserID).Select(x => x.Name).FirstOrDefault();
                 TopData.Score = (int)Top.PointEarn;
@@ -1217,6 +1263,9 @@ namespace QuizApp.Models
                 TopData.status=Top.UserID == model.UserId ? true :  false;
                 TopTenUsers.Add(TopData);
             }
+    
+            
+
             return TopTenUsers;
         }
         #endregion

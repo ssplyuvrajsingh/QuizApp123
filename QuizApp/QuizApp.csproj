@@ -365,6 +365,7 @@
     <Compile Include="Models\Output\QuizData\EndGameResult.cs" />
     <Compile Include="Models\Output\QuizData\GetScoreResult.cs" />
     <Compile Include="Models\Output\QuizData\LevelEarningModelMaster.cs" />
+    <Compile Include="Models\Output\QuizData\LevelWiseModel.cs" />
     <Compile Include="Models\Output\QuizData\QuizPlayerResult.cs" />
     <Compile Include="Models\Output\QuizData\QuizQuestionResult.cs" />
     <Compile Include="Models\Output\QuizData\QuizResult.cs" />

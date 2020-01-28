@@ -142,6 +142,7 @@
           <Property Name="PercentageEarn" Type="int" />
           <Property Name="Language" Type="nvarchar" MaxLength="128" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="TotalTimeTaken" Type="time" Precision="7" />
         </EntityType>
         <EntityType Name="QuizQuestion">
           <Key>
@@ -169,6 +170,17 @@
           <Property Name="IssuedUtc" Type="datetime" />
           <Property Name="ExpiresUtc" Type="datetime" />
           <Property Name="ProtectedTicket" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Support">
+          <Key>
+            <PropertyRef Name="SupportUserId" />
+          </Key>
+          <Property Name="SupportUserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="200" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="UserQuery" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Transactions">
           <Key>
@@ -275,6 +287,18 @@
             </Principal>
             <Dependent Role="LevelEarnings">
               <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Support__UserId__2DE6D218">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="Support" Type="Self.Support" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Support">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -480,6 +504,7 @@
           <EntitySet Name="QuizPlayer" EntityType="Self.QuizPlayer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QuizQuestion" EntityType="Self.QuizQuestion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RefreshToken" EntityType="Self.RefreshToken" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Support" EntityType="Self.Support" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserAnswer" EntityType="Self.UserAnswer" Schema="dbo" store:Type="Tables" />
@@ -488,6 +513,10 @@
           <AssociationSet Name="FK__LevelEarn__UserI__6FE99F9F" Association="Self.FK__LevelEarn__UserI__6FE99F9F">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="LevelEarnings" EntitySet="LevelEarnings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Support__UserId__2DE6D218" Association="Self.FK__Support__UserId__2DE6D218">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Support" EntitySet="Support" />
           </AssociationSet>
           <AssociationSet Name="FK_AspNetUsers_Id" Association="Self.FK_AspNetUsers_Id">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -632,6 +661,11 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="Transaction" EntitySet="Transactions" />
           </AssociationSet>
+          <EntitySet Name="Supports" EntityType="QuizAppModel.Support" />
+          <AssociationSet Name="FK__Support__UserId__2DE6D218" Association="QuizAppModel.FK__Support__UserId__2DE6D218">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="Support" EntitySet="Supports" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -699,6 +733,7 @@
           <NavigationProperty Name="AspNetRoles" Relationship="QuizAppModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
           <NavigationProperty Name="LevelEarnings" Relationship="QuizAppModel.FK__LevelEarn__UserI__6FE99F9F" FromRole="AspNetUser" ToRole="LevelEarning" />
           <NavigationProperty Name="Transactions" Relationship="QuizAppModel.FK_AspNetUsers_Id" FromRole="AspNetUser" ToRole="Transaction" />
+          <NavigationProperty Name="Supports" Relationship="QuizAppModel.FK__Support__UserId__2DE6D218" FromRole="AspNetUser" ToRole="Support" />
         </EntityType>
         <EntityType Name="DailyUserLog">
           <Key>
@@ -754,6 +789,7 @@
           <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_QuizPlayer_AspNetUsers1" FromRole="QuizPlayer" ToRole="AspNetUser" />
           <NavigationProperty Name="QuizData" Relationship="QuizAppModel.FK_QuizPlayer_QuizData" FromRole="QuizPlayer" ToRole="QuizData" />
           <NavigationProperty Name="UserAnswers" Relationship="QuizAppModel.FK_UserAnswer_QuizPlayer" FromRole="QuizPlayer" ToRole="UserAnswer" />
+          <Property Name="TotalTimeTaken" Type="Time" Precision="7" />
         </EntityType>
         <EntityType Name="QuizQuestion">
           <Key>
@@ -1092,6 +1128,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Support">
+          <Key>
+            <PropertyRef Name="SupportUserId" />
+          </Key>
+          <Property Name="SupportUserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UserQuery" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK__Support__UserId__2DE6D218" FromRole="Support" ToRole="AspNetUser" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="FK__Support__UserId__2DE6D218">
+          <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
+          <End Type="QuizAppModel.Support" Role="Support" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Support">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1193,6 +1253,7 @@
           <EntitySetMapping Name="QuizPlayers">
             <EntityTypeMapping TypeName="QuizAppModel.QuizPlayer">
               <MappingFragment StoreEntitySet="QuizPlayer">
+                <ScalarProperty Name="TotalTimeTaken" ColumnName="TotalTimeTaken" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Language" ColumnName="Language" />
                 <ScalarProperty Name="PercentageEarn" ColumnName="PercentageEarn" />
@@ -1370,6 +1431,18 @@
                 <ScalarProperty Name="transactionDateTime" ColumnName="transactionDateTime" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Supports">
+            <EntityTypeMapping TypeName="QuizAppModel.Support">
+              <MappingFragment StoreEntitySet="Support">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UserQuery" ColumnName="UserQuery" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="SupportUserId" ColumnName="SupportUserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

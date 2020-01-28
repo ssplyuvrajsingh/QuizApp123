@@ -26,13 +26,13 @@ namespace QuizAdmin.Models
                                 ReferalCode = u.ReferalCode,
                                 UsedReferalCode = u.UsedReferalCode,
                                 Password = u.Password,
-                                CreatedDate=u.CreatedDate,
+                                CreatedDate = u.CreatedDate,
                                 LastActiveDate = u.LastActiveDate,
                                 isActive = u.isActive,
                                 isBlocked = u.isBlocked,
-                                
+
                                 CurrentPoint = u.CurrentPoint,
-                                CurrentBalance =u.CurrentBalance,
+                                CurrentBalance = u.CurrentBalance,
                                 TotalEarn = u.TotalEarn,
                                 TotalWithdraw = u.TotalWithdraw,
                                 PendingWithdraw = u.PendingWithdraw,
@@ -44,7 +44,7 @@ namespace QuizAdmin.Models
                                 Passcode = u.Passcode,
                                 UserId = u.UserID,
                                 ParentIDs = u.ParentIDs,
-                            }).OrderByDescending(x=>x.CreatedDate).ToList();
+                            }).OrderByDescending(x => x.CreatedDate).ToList();
             return allusers;
         }
         #endregion
@@ -91,16 +91,16 @@ namespace QuizAdmin.Models
                 comment = s.comment,
                 username = s.username,
                 mobilenumber = s.mobilenumber,
-                ConvertedPoints=s.ConvertedPoints,
-                WithdrawType=s.WithdrawType,
-                AccountNumber=s.AccountNumber,
-                NameInAccount=s.NameInAccount,
-                Bank=s.Bank,
-                IFSCCode=s.IFSCCode,
-                PaytmOrderId=s.PaytmOrderId,
-                PaytmWithdrawCharges=s.PaytmWithdrawCharges,
-                PaytmResponse=s.PaytmResponse
-            }).Where(x=>x.paymentStatus!="Pending").OrderByDescending(x=>x.transactionDateTime).ToList();
+                ConvertedPoints = s.ConvertedPoints,
+                WithdrawType = s.WithdrawType,
+                AccountNumber = s.AccountNumber,
+                NameInAccount = s.NameInAccount,
+                Bank = s.Bank,
+                IFSCCode = s.IFSCCode,
+                PaytmOrderId = s.PaytmOrderId,
+                PaytmWithdrawCharges = s.PaytmWithdrawCharges,
+                PaytmResponse = s.PaytmResponse
+            }).Where(x => x.paymentStatus != "Pending").OrderByDescending(x => x.transactionDateTime).ToList();
         }
         #endregion
 
@@ -128,5 +128,25 @@ namespace QuizAdmin.Models
             }).Where(x => x.paymentStatus == "Pending").OrderByDescending(x => x.transactionDateTime).ToList();
         }
         #endregion
+
+        #region Confirm Withdrawal
+        public bool ConfirmWithdrawal(int TransactionID)
+        {
+            var data = db.Transactions.Where(x => x.TransactionID == TransactionID).FirstOrDefault();
+            if (data != null)
+            {
+                var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
+                //Entery in Transaction Table for Withdrawal Amount in Bank
+                data.paymentStatus = "Confirm_Withdraw";
+                data.comment = "Withdrawal Amount in Bank Successfully";
+                db.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
+    #endregion
 }

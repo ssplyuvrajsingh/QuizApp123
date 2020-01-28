@@ -156,7 +156,7 @@ namespace QuizAdmin.Controllers
 
             catch (Exception ee)
             {
-                TempData["error"] = "Record Not Found or Deleted by Another user";
+                TempData["error"] = ee.Message;
                 return RedirectToAction("Quiz", "Home");
             }
         }
@@ -310,6 +310,8 @@ namespace QuizAdmin.Controllers
         }
         #endregion
 
+        #region Transaction
+
         #region Transaction Pending List
         public ActionResult TransactionPending()
         {
@@ -320,6 +322,49 @@ namespace QuizAdmin.Controllers
             RepoUserMaster db = new RepoUserMaster();
 
             return PartialView(db.GetTransactionsPending());
+        }
+        #endregion
+
+        #region Confirm Withdrawal
+        public ActionResult ConfirmWithdrawal(int id)
+        {
+            try
+            {
+                RepoUserMaster repo = new RepoUserMaster();
+                bool status = repo.ConfirmWithdrawal(id);
+                if(status)
+                {
+                    TempData["success"] = "This transaction is confirmed withdrawal";
+                }
+                else
+                {
+                    TempData["error"] = "This transaction is not confirmed withdrawal";
+                }
+            }
+            catch(Exception ex)
+            {
+                TempData["error"] = ex.Message;
+            }
+            return RedirectToAction("TransactionPending", "Home");
+        }
+        #endregion
+
+        #endregion
+
+        #region Privacy Policy
+        [AllowAnonymous]
+        public ActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+        #endregion
+
+        #region Support
+        [AllowAnonymous]
+        public ActionResult Support()
+        {
+            RepoSupport repoSupport = new RepoSupport();
+            return View(repoSupport.GetSupportsList());
         }
         #endregion
     }

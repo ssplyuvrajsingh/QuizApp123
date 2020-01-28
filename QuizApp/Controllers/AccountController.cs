@@ -114,7 +114,7 @@ namespace QuizApp.Controllers
                         {
                             return new TokenResult()
                             {
-                                error_message = "Your mobile number is not Verify",
+                                error_message = "Your mobile number is not verified please contact to administration",
                                 result = false
                             };
                         }
@@ -172,10 +172,10 @@ namespace QuizApp.Controllers
                         result = false
                     };
                 }
-                AuthRepository auth = new AuthRepository()
+                AuthRepository auth = new AuthRepository();
                 string UserName = auth.GetUserName(getClient.UserID);
                 AuthRepository authRepository = new AuthRepository();
-                var data= authRepository.GenerateToken(getClient.AspNetUser.UserName, getClient.Password, getClient.UserID, model.RefreshToken);
+                var data= authRepository.GenerateToken(UserName, getClient.Password, getClient.UserID, model.RefreshToken);
                 return data;
             }
             catch(Exception ex)
