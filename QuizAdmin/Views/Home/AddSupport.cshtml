@@ -1,0 +1,93 @@
+﻿@model QuizAdmin.Models.UserSupportModel
+@{
+    /**/
+
+    ViewBag.Title = "AddSupport";
+    Layout = null;
+}
+
+
+<link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.min.css">
+<!-- Font Awesome Icon Fonts -->
+<link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
+
+<!-- Toastr Popups -->
+<link rel="stylesheet" type="text/css" href="/vendor/toastr/toastr.min.css">
+<link rel="stylesheet" href="/vendor/datatables/media/css/dataTables.bootstrap.min.css">
+
+<style>
+    textarea {
+        width: 100%;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        height: 100px;
+    }
+</style>
+
+<header class="ribbon">
+    <h2>&nbsp;</h2>
+</header>
+@if (TempData["success"] != null)
+{
+    <p class="alert alert-success" id="successMessage">@TempData["success"]</p>
+}
+@if (TempData["error"] != null)
+{
+    <p class="alert alert-danger" id="errorMessage">@TempData["error"]</p>
+}
+
+<div class="page-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div>
+                    <div class="panel-body">
+                        @using (Html.BeginForm())
+                        {
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>User Name<em>*</em></label>
+                                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Phone Number<em>*</em></label>
+                                        @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Query<em>*</em></label>
+                                        @Html.TextAreaFor(model => model.UserQuery, new { htmlAttributes = new { @class = "form-control required support" } })
+                                        @Html.ValidationMessageFor(model => model.UserQuery, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        }
+
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-primary panel -->
+            </div>
+            <!-- /.col-md-7 -->
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#successMessage").fadeOut(7000);
+        $("#errorMessage").fadeOut(7000);
+    });
+</script>

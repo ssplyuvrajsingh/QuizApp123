@@ -21,5 +21,21 @@ namespace QuizAdmin.Models
         }
 
         #endregion
+
+        #region Add Support Query
+        public bool AddSupportQuery(UserSupportModel model)
+        {
+           var query= new Support()
+            {
+                UserName = model.UserName,
+                PhoneNumber = model.PhoneNumber,
+                UserQuery = model.UserQuery,
+                CreatedDate=DateTime.Now
+            };
+            db.Supports.Add(query);
+            return db.SaveChanges() > 0;
+        }
+
+        #endregion
     }
 }

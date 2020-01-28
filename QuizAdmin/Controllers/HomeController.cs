@@ -359,6 +359,42 @@ namespace QuizAdmin.Controllers
         }
         #endregion
 
+        public ActionResult AddSupport()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AddSupport(UserSupportModel model)
+        {
+            try
+            {
+           
+            if (!ModelState.IsValid)
+            {
+                    return View(model);
+            }
+
+            RepoSupport repoSupport = new RepoSupport();
+            var result = repoSupport.AddSupportQuery(model);
+                if(result)
+                {
+                    TempData["success"] = "Query save successfully";
+                    return RedirectToAction("AddSupport", "Home");
+                }
+                else
+                {
+                    TempData["error"] = "Query failled to saved!";
+                    return View(model);
+                }
+            }
+
+            catch (Exception ee)
+            {
+                TempData["error"] = ee.Message;
+                return RedirectToAction("AddSupport", "Home");
+            }
+        }
+
         #region Support
         [AllowAnonymous]
         public ActionResult Support()

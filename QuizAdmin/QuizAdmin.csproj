@@ -1380,6 +1380,7 @@
     <Content Include="Views\Home\TransactionPendingPartialView.cshtml" />
     <Content Include="Views\Home\PrivacyPolicy.cshtml" />
     <Content Include="Views\Home\Support.cshtml" />
+    <Content Include="Views\Home\AddSupport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
