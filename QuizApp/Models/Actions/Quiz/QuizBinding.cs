@@ -19,11 +19,11 @@ namespace QuizApp.Models
         #endregion
 
         #region Quiz
-        public List<QuizResult> GetQuiz(string userId)
+        public UserQuizWallet GetQuiz(string userId)
         {
             var ImageSource = ConfigurationManager.AppSettings["ImageSource"].ToString();
-      
-            var data = entities.QuizDatas.Where(x => x.isActive == true).OrderByDescending(x=>x.CreatedDate).Select(a => new QuizResult()
+            var kk = entities.QuizDatas.Where(x => x.isActive == true).OrderByDescending(x => x.CreatedDate).ToList();
+            var data = entities.QuizDatas.Where(x => x.isActive == true).OrderByDescending(x => x.CreatedDate).Select(a => new QuizResult()
             {
                 QuizID = a.QuizID,
                 QuizTitle = a.QuizTitle,
@@ -32,11 +32,11 @@ namespace QuizApp.Models
                 NoOfQuestion = a.NoOfQuestion.Value,
 
                 PlayingDescriptionImg = a.PlayingDescriptionImg != null ? ImageSource + a.PlayingDescriptionImg : ImageSource + "/Content/attachment/bd574fd3-1faa-4884-a152-fd55e6dffe3a_Untitled-1.png",
-                AlreadyPlayed=false,
+                AlreadyPlayed = false,
                 StartDate = a.StartDate.Value,
                 WinPrecentage = a.WinPrecentage
-                }).ToList();
-            int playedQuizCount=0;
+            }).ToList();
+            int playedQuizCount = 0;
             //Check Player Already played this Quiz
             foreach (var item in data)
             {
@@ -54,9 +54,9 @@ namespace QuizApp.Models
                 a.isActive = DateTime.Compare(a.StartDate, DateTime.Now) <= 0;
             });
             //Update Last Active Date User
-            var playedDataCount = entities.QuizPlayers.Where(a=> a.UserID == userId && a.IsCompleted == true && a.PlayedDate!=null  ).OrderByDescending(a => a.PlayedDate).ToList();
-            var d= DateTime.Now.Date;
-             playedDataCount = playedDataCount.Where(a=>(a.PlayedDate.Value).Date == (DateTime.Now).Date).OrderByDescending(a => a.PlayedDate).ToList();
+            var playedDataCount = entities.QuizPlayers.Where(a => a.UserID == userId && a.IsCompleted == true && a.PlayedDate != null).OrderByDescending(a => a.PlayedDate).ToList();
+            var d = DateTime.Now.Date;
+            playedDataCount = playedDataCount.Where(a => (a.PlayedDate.Value).Date == (DateTime.Now).Date).OrderByDescending(a => a.PlayedDate).ToList();
             var eaningHeadModel = GetEaningHead();
             if (playedDataCount.Count == eaningHeadModel.MinimumQuiz)
             {
@@ -64,7 +64,19 @@ namespace QuizApp.Models
                 LastActiveDate = DateTime.Now;
                 entities.SaveChanges();
             }
-            return data;
+
+            var userWallet = GetWalletInfo(new UserModel() { UserId=userId});
+
+            
+           var model = new UserQuizWallet()
+            {
+                CurrentBalance = userWallet.CurrentBalance,
+                MothlyIncome = userWallet.MothlyIncome,
+                TotalWithdraw = userWallet.TotalWithdraw,
+                QuizList = data
+            };
+
+            return model;
         }
         #endregion
 

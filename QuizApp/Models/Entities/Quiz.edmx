@@ -536,7 +536,6 @@
           <EntitySet Name="C__MigrationHistory" EntityType="QuizAppModel.C__MigrationHistory" />
           <EntitySet Name="AspNetRoles" EntityType="QuizAppModel.AspNetRole" />
           <EntitySet Name="AspNetUserClaims" EntityType="QuizAppModel.AspNetUserClaim" />
-          <EntitySet Name="AspNetUserLogins" EntityType="QuizAppModel.AspNetUserLogin" />
           <EntitySet Name="AspNetUsers" EntityType="QuizAppModel.AspNetUser" />
           <EntitySet Name="DailyUserLogs" EntityType="QuizAppModel.DailyUserLog" />
           <EntitySet Name="QuizPlayers" EntityType="QuizAppModel.QuizPlayer" />
@@ -547,10 +546,6 @@
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="QuizAppModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaim" EntitySet="AspNetUserClaims" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
           </AssociationSet>
           <AssociationSet Name="FK_DailyUserLog_AspNetUsers" Association="QuizAppModel.FK_DailyUserLog_AspNetUsers">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
@@ -606,6 +601,11 @@
           </AssociationSet>
           <EntitySet Name="MobileOTPs" EntityType="QuizAppModel.MobileOTP" />
           <EntitySet Name="LevelEarningStatus" EntityType="QuizAppModel.LevelEarningStatu" />
+          <EntitySet Name="AspNetUserLogins" EntityType="QuizAppModel.AspNetUserLogin" />
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -635,17 +635,6 @@
           <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaim" ToRole="AspNetUser" />
         </EntityType>
-        <EntityType Name="AspNetUserLogin">
-          <Key>
-            <PropertyRef Name="LoginProvider" />
-            <PropertyRef Name="ProviderKey" />
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="LoginProvider" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="ProviderKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogin" ToRole="AspNetUser" />
-        </EntityType>
         <EntityType Name="AspNetUser">
           <Key>
             <PropertyRef Name="Id" />
@@ -663,7 +652,6 @@
           <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
           <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetUserClaims" Relationship="QuizAppModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserClaim" />
-          <NavigationProperty Name="AspNetUserLogins" Relationship="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
           <NavigationProperty Name="DailyUserLogs" Relationship="QuizAppModel.FK_DailyUserLog_AspNetUsers" FromRole="AspNetUser" ToRole="DailyUserLog" />
           <NavigationProperty Name="QuizPlayers" Relationship="QuizAppModel.FK_QuizPlayer_AspNetUsers1" FromRole="AspNetUser" ToRole="QuizPlayer" />
           <NavigationProperty Name="RefreshTokens" Relationship="QuizAppModel.FK_RefreshToken_AspNetUsers" FromRole="AspNetUser" ToRole="RefreshToken" />
@@ -672,6 +660,7 @@
           <NavigationProperty Name="Transactions" Relationship="QuizAppModel.FK_AspNetUsers_Id" FromRole="AspNetUser" ToRole="Transaction" />
           <NavigationProperty Name="LevelEarnings" Relationship="QuizAppModel.FK__LevelEarn__UserI__625A9A57" FromRole="AspNetUser" ToRole="LevelEarning" />
           <NavigationProperty Name="Users" Relationship="QuizAppModel.FK_UserID_UserID" FromRole="AspNetUser" ToRole="User" />
+          <NavigationProperty Name="AspNetUserLogins" Relationship="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
         </EntityType>
         <EntityType Name="DailyUserLog">
           <Key>
@@ -770,20 +759,6 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="AspNetUserClaim">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-          <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="QuizAppModel.AspNetUserLogin" Role="AspNetUserLogin" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUser">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserLogin">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1046,6 +1021,31 @@
           <Property Name="LevelHangFireStatus" Type="Boolean" />
           <Property Name="StatusTime" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="AspNetUserLogin">
+          <Key>
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="LoginProvider" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ProviderKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogin" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="QuizAppModel.AspNetUserLogin" Role="AspNetUserLogin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogin">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1077,15 +1077,6 @@
                 <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="AspNetUserLogins">
-            <EntityTypeMapping TypeName="QuizAppModel.AspNetUserLogin">
-              <MappingFragment StoreEntitySet="AspNetUserLogins">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
-                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1318,6 +1309,15 @@
                 <ScalarProperty Name="StatusTime" ColumnName="StatusTime" />
                 <ScalarProperty Name="LevelHangFireStatus" ColumnName="LevelHangFireStatus" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserLogins">
+            <EntityTypeMapping TypeName="QuizAppModel.AspNetUserLogin">
+              <MappingFragment StoreEntitySet="AspNetUserLogins">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

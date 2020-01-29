@@ -22,7 +22,7 @@ namespace QuizApp.Controllers
             {
                 QuizBinding quiz = new QuizBinding();
                 var data = quiz.GetQuiz(model.UserId);
-                if (data.Count() > 0)
+                if (data!=null)
                 {
                     return new ResultClass()
                     {

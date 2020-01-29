@@ -28,7 +28,6 @@ namespace QuizApp.Models.Entities
         public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
-        public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<DailyUserLog> DailyUserLogs { get; set; }
         public virtual DbSet<QuizPlayer> QuizPlayers { get; set; }
@@ -42,5 +41,6 @@ namespace QuizApp.Models.Entities
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<MobileOTP> MobileOTPs { get; set; }
         public virtual DbSet<LevelEarningStatu> LevelEarningStatus { get; set; }
+        public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
     }
 }

@@ -8,7 +8,6 @@
         <EntityTypeShape EntityType="QuizAppModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="1.75" />
         <EntityTypeShape EntityType="QuizAppModel.AspNetRole" Width="1.5" PointX="0.75" PointY="15.75" />
         <EntityTypeShape EntityType="QuizAppModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="27.25" />
-        <EntityTypeShape EntityType="QuizAppModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="8.25" />
         <EntityTypeShape EntityType="QuizAppModel.AspNetUser" Width="1.5" PointX="3" PointY="14" />
         <EntityTypeShape EntityType="QuizAppModel.DailyUserLog" Width="1.5" PointX="5.25" PointY="30" />
         <EntityTypeShape EntityType="QuizAppModel.QuizPlayer" Width="1.5" PointX="8.25" PointY="14.75" />
@@ -17,7 +16,6 @@
         <EntityTypeShape EntityType="QuizAppModel.UserAnswer" Width="1.5" PointX="10.5" PointY="15" />
         <EntityTypeShape EntityType="QuizAppModel.UserPoint" Width="1.5" PointX="5.5" PointY="24.75" />
         <AssociationConnector Association="QuizAppModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="QuizAppModel.FK_DailyUserLog_AspNetUsers" />
         <AssociationConnector Association="QuizAppModel.FK_QuizPlayer_AspNetUsers1" />
         <AssociationConnector Association="QuizAppModel.FK_RefreshToken_AspNetUsers" />
@@ -36,6 +34,8 @@
         <AssociationConnector Association="QuizAppModel.FK_UserID_UserID" />
         <EntityTypeShape EntityType="QuizAppModel.MobileOTP" Width="1.5" PointX="3" PointY="2" />
         <EntityTypeShape EntityType="QuizAppModel.LevelEarningStatu" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="QuizAppModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="15.75" />
+        <AssociationConnector Association="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

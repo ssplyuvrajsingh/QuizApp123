@@ -18,7 +18,6 @@ namespace QuizApp.Models.Entities
         public AspNetUser()
         {
             this.AspNetUserClaims = new HashSet<AspNetUserClaim>();
-            this.AspNetUserLogins = new HashSet<AspNetUserLogin>();
             this.DailyUserLogs = new HashSet<DailyUserLog>();
             this.QuizPlayers = new HashSet<QuizPlayer>();
             this.RefreshTokens = new HashSet<RefreshToken>();
@@ -27,6 +26,7 @@ namespace QuizApp.Models.Entities
             this.Transactions = new HashSet<Transaction>();
             this.LevelEarnings = new HashSet<LevelEarning>();
             this.Users = new HashSet<User>();
+            this.AspNetUserLogins = new HashSet<AspNetUserLogin>();
         }
     
         public string Id { get; set; }
@@ -45,8 +45,6 @@ namespace QuizApp.Models.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserClaim> AspNetUserClaims { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DailyUserLog> DailyUserLogs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<QuizPlayer> QuizPlayers { get; set; }
@@ -62,5 +60,7 @@ namespace QuizApp.Models.Entities
         public virtual ICollection<LevelEarning> LevelEarnings { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AspNetUserLogin> AspNetUserLogins { get; set; }
     }
 }

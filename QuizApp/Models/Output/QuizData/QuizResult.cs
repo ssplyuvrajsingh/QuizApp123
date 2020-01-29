@@ -20,4 +20,11 @@ namespace QuizApp.Models
         public bool isActive { get; set; }
         public bool AlreadyPlayed { get; set; }
     }
+    public class UserQuizWallet
+    {
+        public double CurrentBalance { get; set; }
+        public double MothlyIncome { get; set; }
+        public double TotalWithdraw { get; set; }
+        public List<QuizResult> QuizList { get; set; }
+    }
 }
