@@ -168,7 +168,7 @@ namespace QuizApp.Controllers
                 {
                     return new TokenResult()
                     {
-                        error_message = "refresh token is expired",
+                        error_message = "token_expired",
                         result = false
                     };
                 }
