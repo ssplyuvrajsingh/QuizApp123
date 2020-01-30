@@ -1611,139 +1611,99 @@ namespace QuizApp.Models
                             //Already this User Exist check Condition then Update
                             if (userEarningExist != null)
                             {
-                                if (lst.Level == 1)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level1Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level1Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                                
+                                
+                                    
+                                        if (lst.Level == 1)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level1Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                        
+                                    
+                                        if (lst.Level == 2)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level2Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                        
+                                        
+                                        if (lst.Level == 3)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level3Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                       
+                                   
+                                        if (lst.Level == 4)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level4Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                       
+                                    
+                                        if (lst.Level == 5)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level5Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                        
+                                        
+                                        if (lst.Level == 6)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level6Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                        
+                                        
+                                        if (lst.Level == 7)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level7Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                        
+                                        if (lst.Level == 8)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level8Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                        
+                                        if (lst.Level == 9)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level9Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                        
+                                        if (lst.Level == 10)
+                                        {
+                                            userCount = lst.ChildUsers.Count();
+                                            actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                            userEarningExist.Level10Users = userCount;
+                                            totalTransactionAmt += actualEarning;
+                                        }
+                                        
 
-                                if (lst.Level == 2)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level2Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level2Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
-
-                                if (lst.Level == 3)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level3Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level3Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                if (lst.Level == 4)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level4Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level4Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                if (lst.Level == 5)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level5Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level5Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                if (lst.Level == 6)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level6Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level6Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                if (lst.Level == 7)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level7Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level7Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                if (lst.Level == 8)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level8Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level8Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                if (lst.Level == 9)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level9Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level9Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                if (lst.Level == 10)
-                                {
-                                    userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
-                                    userEarningExist.Level10Users = userCount;
-                                    totalTransactionAmt += actualEarning;
-                                }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    userEarningExist.Level10Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                                
                             }
+                        
                             else
                             {
                                 //If Not Exist then Insert 
@@ -1755,12 +1715,7 @@ namespace QuizApp.Models
                                     le.Level1Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level1Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                               
 
                                 if (lst.Level == 2)
                                 {
@@ -1769,12 +1724,7 @@ namespace QuizApp.Models
                                     le.Level2Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level2Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                                
 
                                 if (lst.Level == 3)
                                 {
@@ -1783,12 +1733,7 @@ namespace QuizApp.Models
                                     le.Level3Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level3Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                               
                                 if (lst.Level == 4)
                                 {
                                     userCount = lst.ChildUsers.Count();
@@ -1796,12 +1741,7 @@ namespace QuizApp.Models
                                     le.Level4Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level4Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                                
                                 if (lst.Level == 5)
                                 {
                                     userCount = lst.ChildUsers.Count();
@@ -1809,12 +1749,7 @@ namespace QuizApp.Models
                                     le.Level5Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level5Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                                
                                 if (lst.Level == 6)
                                 {
                                     userCount = lst.ChildUsers.Count();
@@ -1822,12 +1757,7 @@ namespace QuizApp.Models
                                     le.Level6Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level6Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                               
                                 if (lst.Level == 7)
                                 {
                                     userCount = lst.ChildUsers.Count();
@@ -1835,12 +1765,7 @@ namespace QuizApp.Models
                                     le.Level7Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level7Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                                
                                 if (lst.Level == 8)
                                 {
                                     userCount = lst.ChildUsers.Count();
@@ -1848,12 +1773,7 @@ namespace QuizApp.Models
                                     le.Level8Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level8Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                               
                                 if (lst.Level == 9)
                                 {
                                     userCount = lst.ChildUsers.Count();
@@ -1861,12 +1781,7 @@ namespace QuizApp.Models
                                     le.Level9Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level9Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                                
                                 if (lst.Level == 10)
                                 {
                                     userCount = lst.ChildUsers.Count();
@@ -1874,12 +1789,7 @@ namespace QuizApp.Models
                                     le.Level10Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-                                else
-                                {
-                                    actualEarning = 0;
-                                    le.Level10Users = 0;
-                                    totalTransactionAmt += actualEarning;
-                                }
+                                
                             }
                         }
 
@@ -1951,7 +1861,6 @@ namespace QuizApp.Models
                         entities.SaveChanges();
                     }
                 }
-
                 // -----Monthly Income Update
                 totalTransactionAmt = totalTransactionAmt * 30;
                 var UserMUpdate = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
