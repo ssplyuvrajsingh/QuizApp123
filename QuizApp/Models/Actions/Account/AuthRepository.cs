@@ -38,7 +38,7 @@ namespace QuizApp.Models
                     refreshToken = _ctx.RefreshTokens.Where(x => x.UserId == UserId && x.ProtectedTicket == RefreshTokenStr).FirstOrDefault();
                     if (refreshToken != null)
                     {
-                        refreshToken.ExpiresUtc = DateTime.Now.AddHours(Constants.TimeOfExpireRefreshTokenHours);
+                        refreshToken.ExpiresUtc = DateTime.Now.AddMinutes(Constants.TimeOfExpireRefreshTokenHours);
                         refreshToken.IssuedUtc = DateTime.Now;
                         _ctx.SaveChanges();
                     }
@@ -64,7 +64,8 @@ namespace QuizApp.Models
 
             RefreshToken refreshToken = new RefreshToken();
             refreshToken.UserId = UserId;
-            refreshToken.ExpiresUtc = DateTime.Now.AddHours(Constants.TimeOfExpireRefreshTokenHours);
+            TimeSpan m = TimeSpan.FromMinutes(1);
+            refreshToken.ExpiresUtc =DateTime.Now.AddMinutes(Constants.TimeOfExpireRefreshTokenHours);
             refreshToken.IssuedUtc = DateTime.Now;
             refreshToken.ProtectedTicket = GeneralFunctions.RandomString(100);
             _ctx.RefreshTokens.Add(refreshToken);

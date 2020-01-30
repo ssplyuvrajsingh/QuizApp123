@@ -36,7 +36,6 @@ namespace QuizApp.Models
                 StartDate = a.StartDate.Value,
                 WinPrecentage = a.WinPrecentage
             }).ToList();
-            int playedQuizCount = 0;
             //Check Player Already played this Quiz
             foreach (var item in data)
             {
@@ -357,6 +356,16 @@ namespace QuizApp.Models
         #region Get Level Base Earning Amount
         public LevelEarningModelMaster GetLevelBaseEarningAmount(string Users)
         {
+            //Update Active Users and Monthly Income
+            var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
+            EaningHeadModel earningHeads = new EaningHeadModel();
+            using (StreamReader r = new StreamReader(jsonFilePath))
+            {
+                string json = r.ReadToEnd();
+                earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
+            }
+
+            RefreshLevelBaseActiveUsersandMonthlyIncome(jsonFilePath, Users);
             LevelEarningModelMaster levelEarningModelMaster = new LevelEarningModelMaster();
             var data = entities.LevelEarnings.Where(x => x.UserID == Users).FirstOrDefault();
             List<LevelEarningModel> levelEarnings = new List<LevelEarningModel>();
@@ -1307,6 +1316,654 @@ namespace QuizApp.Models
             };
             entities.LevelEarningStatus.Add(obj);
             entities.SaveChanges();
+        }
+        #endregion
+
+        #region Refresh Level Base Active Users and Monthly Income
+        public bool RefreshLevelBaseActiveUsersandMonthlyIncome(string jsonFilePath,string UserId)
+        {
+            try
+            {
+                var activeUser = entities.Users.Where(x=>x.isActive==true).ToList();
+
+                //Read Json File
+                EaningHeadModel earningHeads = new EaningHeadModel();
+                using (StreamReader r = new StreamReader(jsonFilePath))
+                {
+                    string json = r.ReadToEnd();
+                    earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
+                }
+
+                double totalTransactionAmt = 0;
+                List<LevelWithUser> lstLevelWithUser = new List<LevelWithUser>();
+
+                //Get Child Users Where Current User
+                var childUsers = activeUser.Where(x => !string.IsNullOrEmpty(x.ParentIDs) && x.ParentIDs.Split(',').Where(y => y == UserId).Any()).ToList();
+
+                childUsers = childUsers.Where(x=>x.LastActiveDate != null && (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date || (x.LastActiveDate.Value).Date == (DateTime.Now).Date).ToList();
+
+                totalTransactionAmt += earningHeads.DirectIncome;
+                if (childUsers.Any())
+                {
+                    foreach (var level in childUsers)
+                    {
+                        var parentIDs = level.ParentIDs.Split(',').ToList();
+                        var parentUserWithLevel = parentIDs.Select(x => new SetLevelForParentUser()
+                        {
+                            UserId = x,
+                            Level = parentIDs.IndexOf(x) + 1,
+                            Count = parentIDs.Count()
+                        }).ToList();
+
+                        //Add Level 
+                        var level_1 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 1).FirstOrDefault();
+                        if (level_1 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 1).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l1 = new LevelWithUser();
+                                l1.Level = 1;
+                                l1.ChildUsers = new List<ChildUser>();
+                                l1.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l1);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+                        }
+
+                        var level_2 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 2).FirstOrDefault();
+                        if (level_2 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 2).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l2 = new LevelWithUser();
+                                l2.Level = 2;
+                                l2.ChildUsers = new List<ChildUser>();
+                                l2.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l2);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+
+                        }
+
+                        var level_3 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 3).FirstOrDefault();
+                        if (level_3 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 3).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l3 = new LevelWithUser();
+                                l3.Level = 3;
+                                l3.ChildUsers = new List<ChildUser>();
+                                l3.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l3);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+                        }
+
+                        var level_4 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 4).FirstOrDefault();
+                        if (level_4 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 4).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l4 = new LevelWithUser();
+                                l4.Level = 4;
+                                l4.ChildUsers = new List<ChildUser>();
+                                l4.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l4);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+                        }
+
+                        var level_5 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 5).FirstOrDefault();
+                        if (level_5 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 5).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l5 = new LevelWithUser();
+                                l5.Level = 5;
+                                l5.ChildUsers = new List<ChildUser>();
+                                l5.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l5);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+                        }
+
+                        var level_6 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 6).FirstOrDefault();
+                        if (level_6 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 6).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l6 = new LevelWithUser();
+                                l6.Level = 6;
+                                l6.ChildUsers = new List<ChildUser>();
+                                l6.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l6);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+                        }
+
+                        var level_7 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 7).FirstOrDefault();
+                        if (level_7 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 7).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l7 = new LevelWithUser();
+                                l7.Level = 7;
+                                l7.ChildUsers = new List<ChildUser>();
+                                l7.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l7);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+                        }
+
+                        var level_8 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 8).FirstOrDefault();
+                        if (level_8 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 8).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l8 = new LevelWithUser();
+                                l8.Level = 8;
+                                l8.ChildUsers = new List<ChildUser>();
+                                l8.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l8);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+                        }
+
+                        var level_9 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 9).FirstOrDefault();
+                        if (level_9 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 9).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l9 = new LevelWithUser();
+                                l9.Level = 9;
+                                l9.ChildUsers = new List<ChildUser>();
+                                l9.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l9);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+                        }
+
+                        var level_10 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 10).FirstOrDefault();
+                        if (level_10 != null)
+                        {
+                            var data = lstLevelWithUser.Where(x => x.Level == 10).FirstOrDefault();
+                            if (data == null)
+                            {
+                                var l10 = new LevelWithUser();
+                                l10.Level = 10;
+                                l10.ChildUsers = new List<ChildUser>();
+                                l10.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                                lstLevelWithUser.Add(l10);
+                            }
+                            else
+                            {
+                                data.ChildUsers.Add(new ChildUser()
+                                {
+                                    UserId = level.UserID
+                                });
+                            }
+                        }
+                    }
+
+                    //Add Actual Earning Based on Level
+                    if (lstLevelWithUser.Any())
+                    {
+                        var le = new LevelEarning();
+                        GeneralFunctions generalFunctions = new GeneralFunctions();
+                        var userEarningExist = entities.LevelEarnings.Where(x => x.UserID == UserId).FirstOrDefault();
+                        foreach (var lst in lstLevelWithUser)
+                        {
+                            int userCount = 0; double actualEarning = 0;
+
+                            //Already this User Exist check Condition then Update
+                            if (userEarningExist != null)
+                            {
+                                if (lst.Level == 1)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level1Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level1Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+
+                                if (lst.Level == 2)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level2Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level2Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+
+                                if (lst.Level == 3)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level3Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level3Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 4)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level4Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level4Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 5)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level5Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level5Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 6)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level6Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level6Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 7)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level7Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level7Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 8)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level8Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level8Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 9)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level9Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level9Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 10)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level10Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    userEarningExist.Level10Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                            }
+                            else
+                            {
+                                //If Not Exist then Insert 
+                                le.UserID = UserId;
+                                if (lst.Level == 1)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level1Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level1Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+
+                                if (lst.Level == 2)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level2Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level2Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+
+                                if (lst.Level == 3)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level3Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level3Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 4)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level4Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level4Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 5)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level5Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level5Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 6)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level6Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level6Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 7)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level7Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level7Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 8)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level8Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level8Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 9)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level9Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level9Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                if (lst.Level == 10)
+                                {
+                                    userCount = lst.ChildUsers.Count();
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level10Users = userCount;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                                else
+                                {
+                                    actualEarning = 0;
+                                    le.Level10Users = 0;
+                                    totalTransactionAmt += actualEarning;
+                                }
+                            }
+                        }
+
+                        if (userEarningExist == null)
+                        {
+                            entities.LevelEarnings.Add(le);
+                        }
+                        entities.SaveChanges();
+                    }
+                }
+                //when Child Users not Exists of activeUsers 
+                else
+                {
+                    var CNE = new LevelEarning();
+                    var childUsersNotExists = entities.LevelEarnings.Where(x => x.UserID == UserId).FirstOrDefault();
+                    //Entery Update When Active Users Already Existes in Level Earning Table
+                    if (childUsersNotExists == null)
+                    {
+                        CNE.UserID = UserId;
+                        CNE.Level1 = 0;
+                        CNE.Level2 = 0;
+                        CNE.Level3 = 0;
+                        CNE.Level4 = 0;
+                        CNE.Level5 = 0;
+                        CNE.Level6 = 0;
+                        CNE.Level7 = 0;
+                        CNE.Level8 = 0;
+                        CNE.Level9 = 0;
+                        CNE.Level10 = 0;
+                        CNE.Level1Users = 0;
+                        CNE.Level2Users = 0;
+                        CNE.Level3Users = 0;
+                        CNE.Level4Users = 0;
+                        CNE.Level5Users = 0;
+                        CNE.Level6Users = 0;
+                        CNE.Level7Users = 0;
+                        CNE.Level8Users = 0;
+                        CNE.Level9Users = 0;
+                        CNE.Level10Users = 0;
+                        CNE.LastUpdate = DateTime.Now;
+                        entities.LevelEarnings.Add(CNE);
+                        entities.SaveChanges();
+                    }
+                    //Entery Insert When Active Users Already not Existes in Level Earning Table
+                    else
+                    {
+                        childUsersNotExists.Level1 = 0;
+                        childUsersNotExists.Level2 = 0;
+                        childUsersNotExists.Level3 = 0;
+                        childUsersNotExists.Level4 = 0;
+                        childUsersNotExists.Level5 = 0;
+                        childUsersNotExists.Level6 = 0;
+                        childUsersNotExists.Level7 = 0;
+                        childUsersNotExists.Level8 = 0;
+                        childUsersNotExists.Level9 = 0;
+                        childUsersNotExists.Level10 = 0;
+                        childUsersNotExists.Level1Users = 0;
+                        childUsersNotExists.Level2Users = 0;
+                        childUsersNotExists.Level3Users = 0;
+                        childUsersNotExists.Level4Users = 0;
+                        childUsersNotExists.Level5Users = 0;
+                        childUsersNotExists.Level6Users = 0;
+                        childUsersNotExists.Level7Users = 0;
+                        childUsersNotExists.Level8Users = 0;
+                        childUsersNotExists.Level9Users = 0;
+                        childUsersNotExists.Level10Users = 0;
+                        childUsersNotExists.LastUpdate = DateTime.Now;
+
+                        entities.SaveChanges();
+                    }
+                }
+
+                // -----Monthly Income Update
+                totalTransactionAmt = totalTransactionAmt * 30;
+                var UserMUpdate = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
+                UserMUpdate.MothlyIncome = totalTransactionAmt;
+                entities.SaveChanges();
+            }
+            catch (Exception ex1)
+            {
+                var data = ex1.Message;
+            }
+
+            return true;
         }
         #endregion
     }
