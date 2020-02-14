@@ -19,6 +19,7 @@ namespace QuizApp.Models
         public System.DateTime CreatedDate { get; set; }
         public List<UserAnswerClass> UserAnswer { get; set; }
         public int PlayerId { get; set; }
+        public string ciphertoken { get; set; }
     }
     public class UserAnswerClass
     {

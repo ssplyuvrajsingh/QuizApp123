@@ -17,5 +17,6 @@ namespace QuizApp.Models
 
         [Required]
         public int OTP { get; set; }
+        public string ciphertoken { get; set; }
     }
 }

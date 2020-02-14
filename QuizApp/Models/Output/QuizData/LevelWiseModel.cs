@@ -9,6 +9,7 @@ namespace QuizApp.Models
     {
         public int Level { get; set; }
         public string UserId { get; set; }
+        public string ciphertoken { get; set; }
     }
 
     public class LevelWiseActiveUsers

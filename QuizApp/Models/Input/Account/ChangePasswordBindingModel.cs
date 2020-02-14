@@ -18,6 +18,7 @@ namespace QuizApp.Models
 
         [Required]
         public string PhoneNumber { get; set; }
-       
+        public string ciphertoken { get; set; }
+
     }
 }

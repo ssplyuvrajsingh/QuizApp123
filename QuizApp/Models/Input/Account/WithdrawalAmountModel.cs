@@ -15,6 +15,7 @@ namespace QuizApp.Models
         public double amount { get; set; }
         public string WithdrawType { get; set; }
         public string Passcode { get; set; }
+        public string ciphertoken { get; set; }
     }
     public class WithdrawalAmountBalance
     {

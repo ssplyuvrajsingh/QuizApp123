@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using System.Configuration;
+
 
 namespace QuizApp.Controllers
 {
@@ -20,23 +22,40 @@ namespace QuizApp.Controllers
         {
             try
             {
-                QuizBinding quiz = new QuizBinding();
-                var data = quiz.GetQuiz(model.UserId);
-                if (data!=null)
+                //TODO: Decrypt the encrypted value
+                var security = new Security();
+                var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                //Check Secret Code
+                bool isStatus = security.CheckDecypt(plainText);
+                if (isStatus)
                 {
-                    return new ResultClass()
+                    QuizBinding quiz = new QuizBinding();
+                    var data = quiz.GetQuiz(model.UserId);
+                    if (data != null)
                     {
-                        Data = data,
-                        Message = "Data found successfully",
-                        Result = true
-                    };
+                        return new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data found successfully",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data not found",
+                            Result = false
+                        };
+                    }
                 }
                 else
                 {
                     return new ResultClass()
                     {
-                        Data = data,
-                        Message = "Data not found",
+                        Message = "Timeout Error",
                         Result = false
                     };
                 }
@@ -73,23 +92,40 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    QuizBinding quiz = new QuizBinding();
-                    var data = quiz.GetQuizQuestions(model.QuizId, model.UserId);
-                    if(data!=null)
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        ResultClass = new ResultClass()
+                        QuizBinding quiz = new QuizBinding();
+                        var data = quiz.GetQuizQuestions(model.QuizId, model.UserId);
+                        if (data != null)
                         {
-                            Data = data,
-                            Message = "Data found successfully",
-                            Result = true
-                        };
+                            ResultClass = new ResultClass()
+                            {
+                                Data = data,
+                                Message = "Data found successfully",
+                                Result = true
+                            };
+                        }
+                        else
+                        {
+                            ResultClass = new ResultClass()
+                            {
+                                Data = null,
+                                Message = "Data Not Found",
+                                Result = false
+                            };
+                        }
                     }
                     else
                     {
-                        ResultClass = new ResultClass()
+                        return new ResultClass()
                         {
-                            Data = null,
-                            Message = "Data Not Found",
+                            Message = "Timeout Error",
                             Result = false
                         };
                     }
@@ -126,13 +162,30 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    QuizBinding quiz = new QuizBinding();
-                    return new ResultClass()
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        Data = quiz.StartGame(model),
-                        Message = "Data found successfully",
-                        Result = true
-                    };
+                        QuizBinding quiz = new QuizBinding();
+                        return new ResultClass()
+                        {
+                            Data = quiz.StartGame(model),
+                            Message = "Data found successfully",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Message = "Timeout Error",
+                            Result = false
+                        };
+                    }
                 }
             }
             catch (Exception ex)
@@ -157,15 +210,32 @@ namespace QuizApp.Controllers
             {
                 if (model.QuizID != null && model.UserID != null)
                 {
-                    QuizBinding quizBinding = new QuizBinding();
-                    var data = quizBinding.SetQuizePlayer(model);
-                    if (data != null)
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        resultClass = new ResultClass()
+                        QuizBinding quizBinding = new QuizBinding();
+                        var data = quizBinding.SetQuizePlayer(model);
+                        if (data != null)
                         {
-                            Data = data,
-                            Message = "Save Quize Player Successfully",
-                            Result = true
+                            resultClass = new ResultClass()
+                            {
+                                Data = data,
+                                Message = "Save Quize Player Successfully",
+                                Result = true
+                            };
+                        }
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Message = "Timeout Error",
+                            Result = false
                         };
                     }
                 }
@@ -207,13 +277,30 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    QuizBinding quiz = new QuizBinding();
-                    return new ResultClass()
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        Data = quiz.EndGame(model),
-                        Message = "Game end successfully",
-                        Result = true
-                    };
+                        QuizBinding quiz = new QuizBinding();
+                        return new ResultClass()
+                        {
+                            Data = quiz.EndGame(model),
+                            Message = "Game end successfully",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Message = "Timeout Error",
+                            Result = false
+                        };
+                    }
                 }
             }
             catch (Exception ex)
@@ -244,13 +331,30 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    QuizBinding quiz = new QuizBinding();
-                    return new ResultClass()
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        Data = quiz.GetScoreByQuiz(model),
-                        Message = "Data found successfully",
-                        Result = true
-                    };
+                        QuizBinding quiz = new QuizBinding();
+                        return new ResultClass()
+                        {
+                            Data = quiz.GetScoreByQuiz(model),
+                            Message = "Data found successfully",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Message = "Timeout Error",
+                            Result = false
+                        };
+                    }
                 }
             }
             catch (Exception ex)
@@ -272,23 +376,40 @@ namespace QuizApp.Controllers
             ResultClass resultClass = null;
             try
             {
-                QuizBinding quizBinding = new QuizBinding();
-                var data = quizBinding.GetWalletInfo(model);
-                if (data != null)
+                //TODO: Decrypt the encrypted value
+                var security = new Security();
+                var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                //Check Secret Code
+                bool isStatus = security.CheckDecypt(plainText);
+                if (isStatus)
                 {
-                    resultClass = new ResultClass()
+                    QuizBinding quizBinding = new QuizBinding();
+                    var data = quizBinding.GetWalletInfo(model);
+                    if (data != null)
                     {
-                        Data = data,
-                        Message = "Data Found",
-                        Result = true
-                    };
+                        resultClass = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data Found",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        resultClass = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data Not Found",
+                            Result = false
+                        };
+                    }
                 }
                 else
                 {
-                    resultClass = new ResultClass()
+                    return new ResultClass()
                     {
-                        Data = data,
-                        Message = "Data Not Found",
+                        Message = "Timeout Error",
                         Result = false
                     };
                 }
@@ -313,15 +434,32 @@ namespace QuizApp.Controllers
             ResultClass result = null;
             try
             {
-                QuizBinding quizBinding = new QuizBinding();
-                var data = quizBinding.GetLevelBaseEarningAmount(model.UserID);
-                if(data!=null)
+                //TODO: Decrypt the encrypted value
+                var security = new Security();
+                var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                //Check Secret Code
+                bool isStatus = security.CheckDecypt(plainText);
+                if (isStatus)
                 {
-                    result = new ResultClass()
+                    QuizBinding quizBinding = new QuizBinding();
+                    var data = quizBinding.GetLevelBaseEarningAmount(model.UserID);
+                    if (data != null)
                     {
-                        Data = data,
-                        Message = "Data Found",
-                        Result = true
+                        result = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data Found",
+                            Result = true
+                        };
+                    }
+                }
+                else
+                {
+                    return new ResultClass()
+                    {
+                        Message = "Timeout Error",
+                        Result = false
                     };
                 }
             }
@@ -380,23 +518,40 @@ namespace QuizApp.Controllers
             ResultClass result = null;
             try
             {
-                QuizBinding quizBinding = new QuizBinding();
-                var data = quizBinding.GetLevelWiseUserInformation(model);
-                if (data.Any())
+                //TODO: Decrypt the encrypted value
+                var security = new Security();
+                var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                //Check Secret Code
+                bool isStatus = security.CheckDecypt(plainText);
+                if (isStatus)
                 {
-                    result = new ResultClass()
+                    QuizBinding quizBinding = new QuizBinding();
+                    var data = quizBinding.GetLevelWiseUserInformation(model);
+                    if (data.Any())
                     {
-                        Data = data,
-                        Message = "Data Found",
-                        Result = true
-                    };
+                        result = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data Found",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        result = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data Not Found",
+                            Result = false
+                        };
+                    }
                 }
                 else
                 {
-                    result = new ResultClass()
+                    return new ResultClass()
                     {
-                        Data = data,
-                        Message = "Data Not Found",
+                        Message = "Timeout Error",
                         Result = false
                     };
                 }
@@ -431,23 +586,40 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    QuizBinding quizBinding = new QuizBinding();
-                    var data = quizBinding.TopTenResultsonQuizId(model);
-                    if(data.Any())
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        result = new ResultClass()
+                        QuizBinding quizBinding = new QuizBinding();
+                        var data = quizBinding.TopTenResultsonQuizId(model);
+                        if (data.Any())
                         {
-                            Data = data,
-                            Message = "Data Found",
-                            Result = true
-                        };
+                            result = new ResultClass()
+                            {
+                                Data = data,
+                                Message = "Data Found",
+                                Result = true
+                            };
+                        }
+                        else
+                        {
+                            result = new ResultClass()
+                            {
+                                Data = null,
+                                Message = "Data Not Found",
+                                Result = false
+                            };
+                        }
                     }
                     else
                     {
-                        result = new ResultClass()
+                        return new ResultClass()
                         {
-                            Data = null,
-                            Message = "Data Not Found",
+                            Message = "Timeout Error",
                             Result = false
                         };
                     }

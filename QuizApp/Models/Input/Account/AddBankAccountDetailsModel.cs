@@ -12,5 +12,6 @@ namespace QuizApp.Models
         public string NameInAccount { get; set; }
         public string Bank { get; set; }
         public string IFSCCode { get; set; }
+        public string ciphertoken { get; set; }
     }
 }

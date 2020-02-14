@@ -14,6 +14,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using QuizApp.Models;
 using QuizApp.Models.Entities;
+using System.Configuration;
 
 namespace QuizApp.Controllers
 {
@@ -71,32 +72,53 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    var User = UserManager.FindByName(model.PhoneNumber);
-                    
-                    if(User!=null)
+                    AccountBinding ac = new AccountBinding();
+                    var date = DateTime.Now;
+
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    //model.ciphertoken = security.OpenSSLEncrypt(model.ciphertoken, secretKey);
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        if (User.PhoneNumberConfirmed)
+                        var User = UserManager.FindByName(model.PhoneNumber);
+
+                        if (User != null)
                         {
-                            User = UserManager.Find(model.PhoneNumber, model.Password);
-                            if (User != null)
+                            if (User.PhoneNumberConfirmed)
                             {
-                                AccountBinding ac = new AccountBinding();
-                                var userinfo = ac.GetUserInformation(User.Id);
-                                if (userinfo.isActive != false && userinfo.isBlocked != true)
+                                User = UserManager.Find(model.PhoneNumber, model.Password);
+                                if (User != null)
                                 {
-                                    AuthRepository authRepository = new AuthRepository();
-                                    var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
-                                    var data1 = ac.GetRefferlCode(data.id);
-                                    data.RefferalCode = data1.RefferalCode;
-                                    data.UserName = data1.UserName;
-                                    data.MobileNumber = model.PhoneNumber;
-                                    return data;
+
+                                    var userinfo = ac.GetUserInformation(User.Id);
+                                    if (userinfo.isActive != false && userinfo.isBlocked != true)
+                                    {
+                                        AuthRepository authRepository = new AuthRepository();
+                                        var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
+                                        var data1 = ac.GetRefferlCode(data.id);
+                                        data.RefferalCode = data1.RefferalCode;
+                                        data.UserName = data1.UserName;
+                                        data.MobileNumber = model.PhoneNumber;
+                                        return data;
+                                    }
+                                    else
+                                    {
+                                        return new TokenResult()
+                                        {
+                                            error_message = "This User is not Actice or Blocked",
+                                            result = false
+                                        };
+                                    }
                                 }
                                 else
                                 {
                                     return new TokenResult()
                                     {
-                                        error_message = "This User is not Actice or Blocked",
+                                        error_message = "Your password is incorrect",
                                         result = false
                                     };
                                 }
@@ -105,16 +127,17 @@ namespace QuizApp.Controllers
                             {
                                 return new TokenResult()
                                 {
-                                    error_message = "Your password is incorrect",
+                                    error_message = "Your mobile number is not verified please contact to administration",
                                     result = false
                                 };
                             }
                         }
+
                         else
                         {
                             return new TokenResult()
                             {
-                                error_message = "Your mobile number is not verified please contact to administration",
+                                error_message = "Invalid Credentials",
                                 result = false
                             };
                         }
@@ -123,10 +146,11 @@ namespace QuizApp.Controllers
                     {
                         return new TokenResult()
                         {
-                            error_message = "Invalid Credentials",
+                            error_message = "Timeout Error",
                             result = false
                         };
                     }
+                
                 }
             }
             catch (Exception ex)
@@ -157,28 +181,45 @@ namespace QuizApp.Controllers
                         result = false
                     };
                 }
-
-                var getClient = new User();
-                using (AuthRepository _repo = new AuthRepository())
+                //TODO: Decrypt the encrypted value
+                var security = new Security();
+                var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                //Check Secret Code
+                bool isStatus = security.CheckDecypt(plainText);
+                if (isStatus)
                 {
-                    getClient = _repo.FindUserByRefreshToken(model.RefreshToken);
-                }
+                    var getClient = new User();
+                    using (AuthRepository _repo = new AuthRepository())
+                    {
+                        getClient = _repo.FindUserByRefreshToken(model.RefreshToken);
+                    }
 
-                if (getClient == null)
+                    if (getClient == null)
+                    {
+                        return new TokenResult()
+                        {
+                            error_message = "token_expired",
+                            result = false
+                        };
+                    }
+                    AuthRepository auth = new AuthRepository();
+                    string UserName = auth.GetUserName(getClient.UserID);
+                    AuthRepository authRepository = new AuthRepository();
+                    var data = authRepository.GenerateToken(UserName, getClient.Password, getClient.UserID, model.RefreshToken);
+                    return data;
+                }
+                else
                 {
                     return new TokenResult()
                     {
-                        error_message = "token_expired",
+                        error_message = "Timeout Error",
                         result = false
                     };
                 }
-                AuthRepository auth = new AuthRepository();
-                string UserName = auth.GetUserName(getClient.UserID);
-                AuthRepository authRepository = new AuthRepository();
-                var data= authRepository.GenerateToken(UserName, getClient.Password, getClient.UserID, model.RefreshToken);
-                return data;
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new TokenResult()
                 {
@@ -214,21 +255,37 @@ namespace QuizApp.Controllers
                     result.error_message = "Given referal code is not valid";
                     return result;
                 }
-
-                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber=model.PhoneNumber,EmailConfirmed=true,PhoneNumberConfirmed=false };
-
-
-                IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
-
-                if (!identityResult.Succeeded)
+                //TODO: Decrypt the encrypted value
+                var security = new Security();
+                var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                //Check Secret Code
+                bool isStatus = security.CheckDecypt(plainText);
+                if (isStatus)
                 {
-                    result.result = identityResult.Succeeded;
-                    result.error_message = "Username is already exists";
-                    return result;
-                }
+                    var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber = model.PhoneNumber, EmailConfirmed = true, PhoneNumberConfirmed = false };
 
-                model.UserId = user.Id;
-                return registration.RegisterUser(model);
+
+                    IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
+
+                    if (!identityResult.Succeeded)
+                    {
+                        result.result = identityResult.Succeeded;
+                        result.error_message = "Username is already exists";
+                        return result;
+                    }
+
+                    model.UserId = user.Id;
+                    return registration.RegisterUser(model);
+                }
+                else
+                {
+                    return new TokenResult()
+                    {
+                        error_message = "Timeout Error",
+                        result = false
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -252,24 +309,41 @@ namespace QuizApp.Controllers
             {
                 if (model.UserId != null)
                 {
-                    AccountBinding accountBinding = new AccountBinding();
-                    bool data = accountBinding.PassCodeSave(model);
-                    if (data)
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        result = new ResultClass()
+                        AccountBinding accountBinding = new AccountBinding();
+                        bool data = accountBinding.PassCodeSave(model);
+                        if (data)
                         {
-                            Message = "Save Passcode Successfuly",
-                            Result = true
-                        };
+                            result = new ResultClass()
+                            {
+                                Message = "Save Passcode Successfuly",
+                                Result = true
+                            };
+                        }
+                        else
+                        {
+                            result = new ResultClass()
+                            {
+                                Message = "Not Save",
+                                Result = false
+                            };
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    return new ResultClass()
                     {
-                        result = new ResultClass()
-                        {
-                            Message = "Not Save",
-                            Result = false
-                        };
-                    }
+                        Message = "Timeout Error",
+                        Result = false
+                    };
                 }
             }
             catch (Exception ex)
@@ -302,26 +376,42 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    var user = UserManager.FindByName(model.PhoneNumber);
-                    if (user != null)
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        AccountBinding registration = new AccountBinding();
-                        result.Result = registration.OTPVerification(model);
-                        if (result.Result)
+                        var user = UserManager.FindByName(model.PhoneNumber);
+                        if (user != null)
                         {
-                            result.Message = "OTP verification successfully";
-                            result.Result = true;
-                            user.PhoneNumberConfirmed = true;
-                            UserManager.Update(user);
-                        }
-                        else
-                        {
-                            result.Message = "Your OTP is Wrong";
-                            result.Result = false;
+                            AccountBinding registration = new AccountBinding();
+                            result.Result = registration.OTPVerification(model);
+                            if (result.Result)
+                            {
+                                result.Message = "OTP verification successfully";
+                                result.Result = true;
+                                user.PhoneNumberConfirmed = true;
+                                UserManager.Update(user);
+                            }
+                            else
+                            {
+                                result.Message = "Your OTP is Wrong";
+                                result.Result = false;
+                            }
                         }
                     }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Message = "Timeout Error",
+                            Result = false
+                        };
+                    }
                 }
-
             }
             catch (Exception ex)
             {
@@ -351,13 +441,30 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    AccountBinding accountBinding = new AccountBinding();
-                    var addOTPResult = accountBinding.AddOTP(model);
-                    return new ResultClass()
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        Result = addOTPResult,
-                        Message = addOTPResult ? "OTP send successfully" : "Your Mobile Number is Wrong"
-                    };
+                        AccountBinding accountBinding = new AccountBinding();
+                        var addOTPResult = accountBinding.AddOTP(model);
+                        return new ResultClass()
+                        {
+                            Result = addOTPResult,
+                            Message = addOTPResult ? "OTP send successfully" : "Your Mobile Number is Wrong"
+                        };
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Message = "Timeout Error",
+                            Result = false
+                        };
+                    }
                 }
             }
             catch (Exception ex)
@@ -387,44 +494,61 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    AccountBinding accountBinding = new AccountBinding();
-                    var OTPVarification = accountBinding.OTPVerification(new OTPVerificationBindingModel()
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        OTP = model.OTP,
-                        PhoneNumber = model.PhoneNumber
-                    });
-
-                    if (!OTPVarification)
-                    {
-                        return new ResultClass()
+                        AccountBinding accountBinding = new AccountBinding();
+                        var OTPVarification = accountBinding.OTPVerification(new OTPVerificationBindingModel()
                         {
-                            Result = false,
-                            Message = "OTP verification failed"
-                        };
-                    }
-                    else
-                    {
-                        var user = UserManager.FindByName(model.PhoneNumber);
-                        IdentityResult removePassoword = await UserManager.RemovePasswordAsync(user.Id);
+                            OTP = model.OTP,
+                            PhoneNumber = model.PhoneNumber
+                        });
 
-                        var addPassword = await UserManager.AddPasswordAsync(user.Id, model.NewPassword);
-                        if (!addPassword.Succeeded)
+                        if (!OTPVarification)
                         {
                             return new ResultClass()
                             {
                                 Result = false,
-                                Message = "Password change failed"
+                                Message = "OTP verification failed"
                             };
                         }
                         else
                         {
-                            var resultUpdatePassword = accountBinding.UpdatePassword(user.Id, model.NewPassword);
-                            return new ResultClass()
+                            var user = UserManager.FindByName(model.PhoneNumber);
+                            IdentityResult removePassoword = await UserManager.RemovePasswordAsync(user.Id);
+
+                            var addPassword = await UserManager.AddPasswordAsync(user.Id, model.NewPassword);
+                            if (!addPassword.Succeeded)
                             {
-                                Result = true,
-                                Message = "Password change successfully"
-                            };
+                                return new ResultClass()
+                                {
+                                    Result = false,
+                                    Message = "Password change failed"
+                                };
+                            }
+                            else
+                            {
+                                var resultUpdatePassword = accountBinding.UpdatePassword(user.Id, model.NewPassword);
+                                return new ResultClass()
+                                {
+                                    Result = true,
+                                    Message = "Password change successfully"
+                                };
+                            }
                         }
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Message = "Timeout Error",
+                            Result = false
+                        };
                     }
                 }
             }
@@ -454,29 +578,45 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    AccountBinding accountBinding = new AccountBinding();
-
-                    var user = UserManager.FindByName(model.PhoneNumber);
-                    IdentityResult identityResult = await UserManager.ChangePasswordAsync(user.Id, model.OldPassword,
-                    model.NewPassword);
-                    if (!identityResult.Succeeded)
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        return new ResultClass()
+                        AccountBinding accountBinding = new AccountBinding();
+
+                        var user = UserManager.FindByName(model.PhoneNumber);
+                        IdentityResult identityResult = await UserManager.ChangePasswordAsync(user.Id, model.OldPassword,
+                        model.NewPassword);
+                        if (!identityResult.Succeeded)
                         {
-                            Result = false,
-                            Message = "Old Password not match"
-                        };
+                            return new ResultClass()
+                            {
+                                Result = false,
+                                Message = "Old Password not match"
+                            };
+                        }
+                        else
+                        {
+                            var updatePassword = accountBinding.UpdatePassword(user.Id, model.NewPassword);
+                            return new ResultClass()
+                            {
+                                Result = true,
+                                Message = "Password change successfully"
+                            };
+                        }
                     }
                     else
                     {
-                        var updatePassword = accountBinding.UpdatePassword(user.Id, model.NewPassword);
                         return new ResultClass()
                         {
-                            Result = true,
-                            Message = "Password change successfully"
+                            Message = "Timeout Error",
+                            Result = false
                         };
                     }
-
                 }
             }
             catch (Exception ex)
@@ -624,21 +764,38 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    AccountBinding accountBinding = new AccountBinding();
-                    bool data = accountBinding.AddBankAccountDetails(model);
-                    if (data)
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        result = new ResultClass()
+                        AccountBinding accountBinding = new AccountBinding();
+                        bool data = accountBinding.AddBankAccountDetails(model);
+                        if (data)
                         {
-                            Message = "Your bank details added successfully",
-                            Result = true
-                        };
+                            result = new ResultClass()
+                            {
+                                Message = "Your bank details added successfully",
+                                Result = true
+                            };
+                        }
+                        else
+                        {
+                            result = new ResultClass()
+                            {
+                                Message = "Not Save Bank Account Details",
+                                Result = false
+                            };
+                        }
                     }
                     else
                     {
-                        result = new ResultClass()
+                        return new ResultClass()
                         {
-                            Message = "Not Save Bank Account Details",
+                            Message = "Timeout Error",
                             Result = false
                         };
                     }
@@ -674,22 +831,40 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    AccountBinding accountBinding = new AccountBinding();
-                    var data = accountBinding.CurrentAmountDetails(model.UserId);
-                    if (data != null)
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        result = new ResultClass()
+                        AccountBinding accountBinding = new AccountBinding();
+                        var data = accountBinding.CurrentAmountDetails(model.UserId);
+                        if (data != null)
                         {
-                            Data = data,
-                            Message = "Data Found",
-                            Result = true
-                        };
+                            result = new ResultClass()
+                            {
+                                Data = data,
+                                Message = "Data Found",
+                                Result = true
+                            };
+                        }
+
+                        else
+                        {
+                            result = new ResultClass()
+                            {
+                                Message = "sorry your balance is insufficient to complete the transaction ",
+                                Result = false
+                            };
+                        }
                     }
                     else
                     {
-                        result = new ResultClass()
+                        return new ResultClass()
                         {
-                            Message = "sorry your balance is insufficient to complete the transaction ",
+                            Message = "Timeout Error",
                             Result = false
                         };
                     }
@@ -715,50 +890,67 @@ namespace QuizApp.Controllers
             ResultClass result = new ResultClass();
             try
             {
-                AccountBinding accountBinding = new AccountBinding();
-                var data = accountBinding.WithdrawalAmount(model);
-                string res = data.State;
-                switch (res)
+                //TODO: Decrypt the encrypted value
+                var security = new Security();
+                var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                //Check Secret Code
+                bool isStatus = security.CheckDecypt(plainText);
+                if (isStatus)
                 {
-                    case "True":
-                        result = new ResultClass()
-                        {
-                            Data = data,
-                            Message = "Thank you,your payment was successful",
-                            Result = true
-                        };
-                        break;
+                    AccountBinding accountBinding = new AccountBinding();
+                    var data = accountBinding.WithdrawalAmount(model);
+                    string res = data.State;
+                    switch (res)
+                    {
+                        case "True":
+                            result = new ResultClass()
+                            {
+                                Data = data,
+                                Message = "Thank you,your payment was successful",
+                                Result = true
+                            };
+                            break;
 
-                    case "insufficient":
-                        result = new ResultClass()
-                        {
-                            Message = "sorry your balance is insufficient to complete this transaction (Maximum Withdrawal Limit is 1000 and Minimum Withdrawal Limit is 110)",
-                            Result = false
-                        };
-                        break;
-                    case "model":
-                        result = new ResultClass()
-                        {
-                            Message = "Please send all required fields",
-                            Result = false
-                        };
-                        break;
-                    case "Passcode":
-                        result = new ResultClass()
-                        {
-                            Message = "Sorry your passcode is wrong ",
-                            Result = false
-                        };
-                        break;
-                    case "CurrentBalance":
-                        result = new ResultClass()
-                        {
-                            Message = "Sorry Your Current Balance is insufficient to complete this transaction",
-                            Result = false
-                        };
-                        break;
+                        case "insufficient":
+                            result = new ResultClass()
+                            {
+                                Message = "sorry your balance is insufficient to complete this transaction (Maximum Withdrawal Limit is 1000 and Minimum Withdrawal Limit is 110)",
+                                Result = false
+                            };
+                            break;
+                        case "model":
+                            result = new ResultClass()
+                            {
+                                Message = "Please send all required fields",
+                                Result = false
+                            };
+                            break;
+                        case "Passcode":
+                            result = new ResultClass()
+                            {
+                                Message = "Sorry your passcode is wrong ",
+                                Result = false
+                            };
+                            break;
+                        case "CurrentBalance":
+                            result = new ResultClass()
+                            {
+                                Message = "Sorry Your Current Balance is insufficient to complete this transaction",
+                                Result = false
+                            };
+                            break;
+                    }
                 }
-            }
+                else
+                {
+                    return new ResultClass()
+                    {
+                        Message = "Timeout Error",
+                        Result = false
+                    };
+                }
+        }
             catch (Exception ex)
             {
                 result = new ResultClass()
@@ -789,35 +981,52 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    AccountBinding accountBinding = new AccountBinding();
-                    var data = accountBinding.PointRedeem(model);
-                    string Res = data.State;
-                    switch (Res)
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        case "True":
-                            result = new ResultClass()
-                            {
-                                Data = data.RedeemBalance,
-                                Message = "Thank you,your points redeem is successful",
-                                Result = true
-                            };
-                            break;
+                        AccountBinding accountBinding = new AccountBinding();
+                        var data = accountBinding.PointRedeem(model);
+                        string Res = data.State;
+                        switch (Res)
+                        {
+                            case "True":
+                                result = new ResultClass()
+                                {
+                                    Data = data.RedeemBalance,
+                                    Message = "Thank you,your points redeem is successful",
+                                    Result = true
+                                };
+                                break;
 
-                        case "insufficient":
-                            result = new ResultClass()
-                            {
-                                Data = data.RedeemBalance,
-                                Message = "Your points is insufficient to complete this transaction",
-                                Result = false
-                            };
-                            break;
-                        case "Passcode":
-                            result = new ResultClass()
-                            {
-                                Message = "Sorry your passcode is wrong",
-                                Result = false
-                            };
-                            break;
+                            case "insufficient":
+                                result = new ResultClass()
+                                {
+                                    Data = data.RedeemBalance,
+                                    Message = "Your points is insufficient to complete this transaction",
+                                    Result = false
+                                };
+                                break;
+                            case "Passcode":
+                                result = new ResultClass()
+                                {
+                                    Message = "Sorry your passcode is wrong",
+                                    Result = false
+                                };
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Message = "Timeout Error",
+                            Result = false
+                        };
                     }
                 }
             }
@@ -939,23 +1148,40 @@ namespace QuizApp.Controllers
                 }
                 else
                 {
-                    AccountBinding accountBinding = new AccountBinding();
-                    var data = accountBinding.GetUserProfile(model);
-                    if (data != null)
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText);
+                    if (isStatus)
                     {
-                        return new ResultClass()
+                        AccountBinding accountBinding = new AccountBinding();
+                        var data = accountBinding.GetUserProfile(model);
+                        if (data != null)
                         {
-                            Data = data,
-                            Message = "Data Found",
-                            Result = true
-                        };
+                            return new ResultClass()
+                            {
+                                Data = data,
+                                Message = "Data Found",
+                                Result = true
+                            };
+                        }
+                        else
+                        {
+                            return new ResultClass()
+                            {
+                                Data = null,
+                                Message = "Data Not Found",
+                                Result = false
+                            };
+                        }
                     }
                     else
                     {
                         return new ResultClass()
                         {
-                            Data = null,
-                            Message = "Data Not Found",
+                            Message = "Timeout Error",
                             Result = false
                         };
                     }

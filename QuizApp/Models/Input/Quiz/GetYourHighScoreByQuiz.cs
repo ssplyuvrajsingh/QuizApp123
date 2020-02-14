@@ -13,5 +13,6 @@ namespace QuizApp.Models.Input.Quiz
 
         [Required]
         public Guid QuizID { get; set; }
+        public string ciphertoken { get; set; }
     }
 }

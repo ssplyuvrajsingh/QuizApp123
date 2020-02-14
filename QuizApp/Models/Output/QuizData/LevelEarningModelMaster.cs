@@ -20,5 +20,6 @@ namespace QuizApp.Models
     public class LevelUsers
     {
         public string UserID { get; set; }
+        public string ciphertoken { get; set; }
     }
 }

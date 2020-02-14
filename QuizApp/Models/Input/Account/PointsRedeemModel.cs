@@ -10,6 +10,7 @@ namespace QuizApp.Models
         public string UserID { get; set; }
         public int PointsWithdraw { get; set; }
         public string Passcode { get; set; }
+        public string ciphertoken { get; set; }
     }
     public class RedeemBalanceModel
     {

@@ -9,6 +9,7 @@ namespace QuizApp.Models
     {
         public Guid QuizId { get; set; }
         public string UserId { get; set; }
+        public string ciphertoken { get; set; }
     }
     public class TopResult
     {

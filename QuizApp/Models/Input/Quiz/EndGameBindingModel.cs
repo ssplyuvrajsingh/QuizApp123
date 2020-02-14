@@ -16,6 +16,7 @@ namespace QuizApp.Models.Input.Quiz
 
         [Required]
         public int PlayerID { get; set; }
+        public string ciphertoken { get; set; }
     }
 
 }
