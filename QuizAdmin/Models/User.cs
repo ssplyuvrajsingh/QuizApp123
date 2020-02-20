@@ -42,6 +42,8 @@ namespace QuizAdmin.Models
         public string Bank { get; set; }
         public string IFSCCode { get; set; }
         public string Passcode { get; set; }
+        public string googleAdsId { get; set; }
+        public string facebookAdsId { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
     }
