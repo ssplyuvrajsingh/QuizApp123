@@ -32,6 +32,7 @@ namespace QuizAdmin.Models
         public Nullable<bool> isActive { get; set; }
         public Nullable<System.DateTime> StartDate { get; set; }
         public System.DateTime CreatedDate { get; set; }
+        public Nullable<bool> IsDeleted { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<QuizPlayer> QuizPlayers { get; set; }

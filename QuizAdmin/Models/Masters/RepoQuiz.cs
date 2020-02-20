@@ -12,7 +12,7 @@ namespace QuizAdmin.Models
         #region Quiz List
         public List<QuizData> getQuiz()
         {
-            return db.QuizDatas.OrderByDescending(x=>x.CreatedDate).ToList();
+            return db.QuizDatas.Where(x=> x.IsDeleted.Value!=true).OrderByDescending(x=>x.CreatedDate).ToList();
         }
         #endregion
 
@@ -52,8 +52,7 @@ namespace QuizAdmin.Models
             {
                 return false;
             }
-            db.QuizDatas.Remove(old);
-            db.SaveChanges();
+            old.IsDeleted = true;
             return true;
         }
         #endregion

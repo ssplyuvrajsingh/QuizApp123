@@ -32,6 +32,7 @@ namespace QuizAdmin.Models
         public Nullable<int> MaxTime { get; set; }
         public Nullable<int> QuestionPoint { get; set; }
         public System.DateTime CreatedDate { get; set; }
+        public Nullable<bool> IsDeleted { get; set; }
     
         public virtual QuizData QuizData { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -77,6 +77,7 @@ namespace QuizApp.Models
             return msEncrypt.ToArray();
         }
         #endregion
+
         #region Decrypt
         public string OpenSSLDecrypt(string encrypted, string passphrase)
         {
@@ -189,9 +190,12 @@ namespace QuizApp.Models
                 string[] Check = Value.Split('-');
 
                 string[] ClientYearTime = Check[3].Split(' ');
-
+                var Date = Convert.ToDateTime(Check[1] + "/" + Check[2] + "/" + ClientYearTime[0]);
+                
 
                 DateTime ClientTime = Convert.ToDateTime(ClientYearTime[1]);
+                string CT = ClientTime.Hour + ":" + ClientTime.Minute;
+                TimeSpan CTClientHourMinutes = TimeSpan.Parse(CT);
                 //ClientTime = DateTime.Now;
 
                 //Client Side Add 2 Minutes
@@ -204,12 +208,12 @@ namespace QuizApp.Models
                 //Check First and Last Value
                 if (Check[0] == FirstValue && Check[4] == LastValue)
                 {
-                    DateTime SystemDateTime = DateTime.Now;
+                    DateTime SystemDateTime = DateTime.UtcNow;
 
                     string SDT = SystemDateTime.Hour + ":" + SystemDateTime.Minute;
                     TimeSpan SystemHourMinutes = TimeSpan.Parse(SDT);
 
-                    if (SystemHourMinutes <= ClientHourMinutes)
+                    if (SystemHourMinutes <= ClientHourMinutes && Date.Date==SystemDateTime.Date && SystemHourMinutes >= CTClientHourMinutes)
                     {
                         return true;
                     }

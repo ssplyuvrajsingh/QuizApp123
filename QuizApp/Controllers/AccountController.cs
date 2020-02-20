@@ -73,12 +73,11 @@ namespace QuizApp.Controllers
                 else
                 {
                     AccountBinding ac = new AccountBinding();
-                    var date = DateTime.Now;
 
                     //TODO: Decrypt the encrypted value
                     var security = new Security();
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
-                    //model.ciphertoken = security.OpenSSLEncrypt(model.ciphertoken, secretKey);
+                    model.ciphertoken = security.OpenSSLEncrypt(model.ciphertoken, secretKey);
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
                     bool isStatus = security.CheckDecypt(plainText);
