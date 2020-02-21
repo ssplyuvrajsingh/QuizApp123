@@ -135,6 +135,7 @@
           <Property Name="isActive" Type="bit" />
           <Property Name="StartDate" Type="datetime" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" />
         </EntityType>
         <EntityType Name="QuizPlayer">
           <Key>
@@ -168,6 +169,7 @@
           <Property Name="MaxTime" Type="int" />
           <Property Name="QuestionPoint" Type="int" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" />
         </EntityType>
         <EntityType Name="RefreshToken">
           <Key>
@@ -234,6 +236,8 @@
           <Property Name="Bank" Type="nvarchar" MaxLength="100" />
           <Property Name="IFSCCode" Type="nvarchar" MaxLength="20" />
           <Property Name="Passcode" Type="nvarchar" MaxLength="4" />
+          <Property Name="googleAdsId" Type="nvarchar" MaxLength="500" />
+          <Property Name="facebookAdsId" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="UserAnswer">
           <Key>
@@ -709,6 +713,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="UserAnswers" Relationship="QuizAppModel.FK_UserAnswer_QuizQuestion" FromRole="QuizQuestion" ToRole="UserAnswer" />
           <NavigationProperty Name="QuizData" Relationship="QuizAppModel.FK_QuizQuestion_QuizData" FromRole="QuizQuestion" ToRole="QuizData" />
+          <Property Name="IsDeleted" Type="Boolean" />
         </EntityType>
         <EntityType Name="RefreshToken">
           <Key>
@@ -856,6 +861,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="QuizPlayers" Relationship="QuizAppModel.FK_QuizPlayer_QuizData" FromRole="QuizData" ToRole="QuizPlayer" />
           <NavigationProperty Name="QuizQuestions" Relationship="QuizAppModel.FK_QuizQuestion_QuizData" FromRole="QuizData" ToRole="QuizQuestion" />
+          <Property Name="IsDeleted" Type="Boolean" />
         </EntityType>
         <Association Name="FK_QuizPlayer_QuizData">
           <End Type="QuizAppModel.QuizData" Role="QuizData" Multiplicity="1" />
@@ -979,6 +985,8 @@
           <Property Name="IFSCCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_UserID_UserID" FromRole="User" ToRole="AspNetUser" />
           <Property Name="Passcode" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="googleAdsId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="facebookAdsId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK__LevelEarn__UserI__625A9A57">
           <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
@@ -1128,6 +1136,7 @@
           <EntitySetMapping Name="QuizQuestions">
             <EntityTypeMapping TypeName="QuizAppModel.QuizQuestion">
               <MappingFragment StoreEntitySet="QuizQuestion">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="QuestionPoint" ColumnName="QuestionPoint" />
                 <ScalarProperty Name="MaxTime" ColumnName="MaxTime" />
@@ -1192,6 +1201,7 @@
           <EntitySetMapping Name="QuizDatas">
             <EntityTypeMapping TypeName="QuizAppModel.QuizData">
               <MappingFragment StoreEntitySet="QuizData">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="isActive" ColumnName="isActive" />
@@ -1262,6 +1272,8 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="QuizAppModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="facebookAdsId" ColumnName="facebookAdsId" />
+                <ScalarProperty Name="googleAdsId" ColumnName="googleAdsId" />
                 <ScalarProperty Name="Passcode" ColumnName="Passcode" />
                 <ScalarProperty Name="IFSCCode" ColumnName="IFSCCode" />
                 <ScalarProperty Name="Bank" ColumnName="Bank" />

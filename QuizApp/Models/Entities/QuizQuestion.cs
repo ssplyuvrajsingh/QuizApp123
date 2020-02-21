@@ -32,6 +32,7 @@ namespace QuizApp.Models.Entities
         public Nullable<int> MaxTime { get; set; }
         public Nullable<int> QuestionPoint { get; set; }
         public System.DateTime CreatedDate { get; set; }
+        public Nullable<bool> IsDeleted { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserAnswer> UserAnswers { get; set; }

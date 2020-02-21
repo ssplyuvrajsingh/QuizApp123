@@ -12,14 +12,14 @@ namespace QuizAdmin.Models
         #region Quiz List
         public List<QuizData> getQuiz()
         {
-            return db.QuizDatas.Where(x=> x.IsDeleted.Value!=true).OrderByDescending(x=>x.CreatedDate).ToList();
+            return db.QuizDatas.Where(x => x.IsDeleted == null || x.IsDeleted.Value == false).OrderByDescending(x => x.CreatedDate).ToList();
         }
         #endregion
 
         #region Get Quiz By Id
         public QuizData getQuizById(Guid QuizId)
         {
-            return db.QuizDatas.Where(a => a.QuizID == QuizId).FirstOrDefault();
+            return db.QuizDatas.Where(a => (a.IsDeleted == null || a.IsDeleted.Value == false) && a.QuizID == QuizId).FirstOrDefault();
         }
         #endregion
 
@@ -48,19 +48,27 @@ namespace QuizAdmin.Models
         public bool deleteQuiz(Guid id)
         {
             var old = db.QuizDatas.Where(a => a.QuizID == id).FirstOrDefault();
-            if (old == null)
+            if (old != null)
             {
-                return false;
+                old.IsDeleted = true;
+                db.SaveChanges();
+
+                var quizQuestion = db.QuizQuestions.Where(x => x.QuizID == id).ToList();
+                if (quizQuestion.Any())
+                {
+                    quizQuestion.ForEach(f => f.IsDeleted = true);
+                    db.SaveChanges();
+                }
+                return true;
             }
-            old.IsDeleted = true;
-            return true;
+            return false;
         }
         #endregion
 
         #region ActiveQuiz
         public string ActiveQuiz(Guid id)
         {
-            var old = db.QuizDatas.Where(a => a.QuizID == id).FirstOrDefault();
+            var old = db.QuizDatas.Where(a => (a.IsDeleted == null || a.IsDeleted.Value == false) && a.QuizID == id).FirstOrDefault();
             if (old != null)
             {
                 if ((bool)old.isActive)
@@ -86,14 +94,14 @@ namespace QuizAdmin.Models
         #region Get Quiz Answer
         public List<QuizQuestion> getQuizAnswer()
         {
-            return db.QuizQuestions.ToList();
+            return db.QuizQuestions.Where(x => x.IsDeleted == null || x.IsDeleted.Value == false).ToList();
         }
         #endregion
 
         #region Get Quiz Answer By Id
         public QuizQuestion getQuizAnswerById(int QuizQuestionId)
         {
-            return db.QuizQuestions.Where(a => a.QuizQuestionID == QuizQuestionId).FirstOrDefault();
+            return db.QuizQuestions.Where(a => (a.IsDeleted == null || a.IsDeleted.Value == false) && a.QuizQuestionID == QuizQuestionId).FirstOrDefault();
         }
 
         public bool addUpdateQuizAnswer(QuizQuestion model)
@@ -122,7 +130,7 @@ namespace QuizAdmin.Models
             {
                 return false;
             }
-            db.QuizQuestions.Remove(old);
+            old.IsDeleted = true;
             db.SaveChanges();
             return true;
         }
@@ -138,7 +146,7 @@ namespace QuizAdmin.Models
                 quizcount.Add(new QuizUserCount()
                 {
                     Quiztitle = quiz.FirstOrDefault().QuizData.QuizTitle,
-                    QuizCount=quiz.Count()
+                    QuizCount = quiz.Count()
                 });
             }
             return quizcount;
