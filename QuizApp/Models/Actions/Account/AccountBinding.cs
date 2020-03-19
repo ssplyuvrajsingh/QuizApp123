@@ -2,6 +2,7 @@
 using QuizApp.Models.Entities;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -26,11 +27,11 @@ namespace QuizApp.Models
         #region GetRefferal Code
         public TokenResult GetRefferlCode(string userId)
         {
-            return entities.Users.Where(x => x.UserID == userId).Select(x=> new TokenResult() {
-            RefferalCode=x.ReferalCode,
-            UserName=x.Name
+            return entities.Users.Where(x => x.UserID == userId).Select(x => new TokenResult() {
+                RefferalCode = x.ReferalCode,
+                UserName = x.Name
             }).FirstOrDefault();
-           
+
         }
         #endregion
 
@@ -43,12 +44,12 @@ namespace QuizApp.Models
                 //Set By Defaulte Admin Refferal Code When User Not Use Any Refferal Code
                 if (model.UsedReferalCode == null)
                 {
-                    string AdminId = "1d0df4fa-6139-4216-8947-b68d24a3b68c";
+                    string AdminId = ConfigurationManager.AppSettings["Admin"].ToString(); ;
                     model.UsedReferalCode = entities.Users.Where(x => x.UserID == AdminId).Select(x => x.ReferalCode).FirstOrDefault();
                 }
 
                 var ParentIDs = GetParentsIDsFromReferalCode(model.UsedReferalCode, model.UserId);
-               
+
                 using (QuizAppEntities entities = new QuizAppEntities())
                 {
                     User registerUser = new User()
@@ -68,9 +69,9 @@ namespace QuizApp.Models
                         otp = Otp.ToString(),
                         ParentIDs = ParentIDs,
                         Platform = model.Platform,
-                        UsedReferalCode = model.UsedReferalCode
+                        UsedReferalCode = model.UsedReferalCode,
                     };
-
+                    var rrea = sms_api_callAsync("8209004092", Otp.ToString());
                     MobileOTP mobileOTP = new MobileOTP()
                     {
                         PhoneNumber = model.PhoneNumber,
@@ -96,15 +97,15 @@ namespace QuizApp.Models
                         var data = (from U in entities.Users
                                     join A in entities.AspNetUsers on U.UserID equals A.Id where U.UserID == UserId
                                     select new UserTransactionModel() {
-                                    UserName = U.Name,
-                                    MobileNumber=A.UserName
+                                        UserName = U.Name,
+                                        MobileNumber = A.UserName
                                     }).FirstOrDefault();
                         var uniqueKey = $"{UserId}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
                         Transaction transaction = new Transaction()
                         {
-                            UserID=UserId,
-                            transactionDateTime=DateTime.Now,
-                            UniqueKey= uniqueKey,
+                            UserID = UserId,
+                            transactionDateTime = DateTime.Now,
+                            UniqueKey = uniqueKey,
                             paymentStatus = "Earning",
                             amount = earningHeads.RegistrationIncome,
                             comment = "Registration Income Amount",
@@ -191,9 +192,9 @@ namespace QuizApp.Models
             string[] Ref = RefCode.Split(',');
             if (Ref.Length >= 11)
             {
-                for (int i = Ref.Length-1, j = Ref.Length-2; i >= 0; i--, j--)
+                for (int i = Ref.Length - 1, j = Ref.Length - 2; i >= 0; i--, j--)
                 {
-                    
+
                     if (i == 0)
                     {
                         Ref[i] = "";
@@ -305,7 +306,7 @@ namespace QuizApp.Models
                 AccountNumber = data.AccountNumber != null ? data.AccountNumber : "",
                 NameInAccount = data.NameInAccount != null ? data.NameInAccount : "",
                 IFSCCode = data.IFSCCode != null ? data.IFSCCode : "",
-                Bank =data.Bank != null ? data.Bank : "",
+                Bank = data.Bank != null ? data.Bank : "",
                 amount = data.CurrentBalance != null ? Convert.ToDouble(generalFunctions.GetDecimalvalue(data.CurrentBalance.ToString())) : 0
             };
         }
@@ -324,12 +325,12 @@ namespace QuizApp.Models
             }
 
             WithdrawalAmountBalance withdrawal = new WithdrawalAmountBalance();
-            string passcode = entities.Users.Where(x => x.UserID == model.UserId && x.Passcode==model.Passcode).Select(x => x.Passcode).FirstOrDefault();
+            string passcode = entities.Users.Where(x => x.UserID == model.UserId && x.Passcode == model.Passcode).Select(x => x.Passcode).FirstOrDefault();
             if (passcode != null)
             {
                 var data = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
                 var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserId).FirstOrDefault();
-                if (data.CurrentBalance > model.amount)
+                if (data.CurrentBalance >= model.amount)
                 {
                     if (earningHeads.MaximumWithdrawLimit >= model.amount && model.amount >= earningHeads.MinimumWithdrawlLimit)
                     {
@@ -467,7 +468,7 @@ namespace QuizApp.Models
                     };
                 }
             }
-            
+
             else
             {
                 withdrawal = new WithdrawalAmountBalance()
@@ -525,7 +526,7 @@ namespace QuizApp.Models
                         comment = "Point Withdrawal in Your Current Balance",
                         username = data.Name,
                         mobilenumber = data1.UserName,
-                        ConvertedPoints=model.PointsWithdraw
+                        ConvertedPoints = model.PointsWithdraw
                     };
                     entities.Transactions.Add(transaction);
                     entities.SaveChanges();
@@ -566,7 +567,7 @@ namespace QuizApp.Models
         public UserProfileModel GetUserProfile(UserModel model)
         {
             var UserInfo = entities.Users.Where(x => x.UserID == model.UserId).FirstOrDefault();
-            if(UserInfo!=null)
+            if (UserInfo != null)
             {
                 var data = new UserProfileModel();
 
@@ -577,7 +578,7 @@ namespace QuizApp.Models
                 data.PhoneNumber = UserInfoPhoneNumber;
 
                 var ParentUserInfo = entities.Users.Where(x => x.ReferalCode == UserInfo.UsedReferalCode).FirstOrDefault();
-                if(ParentUserInfo!=null)
+                if (ParentUserInfo != null)
                 {
                     var ParentPhoneNumber = entities.AspNetUsers.Where(x => x.Id == ParentUserInfo.UserID).Select(x => x.PhoneNumber).FirstOrDefault();
                     data.ParentName = ParentUserInfo.Name;
@@ -596,6 +597,30 @@ namespace QuizApp.Models
             else
             {
                 return null;
+            }
+        }
+        #endregion
+
+        #region Get Sms 
+        public async Task<string> sms_api_callAsync(string mobile, string uniqueNumber)
+        {
+            try
+            {
+                //$username = "motanad";
+                //$password = "yadav@123456";
+                string message = uniqueNumber + " " + "%20is%20your%20Quiz%20verification%20code";
+                string url = "http://msg.msgclub.net/rest/services/sendSMS/sendGroupSms?AUTH_KEY=c24eb7fe1cecdca943c82c40976ea6c1&message=" + message + "&senderId=MOTANA&routeId=1&mobileNos=" + mobile + "&smsContentType=english";
+
+                HttpClient client = new HttpClient();
+
+                HttpResponseMessage response = await client.GetAsync(url);
+                return response.EnsureSuccessStatusCode().ToString();
+                //return "Test";
+            }
+            catch(Exception ex)
+            {
+                var data = ex.Message;
+                return data;
             }
         }
         #endregion

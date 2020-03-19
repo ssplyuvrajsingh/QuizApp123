@@ -14,7 +14,6 @@ namespace QuizApp.Models
         [Required]
         public string UserId { get; set; }
 
-        [Required]
         public string ciphertoken { get; set; }
     }
 }

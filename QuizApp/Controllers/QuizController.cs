@@ -165,9 +165,11 @@ namespace QuizApp.Controllers
                     //TODO: Decrypt the encrypted value
                     var security = new Security();
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+
+                    //model.ciphertoken = security.OpenSSLEncrypt(model.ciphertoken, secretKey);
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus =security.CheckDecypt(plainText);
                     if (isStatus)
                     {
                         QuizBinding quiz = new QuizBinding();
@@ -215,7 +217,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus =  security.CheckDecypt(plainText);
                     if (isStatus)
                     {
                         QuizBinding quizBinding = new QuizBinding();
@@ -523,7 +525,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus = security.CheckDecypt(plainText);
+                bool isStatus =  security.CheckDecypt(plainText);
                 if (isStatus)
                 {
                     QuizBinding quizBinding = new QuizBinding();

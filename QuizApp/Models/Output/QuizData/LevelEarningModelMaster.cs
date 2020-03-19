@@ -7,6 +7,7 @@ namespace QuizApp.Models
 {
     public class LevelEarningModelMaster
     {
+        public int MinimumQuiz { get; set; }
         public List<LevelEarningModel> levelEarnings { get; set; }
     }
 

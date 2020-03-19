@@ -11,12 +11,27 @@ namespace QuizApp.Models
 {
     public class GeneralFunctions
     {
+        private static Random random = new Random();
         public static int GetOTP()
         {
-            return 1234;
+                int length = random.Next(4, 4);
+
+                string OTP = GenerateRandomOTP(length);
+                return Convert.ToInt32(OTP);
+        }
+        public static string GenerateRandomOTP(int length)
+        {
+            //const string alphabetCharacters = "abcdefghijklmnopqrstuvwxyz";
+            const string numCharacters = "0123456789";
+            StringBuilder Code = new StringBuilder(length);
+
+            Code.Append(numCharacters[random.Next(numCharacters.Length)]);
+            Code.Append(numCharacters[random.Next(numCharacters.Length)]);
+            Code.Append(numCharacters[random.Next(numCharacters.Length)]);
+            Code.Append(numCharacters[random.Next(numCharacters.Length)]);
+            return Code.ToString();
         }
 
-        private static Random random = new Random();
 
         public static string GetReferalCode()
         {
@@ -65,6 +80,7 @@ namespace QuizApp.Models
 
         public static string GETDataNew(string url, string postData)
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             var data = Encoding.ASCII.GetBytes(postData);
             request.Method = "POST";

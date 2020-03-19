@@ -25,6 +25,7 @@ namespace QuizApp.Models
         public double CurrentBalance { get; set; }
         public double MothlyIncome { get; set; }
         public double TotalWithdraw { get; set; }
+        public double MinimumQuiz { get; set; }
         public List<QuizResult> QuizList { get; set; }
     }
 }

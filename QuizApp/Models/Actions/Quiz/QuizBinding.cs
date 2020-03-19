@@ -65,13 +65,13 @@ namespace QuizApp.Models
             }
 
             var userWallet = GetWalletInfo(new UserModel() { UserId = userId });
-
-
+            var earningHeads = GetEarningHeadModel();
             var model = new UserQuizWallet()
             {
                 CurrentBalance = userWallet.CurrentBalance,
                 MothlyIncome = userWallet.MothlyIncome,
                 TotalWithdraw = userWallet.TotalWithdraw,
+                MinimumQuiz = earningHeads != null ? earningHeads.MinimumQuiz : 0,
                 QuizList = data
             };
 
@@ -136,21 +136,29 @@ namespace QuizApp.Models
         #region Start Game
         public int StartGame(StartGameBindingModel model)
         {
-            var player = new QuizPlayer()
+            try
             {
-                CreatedDate = DateTime.Now,
-                IsCompleted = false,
-                IsWon = false,
-                Language = "",
-                PercentageEarn = 0,
-                PlayedDate = DateTime.Now,
-                PointEarn = 0,
-                QuizID = model.QuizId,
-                UserID = model.UserId
-            };
-            entities.QuizPlayers.Add(player);
-            entities.SaveChanges();
-            return player.PlayerID;
+                var player = new QuizPlayer()
+                {
+                    CreatedDate = DateTime.Now,
+                    IsCompleted = false,
+                    IsWon = false,
+                    Language = "",
+                    PercentageEarn = 0,
+                    PlayedDate = DateTime.Now,
+                    PointEarn = 0,
+                    QuizID = model.QuizId,
+                    UserID = model.UserId
+                };
+                entities.QuizPlayers.Add(player);
+                entities.SaveChanges();
+                return player.PlayerID;
+            }
+            catch(Exception ex)
+            {
+                var data = ex.Message;
+                return 0;
+            }
         }
         #endregion
 
@@ -440,6 +448,7 @@ namespace QuizApp.Models
                 levelEarnings.Add(lvl);
             }
             levelEarningModelMaster.levelEarnings = levelEarnings;
+            levelEarningModelMaster.MinimumQuiz = earningHeads!=null ? earningHeads.MinimumQuiz : 0;
             return levelEarningModelMaster;
         }
         #endregion
@@ -1238,7 +1247,7 @@ namespace QuizApp.Models
         public List<LevelWiseActiveUsers> GetLevelWiseUserInformation(LevelWiseModel model)
         {
             var activeUsers = entities.Users.Where(x => x.ParentIDs.Contains(model.UserId)).ToList();
-            activeUsers = activeUsers.Where(x => x.LastActiveDate != null && (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date).ToList();
+            activeUsers = activeUsers.Where(x => x.LastActiveDate != null && (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date || (x.LastActiveDate.Value).Date == (DateTime.Now).Date).ToList();
             List<LevelWiseActiveUsers> levelsUsers = new List<LevelWiseActiveUsers>();
             foreach (var childUsers in activeUsers)
             {
@@ -1873,6 +1882,20 @@ namespace QuizApp.Models
             }
 
             return true;
+        }
+        #endregion
+
+        #region Get EarningHead Model
+        public EaningHeadModel GetEarningHeadModel()
+        {
+            var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
+            EaningHeadModel earningHeads = new EaningHeadModel();
+            using (StreamReader r = new StreamReader(jsonFilePath))
+            {
+                string json = r.ReadToEnd();
+                earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
+            }
+            return earningHeads;
         }
         #endregion
     }

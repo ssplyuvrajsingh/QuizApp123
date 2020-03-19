@@ -199,7 +199,7 @@ namespace QuizApp.Models
                 //ClientTime = DateTime.Now;
 
                 //Client Side Add 2 Minutes
-                DateTime ClientTimeAdd = ClientTime.AddMinutes(2);
+                DateTime ClientTimeAdd = ClientTime.AddMinutes(5);
 
                 //Get Client Hour and Minutes after Adding 2 Minutes
                 string CTD = ClientTimeAdd.Hour + ":" + ClientTimeAdd.Minute;
@@ -213,13 +213,13 @@ namespace QuizApp.Models
                     string SDT = SystemDateTime.Hour + ":" + SystemDateTime.Minute;
                     TimeSpan SystemHourMinutes = TimeSpan.Parse(SDT);
 
-                    if (SystemHourMinutes <= ClientHourMinutes && Date.Date==SystemDateTime.Date && SystemHourMinutes >= CTClientHourMinutes)
+                    if (SystemHourMinutes <= ClientHourMinutes && Date.Date==SystemDateTime.Date)
                     {
                         return true;
                     }
                     else
                     {
-                        return false;
+                        return true;
                     }
                 }
                 else
