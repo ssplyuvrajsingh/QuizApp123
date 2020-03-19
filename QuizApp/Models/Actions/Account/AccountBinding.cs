@@ -71,7 +71,7 @@ namespace QuizApp.Models
                         Platform = model.Platform,
                         UsedReferalCode = model.UsedReferalCode,
                     };
-                    var rrea = sms_api_callAsync("8209004092", Otp.ToString());
+                    var rrea = sms_api_callAsync(model.PhoneNumber, Otp.ToString());
                     MobileOTP mobileOTP = new MobileOTP()
                     {
                         PhoneNumber = model.PhoneNumber,

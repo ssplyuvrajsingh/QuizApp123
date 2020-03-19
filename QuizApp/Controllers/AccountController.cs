@@ -261,7 +261,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus = true;//security.CheckDecypt(plainText);
+                bool isStatus = security.CheckDecypt(plainText);
                 if (isStatus)
                 {
                     var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber = model.PhoneNumber, EmailConfirmed = true, PhoneNumberConfirmed = false };
