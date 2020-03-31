@@ -359,6 +359,7 @@ namespace QuizAdmin.Controllers
         }
         #endregion
 
+        #region Support
         public ActionResult AddSupport()
         {
             return View();
@@ -394,7 +395,6 @@ namespace QuizAdmin.Controllers
                 return RedirectToAction("AddSupport", "Home");
             }
         }
-
         #region Support
         [AllowAnonymous]
         public ActionResult Support()
@@ -403,5 +403,37 @@ namespace QuizAdmin.Controllers
             return View(repoSupport.GetSupportsList());
         }
         #endregion
+        #endregion
+
+        #region Get Level User Information
+        public ActionResult GetLeveWiseUserInfo()
+        {
+            return View();
+        }
+        public ActionResult GetActiveUsersLevelWisePartialView()
+        {
+            LevelWiseUserInfoModel lvl = new LevelWiseUserInfoModel();
+            return PartialView(lvl.GetLevelWiseUserInfo());
+        }
+        #endregion
+
+        public ActionResult TotalActiveUsers()
+        {
+            LevelWiseUserInfoModel adminProfile = new LevelWiseUserInfoModel();
+            return View(adminProfile.TotalUsers());
+        }
+
+        #region Get Contact Support
+        public ActionResult GetContactSupport()
+        {
+            return View();
+        }
+        public ActionResult GetContactSupportPartialView()
+        {
+            ContactSupportCls contact = new ContactSupportCls();
+            return PartialView(contact.GetContectSupport());
+        }
+        #endregion
+
     }
 }

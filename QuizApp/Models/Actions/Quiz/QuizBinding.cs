@@ -352,10 +352,11 @@ namespace QuizApp.Models
                 Double.TryParse(a.amount.ToString(), out x);
                 Tran.amount = x.ToString("0.00");
             }
+            GeneralFunctions generalFunctions = new GeneralFunctions();
             userWallet.TransactionModels = transactionModels;
-            userWallet.CurrentBalance = Math.Round(data.CurrentBalance != null ? (double)data.CurrentBalance : 0);
-            userWallet.MothlyIncome = Math.Round(data.MothlyIncome != null ? (double)data.MothlyIncome : 0);
-            userWallet.TotalWithdraw = Math.Round(data.TotalWithdraw != null ? (double)data.TotalWithdraw : 0);
+            userWallet.CurrentBalance = data.CurrentBalance != null ? Convert.ToDouble(generalFunctions.GetDecimalvalue(data.CurrentBalance.ToString())) : 0;
+            userWallet.MothlyIncome = data.MothlyIncome != null ? Convert.ToDouble(generalFunctions.GetDecimalvalue(data.MothlyIncome.ToString())) : 0;
+            userWallet.TotalWithdraw = data.TotalWithdraw != null ? Convert.ToDouble(generalFunctions.GetDecimalvalue(data.TotalWithdraw.ToString())) : 0;
             userWallet.TotalPoins = data.CurrentPoint != null ? (int)data.CurrentPoint : 0;
             return userWallet;
         }
@@ -1896,6 +1897,19 @@ namespace QuizApp.Models
                 earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
             }
             return earningHeads;
+        }
+        #endregion
+
+        #region Contact Support
+        public bool ContactSupport(ContactSupportModel model)
+        {
+            entities.ContactSupports.Add(new ContactSupport() {
+                UserId=model.UserId,
+                Mobile=model.Mobile,
+                UserMessage=model.UserMessage,
+                CreateDate=DateTime.Now
+            });
+            return entities.SaveChanges() > 0;
         }
         #endregion
     }

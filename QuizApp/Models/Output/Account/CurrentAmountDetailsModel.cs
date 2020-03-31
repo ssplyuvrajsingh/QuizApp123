@@ -12,5 +12,6 @@ namespace QuizApp.Models
         public string IFSCCode { get; set; }
         public string Bank { get; set; }
         public double amount { get; set; }
+        public int chargesAmount { get; set; }
     }
 } 

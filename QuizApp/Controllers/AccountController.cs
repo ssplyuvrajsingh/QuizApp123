@@ -87,7 +87,7 @@ namespace QuizApp.Controllers
                     {
                         var User = UserManager.FindByName(model.PhoneNumber);
 
-                        if (User != null)
+                            if (User != null)
                         {
                             if (User.PhoneNumberConfirmed)
                             {
@@ -951,7 +951,7 @@ namespace QuizApp.Controllers
                         Result = false
                     };
                 }
-        }
+            }
             catch (Exception ex)
             {
                 result = new ResultClass()
@@ -1008,7 +1008,7 @@ namespace QuizApp.Controllers
                                 result = new ResultClass()
                                 {
                                     Data = data.RedeemBalance,
-                                    Message = "Your points is insufficient to complete this transaction",
+                                    Message = "Your points is insufficient to complete this transaction( reedm values like 100, 200, 300 to 1000  etc not 150 or 125 etc)",
                                     Result = false
                                 };
                                 break;

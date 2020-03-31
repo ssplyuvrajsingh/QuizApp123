@@ -6572,3 +6572,7 @@ table .fc-head .fc-widget-header td, table .fc-head .fc-widget-header th, table 
 .nav-tabs.top-menus li a {
     font-size:12px;
 }
+ 
+.PannelDiv{
+    min-height:140px;
+}

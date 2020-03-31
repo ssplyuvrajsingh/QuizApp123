@@ -284,6 +284,9 @@
     <Compile Include="Models\Entities\AspNetUserLogin.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\ContactSupport.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\C__MigrationHistory.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
@@ -350,6 +353,7 @@
     <Compile Include="Models\Input\Account\TokenBindingModel.cs" />
     <Compile Include="Models\Input\Account\UserModel.cs" />
     <Compile Include="Models\Input\Account\WithdrawalAmountModel.cs" />
+    <Compile Include="Models\Input\Quiz\ContactSupport.cs" />
     <Compile Include="Models\Input\Quiz\EndGameBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\GetYourHighScoreByQuiz.cs" />
     <Compile Include="Models\Input\Quiz\QuizBindingModel.cs" />
@@ -358,6 +362,7 @@
     <Compile Include="Models\Input\Quiz\StartGameBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\WalletClass.cs" />
     <Compile Include="Models\Output\Account\CurrentAmountDetailsModel.cs" />
+    <Compile Include="Models\Output\Account\paytmResponse.cs" />
     <Compile Include="Models\Output\Account\TokenResult.cs" />
     <Compile Include="Models\Output\Account\UserProfileModel.cs" />
     <Compile Include="Models\Output\Account\UserTransactionModel.cs" />

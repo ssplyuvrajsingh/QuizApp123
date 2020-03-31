@@ -301,13 +301,15 @@ namespace QuizApp.Models
         {
             var data = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
             GeneralFunctions generalFunctions = new GeneralFunctions();
+            var earning = generalFunctions.getEarningHeads();
             return new CurrentAmountDetailsModel()
             {
                 AccountNumber = data.AccountNumber != null ? data.AccountNumber : "",
                 NameInAccount = data.NameInAccount != null ? data.NameInAccount : "",
                 IFSCCode = data.IFSCCode != null ? data.IFSCCode : "",
                 Bank = data.Bank != null ? data.Bank : "",
-                amount = data.CurrentBalance != null ? Convert.ToDouble(generalFunctions.GetDecimalvalue(data.CurrentBalance.ToString())) : 0
+                amount = data.CurrentBalance != null ? Convert.ToDouble(generalFunctions.GetDecimalvalue(data.CurrentBalance.ToString())) : 0,
+                chargesAmount = earning.WithdrawCharges
             };
         }
         #endregion
@@ -405,49 +407,59 @@ namespace QuizApp.Models
                             //var WithdrawalCharges = earningHeads.WithdrawCharges;
 
 
-                            string pay = "Pending";
-                            //PaytmBinding paytmBinding = new PaytmBinding();
-                            //var pay = paytmBinding.PaytmResponse(data1.UserName, "Withdrawal Amount in Paytm", Convert.ToString(model.amount), myIP);
-
-                            string orderId = pay;
-                            Transaction transaction = new Transaction()
+                            //string pay = "Pending";
+                            PaytmBinding paytmBinding = new PaytmBinding();
+                            var pay = paytmBinding.PaytmResponse(data1.UserName, "Withdrawal Amount in Paytm", Convert.ToString(model.amount), myIP);
+                            string paymentStatus = string.Empty;
+                            paytmResponse paytmResponse = new paytmResponse();
+                            var paytmResult = JsonConvert.DeserializeObject<paytmResponse.Root>(pay);
+                            if (paytmResult.statusCode == "SUCCESS" && paytmResult.status == "SUCCESS")
                             {
-                                UserID = model.UserId,
-                                transactionDateTime = DateTime.Now,
-                                UniqueKey = uniqueKey,
-                                paymentStatus = pay,
-                                amount = model.amount,
-                                comment = "Withdrawal Amount in Paytm",
-                                username = data.Name,
-                                mobilenumber = data1.UserName,
-                                PaytmWithdrawCharges = earningHeads.WithdrawCharges,
-                                PaytmOrderId = orderId,
-                                PaytmResponse = pay
-                            };
-                            //Transaction charges = new Transaction()
-                            //{
-                            //    UserID = model.UserId,
-                            //    transactionDateTime = DateTime.Now,
-                            //    UniqueKey = uniqueKey,
-                            //    paymentStatus = pay,
-                            //    amount = WithdrawalCharges,
-                            //    comment = "Withdrawal Amount in Paytm Charges",
-                            //    username = data.Name,
-                            //    mobilenumber = data1.UserName,
-                            //    PaytmWithdrawCharges = earningHeads.WithdrawCharges,
-                            //    PaytmOrderId = orderId,
-                            //    PaytmResponse = pay
-                            //};
-                            entities.Transactions.Add(transaction);
-                            //entities.Transactions.Add(charges);
-                            entities.SaveChanges();
-
-                            withdrawal = new WithdrawalAmountBalance()
+                                paymentStatus = "withdrawal";
+                            }
+                            else
                             {
-                                State = "True",
-                                Balance = model.amount,
-                                status = pay
-                            };
+                                paymentStatus = "pending";
+                            }
+                                Transaction transaction = new Transaction()
+                                {
+                                    UserID = model.UserId,
+                                    transactionDateTime = DateTime.Now,
+                                    UniqueKey = uniqueKey,
+                                    paymentStatus = paymentStatus,
+                                    amount = model.amount,
+                                    comment = paytmResult.metadata,
+                                    username = data.Name,
+                                    mobilenumber = data1.UserName,
+                                    PaytmWithdrawCharges = 0,//earningHeads.WithdrawCharges,
+                                    PaytmOrderId = paytmResult.orderId,
+                                    PaytmResponse = pay
+                                };
+                                //Transaction charges = new Transaction()
+                                //{
+                                //    UserID = model.UserId,
+                                //    transactionDateTime = DateTime.Now,
+                                //    UniqueKey = uniqueKey,
+                                //    paymentStatus = pay,
+                                //    amount = WithdrawalCharges,
+                                //    comment = "Withdrawal Amount in Paytm Charges",
+                                //    username = data.Name,
+                                //    mobilenumber = data1.UserName,
+                                //    PaytmWithdrawCharges = earningHeads.WithdrawCharges,
+                                //    PaytmOrderId = orderId,
+                                //    PaytmResponse = pay
+                                //};
+                                entities.Transactions.Add(transaction);
+                                //entities.Transactions.Add(charges);
+                                entities.SaveChanges();
+
+                                withdrawal = new WithdrawalAmountBalance()
+                                {
+                                    State = "True",
+                                    Balance = model.amount,
+                                    status = paytmResult.status
+                                };
+                            
                         }
                     }
                     else
@@ -489,7 +501,8 @@ namespace QuizApp.Models
             {
                 var data = entities.Users.Where(x => x.UserID == model.UserID).FirstOrDefault();
                 var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserID).FirstOrDefault();
-                if (data.CurrentPoint >= model.PointsWithdraw)
+                GeneralFunctions general = new GeneralFunctions();
+                if (data.CurrentPoint >= model.PointsWithdraw && general.PointReddemValueCheck(model.PointsWithdraw))
                 {
                     EaningHeadModel earningHeads = new EaningHeadModel();
                     var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");

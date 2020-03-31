@@ -228,6 +228,9 @@
     <Compile Include="Models\AspNetUserLogin.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ContactSupport.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\C__MigrationHistory.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
@@ -247,6 +250,10 @@
     <Compile Include="Models\MobileOTP.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Output\ContactSupport\ContactSupportCls.cs" />
+    <Compile Include="Models\Output\ContactSupport\ContactSupportModel .cs" />
+    <Compile Include="Models\Output\LevelWiseUserInfo\LevelUserInfoResult.cs" />
+    <Compile Include="Models\Output\LevelWiseUserInfo\LevelWiseUserInfoModel.cs" />
     <Compile Include="Models\Output\Quiz\QuizUserCount.cs" />
     <Compile Include="Models\Output\Support\SupportModel.cs" />
     <Compile Include="Models\Output\Transaction\TransactionModel.cs" />
@@ -1381,6 +1388,11 @@
     <Content Include="Views\Home\PrivacyPolicy.cshtml" />
     <Content Include="Views\Home\Support.cshtml" />
     <Content Include="Views\Home\AddSupport.cshtml" />
+    <Content Include="Views\Home\TotalActiveUsers.cshtml" />
+    <Content Include="Views\Home\GetLeveWiseUserInfo.cshtml" />
+    <Content Include="Views\Home\GetActiveUsersLevelWisePartialView.cshtml" />
+    <Content Include="Views\Home\GetContactSupport.cshtml" />
+    <Content Include="Views\Home\GetContactSupportPartialView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

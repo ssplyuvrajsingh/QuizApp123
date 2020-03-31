@@ -66,6 +66,16 @@
           <Property Name="AccessFailedCount" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
         </EntityType>
+        <EntityType Name="ContactSupport">
+          <Key>
+            <PropertyRef Name="ContactSupportId" />
+          </Key>
+          <Property Name="ContactSupportId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar(max)" />
+          <Property Name="Mobile" Type="nvarchar" MaxLength="20" />
+          <Property Name="UserMessage" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="DailyUserLog">
           <Key>
             <PropertyRef Name="LogID" />
@@ -282,218 +292,6 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="MothlyIncome" Type="int" />
         </EntityType>
-        <Association Name="FK__LevelEarn__UserI__6FE99F9F">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-          <End Role="LevelEarnings" Type="Self.LevelEarnings" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="LevelEarnings">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Support__UserId__2DE6D218">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-          <End Role="Support" Type="Self.Support" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Support">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_AspNetUsers_Id">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Transactions">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DailyUserLog_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="DailyUserLog" Type="Self.DailyUserLog" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DailyUserLog">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="AspNetUserClaims" Type="Self.AspNetUserClaims" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserClaims">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="AspNetUserLogins" Type="Self.AspNetUserLogins" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserLogins">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
-          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetRoles">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserRoles">
-              <PropertyRef Name="RoleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="AspNetUserRoles">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_QuizPlayer_AspNetUsers1">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="QuizPlayer" Type="Self.QuizPlayer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="QuizPlayer">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_QuizPlayer_QuizData">
-          <End Role="QuizData" Type="Self.QuizData" Multiplicity="1" />
-          <End Role="QuizPlayer" Type="Self.QuizPlayer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="QuizData">
-              <PropertyRef Name="QuizID" />
-            </Principal>
-            <Dependent Role="QuizPlayer">
-              <PropertyRef Name="QuizID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_QuizQuestion_QuizData">
-          <End Role="QuizData" Type="Self.QuizData" Multiplicity="1" />
-          <End Role="QuizQuestion" Type="Self.QuizQuestion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="QuizData">
-              <PropertyRef Name="QuizID" />
-            </Principal>
-            <Dependent Role="QuizQuestion">
-              <PropertyRef Name="QuizID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_RefreshToken_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
-          <End Role="RefreshToken" Type="Self.RefreshToken" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="RefreshToken">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UserAnswer_QuizPlayer">
-          <End Role="QuizPlayer" Type="Self.QuizPlayer" Multiplicity="1" />
-          <End Role="UserAnswer" Type="Self.UserAnswer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="QuizPlayer">
-              <PropertyRef Name="PlayerID" />
-            </Principal>
-            <Dependent Role="UserAnswer">
-              <PropertyRef Name="PlayerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UserAnswer_QuizQuestion">
-          <End Role="QuizQuestion" Type="Self.QuizQuestion" Multiplicity="1" />
-          <End Role="UserAnswer" Type="Self.UserAnswer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="QuizQuestion">
-              <PropertyRef Name="QuizQuestionID" />
-            </Principal>
-            <Dependent Role="UserAnswer">
-              <PropertyRef Name="QuizQuestionID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UserID_UserID">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="User" Type="Self.User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UserPoints_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="UserPoints" Type="Self.UserPoints" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserPoints">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UserWallet_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="UserWallet" Type="Self.UserWallet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UserWallet">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="QuizAppModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -501,6 +299,7 @@
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ContactSupport" EntityType="Self.ContactSupport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DailyUserLog" EntityType="Self.DailyUserLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LevelEarnings" EntityType="Self.LevelEarnings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileOTP" EntityType="Self.MobileOTP" Schema="dbo" store:Type="Tables" />
@@ -514,74 +313,6 @@
           <EntitySet Name="UserAnswer" EntityType="Self.UserAnswer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPoints" EntityType="Self.UserPoints" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserWallet" EntityType="Self.UserWallet" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__LevelEarn__UserI__6FE99F9F" Association="Self.FK__LevelEarn__UserI__6FE99F9F">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="LevelEarnings" EntitySet="LevelEarnings" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Support__UserId__2DE6D218" Association="Self.FK__Support__UserId__2DE6D218">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="Support" EntitySet="Support" />
-          </AssociationSet>
-          <AssociationSet Name="FK_AspNetUsers_Id" Association="Self.FK_AspNetUsers_Id">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="Transactions" EntitySet="Transactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DailyUserLog_AspNetUsers" Association="Self.FK_DailyUserLog_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="DailyUserLog" EntitySet="DailyUserLog" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
-            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
-            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_QuizPlayer_AspNetUsers1" Association="Self.FK_QuizPlayer_AspNetUsers1">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="QuizPlayer" EntitySet="QuizPlayer" />
-          </AssociationSet>
-          <AssociationSet Name="FK_QuizPlayer_QuizData" Association="Self.FK_QuizPlayer_QuizData">
-            <End Role="QuizData" EntitySet="QuizData" />
-            <End Role="QuizPlayer" EntitySet="QuizPlayer" />
-          </AssociationSet>
-          <AssociationSet Name="FK_QuizQuestion_QuizData" Association="Self.FK_QuizQuestion_QuizData">
-            <End Role="QuizData" EntitySet="QuizData" />
-            <End Role="QuizQuestion" EntitySet="QuizQuestion" />
-          </AssociationSet>
-          <AssociationSet Name="FK_RefreshToken_AspNetUsers" Association="Self.FK_RefreshToken_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="RefreshToken" EntitySet="RefreshToken" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserAnswer_QuizPlayer" Association="Self.FK_UserAnswer_QuizPlayer">
-            <End Role="QuizPlayer" EntitySet="QuizPlayer" />
-            <End Role="UserAnswer" EntitySet="UserAnswer" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserAnswer_QuizQuestion" Association="Self.FK_UserAnswer_QuizQuestion">
-            <End Role="QuizQuestion" EntitySet="QuizQuestion" />
-            <End Role="UserAnswer" EntitySet="UserAnswer" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserID_UserID" Association="Self.FK_UserID_UserID">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="User" EntitySet="User" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserPoints_AspNetUsers" Association="Self.FK_UserPoints_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="UserPoints" EntitySet="UserPoints" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserWallet_AspNetUsers" Association="Self.FK_UserWallet_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="UserWallet" EntitySet="UserWallet" />
-          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -670,6 +401,7 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="Support" EntitySet="Supports" />
           </AssociationSet>
+          <EntitySet Name="ContactSupports" EntityType="QuizAppModel.ContactSupport" />
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -1160,6 +892,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ContactSupport">
+          <Key>
+            <PropertyRef Name="ContactSupportId" />
+          </Key>
+          <Property Name="ContactSupportId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Mobile" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UserMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1455,6 +1197,17 @@
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="SupportUserId" ColumnName="SupportUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContactSupports">
+            <EntityTypeMapping TypeName="QuizAppModel.ContactSupport">
+              <MappingFragment StoreEntitySet="ContactSupport">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="UserMessage" ColumnName="UserMessage" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ContactSupportId" ColumnName="ContactSupportId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

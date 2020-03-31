@@ -43,5 +43,6 @@ namespace QuizAdmin.Models
         public virtual DbSet<LevelEarning> LevelEarnings { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<Support> Supports { get; set; }
+        public virtual DbSet<ContactSupport> ContactSupports { get; set; }
     }
 }

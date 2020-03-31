@@ -1,0 +1,38 @@
+﻿@model QuizAdmin.Models.LevelUserInfoResult
+@{
+    ViewBag.Title = "TotalActiveUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-lg-6">
+    <div class="panel">
+        <div class="panel-body">
+            <div class="media">
+                <div class="media-left no-padding">
+                    <div class="rounded-icon rounded-icon-primary rounded-icon-lg media-raised">
+                        <i class="mdi mdi-account-multiple-outline pad-top"></i>
+                    </div>
+                </div>
+                <div class="media-body">
+                    <div class="align-right" style="padding-top:0.3em;">
+                        <h6>&nbsp;</h6>
+                        <h2>
+                            Today Active User
+                        </h2>
+                    </div>
+                </div>
+                <div class="media-body">
+                    <div class="align-right" style="padding-top:0.3em;">
+                        <h6>&nbsp;</h6>
+                        <h2>
+                            @Model.TotalUser
+                        </h2>
+                    </div>
+                </div>
+                <!-- /.media-body -->
+            </div>
+        </div>
+        <!-- /.panel-body -->
+    </div>
+</div>
+

@@ -1,4 +1,5 @@
-﻿using QuizApp.Models.Entities;
+﻿using Newtonsoft.Json;
+using QuizApp.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,10 +15,10 @@ namespace QuizApp.Models
         private static Random random = new Random();
         public static int GetOTP()
         {
-                int length = random.Next(4, 4);
+            int length = random.Next(4, 4);
 
-                string OTP = GenerateRandomOTP(length);
-                return Convert.ToInt32(OTP);
+            string OTP = GenerateRandomOTP(length);
+            return Convert.ToInt32(OTP);
         }
         public static string GenerateRandomOTP(int length)
         {
@@ -37,7 +38,7 @@ namespace QuizApp.Models
         {
             Random rnd = new Random();
             int length = random.Next(6, 6);
-            
+
             string referalCode = RandomString(length);
 
             using (QuizAppEntities entities = new QuizAppEntities())
@@ -46,7 +47,7 @@ namespace QuizApp.Models
 
                 if (isExistReferalCode != null)
                 {
-                    referalCode =  GetReferalCode();
+                    referalCode = GetReferalCode();
                 }
             }
 
@@ -146,7 +147,37 @@ namespace QuizApp.Models
         {
             double x;
             Double.TryParse(amount, out x);
-           return x.ToString("0.00");
+            return x.ToString("0.00");
+        }
+        #endregion
+
+        #region Get Point Redeem Value Check
+        public bool PointReddemValueCheck(int Value)
+        {
+            int[] check = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+            bool data = false;
+            foreach (var item in check)
+            {
+                if (Value == item)
+                {
+                    data = true;
+                }
+            }
+            return data;
+        }
+        #endregion
+
+        #region Get Earning Heads
+        public EaningHeadModel getEarningHeads()
+        {
+            var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
+            EaningHeadModel earningHeads = new EaningHeadModel();
+            using (StreamReader r = new StreamReader(jsonFilePath))
+            {
+                string json = r.ReadToEnd();
+                earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
+            }
+            return earningHeads;
         }
         #endregion
     }

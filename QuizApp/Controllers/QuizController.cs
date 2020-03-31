@@ -639,5 +639,57 @@ namespace QuizApp.Controllers
             return result;
         }
         #endregion
+
+        #region Contact Support
+        [HttpPost]
+        public  ResultClass ContactSupport(ContactSupportModel model)
+        {
+            ResultClass result = null;
+            try
+            {
+                //TODO: Decrypt the encrypted value
+                var security = new Security();
+                var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                //Check Secret Code
+                bool isStatus = security.CheckDecypt(plainText);
+                if (true)
+                {
+                    QuizBinding quizBinding = new QuizBinding();
+                    bool Data = quizBinding.ContactSupport(model);
+                    if (Data)
+                    {
+                        result = new ResultClass()
+                        {
+                            Data = Data,
+                            Message = "Data Inserted Successfully",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        result = new ResultClass()
+                        {
+                            Data = Data,
+                            Message = "Data Not Insert Successfully",
+                            Result = true
+                        };
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = ex,
+                    Message = ex.Message,
+                    Result = true
+                };
+            }
+
+            return result;
+        }
+        #endregion
     }
 }

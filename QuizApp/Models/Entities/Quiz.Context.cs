@@ -42,5 +42,6 @@ namespace QuizApp.Models.Entities
         public virtual DbSet<MobileOTP> MobileOTPs { get; set; }
         public virtual DbSet<LevelEarningStatu> LevelEarningStatus { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+        public virtual DbSet<ContactSupport> ContactSupports { get; set; }
     }
 }

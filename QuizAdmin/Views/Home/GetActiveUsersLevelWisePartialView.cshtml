@@ -1,0 +1,61 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $('table.datatable').dataTable();
+    });
+</script>
+
+@model IEnumerable<QuizAdmin.Models.LevelUserInfoResult>
+
+<!-- /.row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2>Level Users</h2>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped- table-bordered table-hover table-checkable datatable productTable" id="kt_table_1">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone Number</th>
+                                <th>Referal Code</th>
+                                <th>Total Active User</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ReferalCode)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TotalUser)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.panel -->
+        </div>
+    </div>
+</div>
+<!-- /.row -->
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('table.datatable').dataTable();
+    });
+</script>
+
