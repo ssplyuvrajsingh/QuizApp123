@@ -4,14 +4,20 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
+using Newtonsoft.Json;
+using QuizApp.Models.Entities;
 
 namespace QuizApp.Models
 {
     public class PaytmBinding
     {
+        #region Database Entities Declaration
+        QuizAppEntities entities = new QuizAppEntities();
+        #endregion
         #region Paytm Binding
         public string PaytmResponse(string Phone, string PaymentText, string Amount,string Ip)
         {
+            Phone = "8209004092";
             string merchantguid = "7f1c79d3-5386-47d7-ac46-707ae6126842";
             string orderid = DateTime.Now.Ticks.ToString();
             string AesKey = "ZBVhw3s0alzVds@k"; // 16 digits Merchant Key or Aes Key
@@ -63,6 +69,36 @@ namespace QuizApp.Models
                 throw ex;
             }
             return "False";
+        }
+        #endregion
+
+        #region Paytm Job
+        public void paytmJob()
+        {
+            var data = entities.Transactions.Where(x => x.comment == "Withdrawal Amount in Paytm" && x.paymentStatus == "Pending").ToList();
+            string hostName = Dns.GetHostName();// Retrive the Name of HOST  
+                                                // Get the IP  
+            string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
+            foreach (var item in data)
+            {
+                var pay = PaytmResponse(item.mobilenumber, "Withdrawal Amount in Paytm", Convert.ToString(item.amount), myIP);
+
+
+                var paytmResult = JsonConvert.DeserializeObject<paytmResponse.Root>(pay);
+                if (paytmResult.statusCode == "SUCCESS" && paytmResult.status == "SUCCESS")
+                {
+                    item.paymentStatus = "withdrawal";
+                }
+                item.PaytmOrderId = paytmResult.orderId;
+                item.PaytmResponse = pay;
+                ////db.Entry(old).CurrentValues.SetValues(model);
+                ////return db.SaveChanges() > 0;
+                ///
+                //entities.SaveChanges();
+
+                entities.Entry(item).CurrentValues.SetValues(item);
+                entities.SaveChanges();
+            }
         }
         #endregion
     }

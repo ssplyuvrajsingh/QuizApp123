@@ -45,7 +45,8 @@ namespace QuizApp.Models
         public double Level8Income { get; set; }
         public double Level9Income { get; set; }
         public double Level10Income { get; set; }
-        public int MinimumWithdrawlLimit { get; set; }
+        public int PaytmMinimumWithdrawlLimit { get; set; }
+        public int BankMinimumWithdrawlLimit { get; set; }
         public int MinimumCharges { get; set; }
         public int MaximumWithdrawLimit { get; set; }
         public int ActiveHourLimit { get; set; }

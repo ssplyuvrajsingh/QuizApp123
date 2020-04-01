@@ -455,6 +455,12 @@ namespace QuizApp.Models
         #endregion
 
         #region Add Level Base Earning Amount
+        public bool CallLevelBaseEarningAmount(string jsonFilePath)
+        {
+            var data = AddLevelBaseEarningAmount(jsonFilePath);
+            LevelFirebaseUpdates(data);
+            return data;
+        }
         public bool AddLevelBaseEarningAmount(string jsonFilePath)
         {
             try

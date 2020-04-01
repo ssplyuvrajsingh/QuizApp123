@@ -17,12 +17,13 @@ namespace QuizApp
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app);
+           ConfigureAuth(app);
+           GetHangfireServers(app);
             var jsonfilepath = HttpContext.Current.Server.MapPath("~/models/jsonfile/levelearningmasteruser.json");
-            if (!string.IsNullOrEmpty(jsonfilepath))
-            {
-                //    //GetHangfireServers(app, jsonFilePath);
-            }
+           if (!string.IsNullOrEmpty(jsonfilepath))
+           {
+                GetHangfireServers(app, jsonfilepath);
+           }
         }
         /// <summary>
         /// This function will be callled every day at 2.00 am
@@ -31,14 +32,29 @@ namespace QuizApp
         /// <param name="jsonFilePath">Read json file</param>
         private void GetHangfireServers(IAppBuilder app, string jsonfilepath)
         {
-            //GlobalConfiguration.Configuration.UseSqlServerStorage("defaultconnection");
-            //QuizBinding quizbinding = new QuizBinding();
-            ////RecurringJob.AddOrUpdate(() => quizbinding.AddLevelBaseEarningAmount(jsonfilepath), Cron.Daily(20, 30));
+        GlobalConfiguration.Configuration.UseSqlServerStorage("defaultconnection");
+        QuizBinding quizbinding = new QuizBinding();
+            RecurringJob.AddOrUpdate(() => quizbinding.CallLevelBaseEarningAmount(jsonfilepath), Cron.Daily(20, 30));
 
-            //app.UseHangfireServer();
-            //app.UseHangfireDashboard();
+        app.UseHangfireServer();
+        app.UseHangfireDashboard();
         }
+        //public void Configuration(IAppBuilder app)
+        //{
+        //    ConfigureAuth(app);
+        //    GetHangfireServers(app);
 
+        //}
+        private void GetHangfireServers(IAppBuilder app)
+        {
+            GlobalConfiguration.Configuration.UseSqlServerStorage("defaultconnection");
+            PaytmBinding paytmBinding = new PaytmBinding();
+            QuizBinding quizbinding = new QuizBinding();
+            RecurringJob.AddOrUpdate(() => paytmBinding.paytmJob(), Cron.Hourly());
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
+        }
 
     }
 }

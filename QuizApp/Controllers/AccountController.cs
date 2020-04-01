@@ -901,6 +901,8 @@ namespace QuizApp.Controllers
                 {
                     AccountBinding accountBinding = new AccountBinding();
                     var data = accountBinding.WithdrawalAmount(model);
+                    GeneralFunctions general = new GeneralFunctions();
+                    var earn = general.getEarningHeads();
                     string res = data.State;
                     switch (res)
                     {
@@ -913,10 +915,18 @@ namespace QuizApp.Controllers
                             };
                             break;
 
-                        case "insufficient":
+                        case "Bankinsufficient":
                             result = new ResultClass()
                             {
-                                Message = "sorry your balance is insufficient to complete this transaction (Maximum Withdrawal Limit is 1000 and Minimum Withdrawal Limit is 110)",
+                                Message = "sorry your balance is insufficient to complete this transaction (Maximum Withdrawal Limit is "+ earn.MaximumWithdrawLimit+ " and Minimum Withdrawal Limit is "+earn.BankMinimumWithdrawlLimit + ")",
+                                Result = false
+                            };
+                            break;
+
+                        case "Paytminsufficient":
+                            result = new ResultClass()
+                            {
+                                Message = "sorry your balance is insufficient to complete this transaction (Maximum Withdrawal Limit is "+ earn.MaximumWithdrawLimit + " and Minimum Withdrawal Limit is " +earn.PaytmMinimumWithdrawlLimit +")",
                                 Result = false
                             };
                             break;
@@ -1243,6 +1253,24 @@ namespace QuizApp.Controllers
                     Message = ex.Message,
                     Result = false
                 };
+            }
+        }
+        #endregion
+
+        #region Get User Profile
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("PaytmJob")]
+        public void PaytmJob()
+        {
+            try
+            {
+                PaytmBinding paytmBinding = new PaytmBinding();
+                paytmBinding.paytmJob();
+            }
+            catch (Exception ex)
+            {
+                var data = ex.Message;
             }
         }
         #endregion

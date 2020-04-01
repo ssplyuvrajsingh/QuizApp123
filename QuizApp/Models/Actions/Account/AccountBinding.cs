@@ -42,10 +42,10 @@ namespace QuizApp.Models
             {
                 var Otp = GeneralFunctions.GetOTP();
                 //Set By Defaulte Admin Refferal Code When User Not Use Any Refferal Code
-                if (model.UsedReferalCode == null)
+                if (model.UsedReferalCode == null || model.UsedReferalCode == "" || model.UsedReferalCode == string.Empty)
                 {
-                    string AdminId = ConfigurationManager.AppSettings["Admin"].ToString(); ;
-                    model.UsedReferalCode = entities.Users.Where(x => x.UserID == AdminId).Select(x => x.ReferalCode).FirstOrDefault();
+                    string AdminId = ConfigurationManager.AppSettings["Admin"].ToString();
+                    model.UsedReferalCode = ConfigurationManager.AppSettings["RefferalCode"].ToString();
                 }
 
                 var ParentIDs = GetParentsIDsFromReferalCode(model.UsedReferalCode, model.UserId);
@@ -334,10 +334,10 @@ namespace QuizApp.Models
                 var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserId).FirstOrDefault();
                 if (data.CurrentBalance >= model.amount)
                 {
-                    if (earningHeads.MaximumWithdrawLimit >= model.amount && model.amount >= earningHeads.MinimumWithdrawlLimit)
+                    var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
+                    if (model.WithdrawType == "Bank")
                     {
-                        var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
-                        if (model.WithdrawType == "Bank")
+                        if (earningHeads.MaximumWithdrawLimit >= model.amount && model.amount >= earningHeads.BankMinimumWithdrawlLimit)
                         {
                             //var WithdrawalAmount = model.amount - earningHeads.WithdrawCharges;
                             //var WithdrawalCharges = earningHeads.WithdrawCharges;
@@ -392,12 +392,23 @@ namespace QuizApp.Models
                             {
                                 withdrawal = new WithdrawalAmountBalance()
                                 {
-                                    State = "model",
+                                    State = "Bankinsufficient",
                                     Balance = model.amount
                                 };
                             }
                         }
-                        else if (model.WithdrawType == "Paytm")
+                        else
+                        {
+                            withdrawal = new WithdrawalAmountBalance()
+                            {
+                                State = "model",
+                                Balance = model.amount
+                            };
+                        }
+                    }
+                    else if (model.WithdrawType == "Paytm")
+                    {
+                        if (earningHeads.MaximumWithdrawLimit >= model.amount && model.amount >= earningHeads.PaytmMinimumWithdrawlLimit)
                         {
                             string hostName = Dns.GetHostName();// Retrive the Name of HOST  
                                                                 // Get the IP  
@@ -407,69 +418,70 @@ namespace QuizApp.Models
                             //var WithdrawalCharges = earningHeads.WithdrawCharges;
 
 
-                            //string pay = "Pending";
-                            PaytmBinding paytmBinding = new PaytmBinding();
-                            var pay = paytmBinding.PaytmResponse(data1.UserName, "Withdrawal Amount in Paytm", Convert.ToString(model.amount), myIP);
-                            string paymentStatus = string.Empty;
-                            paytmResponse paytmResponse = new paytmResponse();
-                            var paytmResult = JsonConvert.DeserializeObject<paytmResponse.Root>(pay);
-                            if (paytmResult.statusCode == "SUCCESS" && paytmResult.status == "SUCCESS")
+                            string pay = "Pending";
+                            //PaytmBinding paytmBinding = new PaytmBinding();
+                            //var pay = paytmBinding.PaytmResponse(data1.UserName, "Withdrawal Amount in Paytm", Convert.ToString(model.amount), myIP);
+                            //string paymentStatus = string.Empty;
+                            //paytmResponse paytmResponse = new paytmResponse();
+                            //var paytmResult = JsonConvert.DeserializeObject<paytmResponse.Root>(pay);
+                            //if (paytmResult.statusCode == "SUCCESS" && paytmResult.status == "SUCCESS")
+                            //{
+                            //    paymentStatus = "withdrawal";
+                            //}
+                            //else
+                            //{
+                            //    paymentStatus = "pending";
+                            //}
+                            Transaction transaction = new Transaction()
                             {
-                                paymentStatus = "withdrawal";
-                            }
-                            else
-                            {
-                                paymentStatus = "pending";
-                            }
-                                Transaction transaction = new Transaction()
-                                {
-                                    UserID = model.UserId,
-                                    transactionDateTime = DateTime.Now,
-                                    UniqueKey = uniqueKey,
-                                    paymentStatus = paymentStatus,
-                                    amount = model.amount,
-                                    comment = paytmResult.metadata,
-                                    username = data.Name,
-                                    mobilenumber = data1.UserName,
-                                    PaytmWithdrawCharges = 0,//earningHeads.WithdrawCharges,
-                                    PaytmOrderId = paytmResult.orderId,
-                                    PaytmResponse = pay
-                                };
-                                //Transaction charges = new Transaction()
-                                //{
-                                //    UserID = model.UserId,
-                                //    transactionDateTime = DateTime.Now,
-                                //    UniqueKey = uniqueKey,
-                                //    paymentStatus = pay,
-                                //    amount = WithdrawalCharges,
-                                //    comment = "Withdrawal Amount in Paytm Charges",
-                                //    username = data.Name,
-                                //    mobilenumber = data1.UserName,
-                                //    PaytmWithdrawCharges = earningHeads.WithdrawCharges,
-                                //    PaytmOrderId = orderId,
-                                //    PaytmResponse = pay
-                                //};
-                                entities.Transactions.Add(transaction);
-                                //entities.Transactions.Add(charges);
-                                entities.SaveChanges();
+                                UserID = model.UserId,
+                                transactionDateTime = DateTime.Now,
+                                UniqueKey = uniqueKey,
+                                paymentStatus = pay,
+                                amount = model.amount,
+                                comment = "Withdrawal Amount in Paytm",
+                                username = data.Name,
+                                mobilenumber = data1.UserName,
+                                PaytmWithdrawCharges = 0,//earningHeads.WithdrawCharges,
+                                PaytmOrderId = "",
+                                PaytmResponse = "Pending"
+                            };
+                            //Transaction charges = new Transaction()
+                            //{
+                            //    UserID = model.UserId,
+                            //    transactionDateTime = DateTime.Now,
+                            //    UniqueKey = uniqueKey,
+                            //    paymentStatus = pay,
+                            //    amount = WithdrawalCharges,
+                            //    comment = "Withdrawal Amount in Paytm Charges",
+                            //    username = data.Name,
+                            //    mobilenumber = data1.UserName,
+                            //    PaytmWithdrawCharges = earningHeads.WithdrawCharges,
+                            //    PaytmOrderId = orderId,
+                            //    PaytmResponse = pay
+                            //};
+                            entities.Transactions.Add(transaction);
+                            //entities.Transactions.Add(charges);
+                            entities.SaveChanges();
 
-                                withdrawal = new WithdrawalAmountBalance()
-                                {
-                                    State = "True",
-                                    Balance = model.amount,
-                                    status = paytmResult.status
-                                };
-                            
+                            withdrawal = new WithdrawalAmountBalance()
+                            {
+                                State = "True",
+                                Balance = model.amount,
+                                status = "Pending"//paytmResult.status
+                            };
+                        }
+                        else
+                        {
+                            withdrawal = new WithdrawalAmountBalance()
+                            {
+                                State = "Paytminsufficient",
+                                Balance = model.amount
+                            };
                         }
                     }
-                    else
-                    {
-                        withdrawal = new WithdrawalAmountBalance()
-                        {
-                            State = "insufficient",
-                            Balance = model.amount
-                        };
-                    }
+
+
                 }
                 else
                 {

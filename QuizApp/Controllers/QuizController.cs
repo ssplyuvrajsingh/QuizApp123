@@ -488,7 +488,7 @@ namespace QuizApp.Controllers
             {
                 QuizBinding quizBinding = new QuizBinding();
                 var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
-                var data = quizBinding.AddLevelBaseEarningAmount(jsonFilePath);
+                var data = quizBinding.CallLevelBaseEarningAmount(jsonFilePath);
                 quizBinding.LevelFirebaseUpdates(data);
                 if (data)
                 {
