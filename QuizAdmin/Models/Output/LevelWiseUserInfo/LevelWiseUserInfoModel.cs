@@ -49,7 +49,7 @@ namespace QuizAdmin.Models
             int totalLevelsUsers = 0;
             foreach(var Lvl in LevelUsers)
             {
-                  totalLevelsUsers = Convert.ToInt32(Lvl.Level1Users + Lvl.Level2Users + Lvl.Level3Users + Lvl.Level4Users + Lvl.Level5Users + Lvl.Level6Users + Lvl.Level7Users + Lvl.Level8Users + Lvl.Level9Users + Lvl.Level10Users);
+                  totalLevelsUsers = totalLevelsUsers + Convert.ToInt32(Lvl.Level1Users + Lvl.Level2Users + Lvl.Level3Users + Lvl.Level4Users + Lvl.Level5Users + Lvl.Level6Users + Lvl.Level7Users + Lvl.Level8Users + Lvl.Level9Users + Lvl.Level10Users);
             }
             return new LevelUserInfoResult()
             {

@@ -64,4 +64,29 @@ namespace QuizApp.Models
     {
         public string UserId { get; set; }
     }
+
+    public class LevelUsersModel
+    {
+        public Nullable<int> Level1Users { get; set; }
+        public Nullable<int> Level2Users { get; set; }
+        public Nullable<int> Level3Users { get; set; }
+        public Nullable<int> Level4Users { get; set; }
+        public Nullable<int> Level5Users { get; set; }
+        public Nullable<int> Level6Users { get; set; }
+        public Nullable<int> Level7Users { get; set; }
+        public Nullable<int> Level8Users { get; set; }
+        public Nullable<int> Level9Users { get; set; }
+        public Nullable<int> Level10Users { get; set; }
+        public Nullable<double> Level1 { get; set; }
+        public Nullable<double> Level2 { get; set; }
+        public Nullable<double> Level3 { get; set; }
+        public Nullable<double> Level4 { get; set; }
+        public Nullable<double> Level5 { get; set; }
+        public Nullable<double> Level6 { get; set; }
+        public Nullable<double> Level7 { get; set; }
+        public Nullable<double> Level8 { get; set; }
+        public Nullable<double> Level9 { get; set; }
+        public Nullable<double> Level10 { get; set; }
+        public Nullable<System.DateTime> LastUpdate { get; set; }
+    }
 }

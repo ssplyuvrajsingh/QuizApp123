@@ -61,7 +61,6 @@ namespace QuizApp.Models
                         LastUpdateDate = DateTime.Now,
                         ReferalCode = GeneralFunctions.GetReferalCode(),
                         DeviceID = model.DeviceID,
-                        LastActiveDate = DateTime.Now,
                         IP = model.IP,
                         isActive = true,
                         isBlocked = false,
@@ -69,7 +68,7 @@ namespace QuizApp.Models
                         otp = Otp.ToString(),
                         ParentIDs = ParentIDs,
                         Platform = model.Platform,
-                        UsedReferalCode = model.UsedReferalCode,
+                        UsedReferalCode = model.UsedReferalCode.ToLower(),
                     };
                     var rrea = sms_api_callAsync(model.PhoneNumber, Otp.ToString());
                     MobileOTP mobileOTP = new MobileOTP()
@@ -160,7 +159,6 @@ namespace QuizApp.Models
             using (QuizAppEntities entities = new QuizAppEntities())
             {
                 var user = entities.Users.Where(x => x.ReferalCode == usedReferalCode && x.AspNetUser.UserName != Username).FirstOrDefault();
-
                 return user == null;
             }
         }
@@ -340,7 +338,6 @@ namespace QuizApp.Models
                         if (earningHeads.MaximumWithdrawLimit >= model.amount && model.amount >= earningHeads.BankMinimumWithdrawlLimit)
                         {
                             //var WithdrawalAmount = model.amount - earningHeads.WithdrawCharges;
-                            //var WithdrawalCharges = earningHeads.WithdrawCharges;
 
                             if (model.AccountNumber != null && model.NameInAccount != null && model.IFSCCode != null && model.Bank != null && model.amount.ToString() != null)
                             {
@@ -356,28 +353,12 @@ namespace QuizApp.Models
                                     username = data.Name,
                                     mobilenumber = data1.UserName,
                                     WithdrawType = model.WithdrawType,
+                                    PaytmWithdrawCharges=earningHeads.WithdrawCharges,
                                     AccountNumber = model.AccountNumber,
                                     NameInAccount = model.NameInAccount,
                                     Bank = model.Bank,
                                     IFSCCode = model.IFSCCode
                                 };
-                                ////Entery in Transaction Table for Bank Charges
-                                //Transaction charges = new Transaction()
-                                //{
-                                //    UserID = model.UserId,
-                                //    transactionDateTime = DateTime.Now,
-                                //    UniqueKey = uniqueKey,
-                                //    paymentStatus = "Pending",
-                                //    amount = WithdrawalCharges,
-                                //    comment = "Withdrawal Amount Bank Charges",
-                                //    username = data.Name,
-                                //    mobilenumber = data1.UserName,
-                                //    WithdrawType = model.WithdrawType,
-                                //    AccountNumber = model.AccountNumber,
-                                //    NameInAccount = model.NameInAccount,
-                                //    Bank = model.Bank,
-                                //    IFSCCode = model.IFSCCode
-                                //};
                                 entities.Transactions.Add(transaction);
                                 //entities.Transactions.Add(charges);
                                 entities.SaveChanges();
@@ -410,28 +391,7 @@ namespace QuizApp.Models
                     {
                         if (earningHeads.MaximumWithdrawLimit >= model.amount && model.amount >= earningHeads.PaytmMinimumWithdrawlLimit)
                         {
-                            string hostName = Dns.GetHostName();// Retrive the Name of HOST  
-                                                                // Get the IP  
-                            string myIP = Dns.GetHostByName(hostName).AddressList[0].ToString();
-
-                            //var WithdrawalAmount = model.amount - earningHeads.WithdrawCharges;
-                            //var WithdrawalCharges = earningHeads.WithdrawCharges;
-
-
                             string pay = "Pending";
-                            //PaytmBinding paytmBinding = new PaytmBinding();
-                            //var pay = paytmBinding.PaytmResponse(data1.UserName, "Withdrawal Amount in Paytm", Convert.ToString(model.amount), myIP);
-                            //string paymentStatus = string.Empty;
-                            //paytmResponse paytmResponse = new paytmResponse();
-                            //var paytmResult = JsonConvert.DeserializeObject<paytmResponse.Root>(pay);
-                            //if (paytmResult.statusCode == "SUCCESS" && paytmResult.status == "SUCCESS")
-                            //{
-                            //    paymentStatus = "withdrawal";
-                            //}
-                            //else
-                            //{
-                            //    paymentStatus = "pending";
-                            //}
                             Transaction transaction = new Transaction()
                             {
                                 UserID = model.UserId,
@@ -442,26 +402,13 @@ namespace QuizApp.Models
                                 comment = "Withdrawal Amount in Paytm",
                                 username = data.Name,
                                 mobilenumber = data1.UserName,
-                                PaytmWithdrawCharges = 0,//earningHeads.WithdrawCharges,
+                                WithdrawType = model.WithdrawType,
+                                PaytmWithdrawCharges = earningHeads.WithdrawCharges,
                                 PaytmOrderId = "",
                                 PaytmResponse = "Pending"
                             };
-                            //Transaction charges = new Transaction()
-                            //{
-                            //    UserID = model.UserId,
-                            //    transactionDateTime = DateTime.Now,
-                            //    UniqueKey = uniqueKey,
-                            //    paymentStatus = pay,
-                            //    amount = WithdrawalCharges,
-                            //    comment = "Withdrawal Amount in Paytm Charges",
-                            //    username = data.Name,
-                            //    mobilenumber = data1.UserName,
-                            //    PaytmWithdrawCharges = earningHeads.WithdrawCharges,
-                            //    PaytmOrderId = orderId,
-                            //    PaytmResponse = pay
-                            //};
+                           
                             entities.Transactions.Add(transaction);
-                            //entities.Transactions.Add(charges);
                             entities.SaveChanges();
 
                             withdrawal = new WithdrawalAmountBalance()
