@@ -41,6 +41,7 @@ namespace QuizApp.Models
             try
             {
                 var Otp = GeneralFunctions.GetOTP();
+
                 //Set By Defaulte Admin Refferal Code When User Not Use Any Refferal Code
                 if (model.UsedReferalCode == null || model.UsedReferalCode == "" || model.UsedReferalCode == string.Empty)
                 {
@@ -70,7 +71,7 @@ namespace QuizApp.Models
                         Platform = model.Platform,
                         UsedReferalCode = model.UsedReferalCode.ToLower(),
                     };
-                    var rrea = sms_api_callAsync(model.PhoneNumber, Otp.ToString());
+                    var OtpSend = sms_api_callAsync(model.PhoneNumber, Otp.ToString());
                     MobileOTP mobileOTP = new MobileOTP()
                     {
                         PhoneNumber = model.PhoneNumber,
@@ -219,7 +220,7 @@ namespace QuizApp.Models
         {
             using (QuizAppEntities entities = new QuizAppEntities())
             {
-                var userInfo = entities.MobileOTPs.Where(x => x.PhoneNumber == model.PhoneNumber).OrderByDescending(a => a.CreatedDate).FirstOrDefault();
+                var userInfo = entities.MobileOTPs.Where(x => x.PhoneNumber == model.PhoneNumber && x.OTP == model.OTP).OrderByDescending(a => a.CreatedDate).FirstOrDefault();
                 if (userInfo != null && userInfo.OTP == model.OTP)
                 {
                     return true;
@@ -237,15 +238,17 @@ namespace QuizApp.Models
         {
             using (QuizAppEntities entities = new QuizAppEntities())
             {
+                var OTP = GeneralFunctions.GetOTP();
                 MobileOTP mobileOTP = new MobileOTP()
                 {
                     PhoneNumber = model.PhoneNumber,
-                    OTP = GeneralFunctions.GetOTP(),
+                    OTP = OTP,
                     CreatedDate = DateTime.Now,
 
                 };
 
                 entities.MobileOTPs.Add(mobileOTP);
+                var OtpSend = sms_api_callAsync(model.PhoneNumber, OTP.ToString());
                 return entities.SaveChanges() > 0;
             }
         }
@@ -593,6 +596,21 @@ namespace QuizApp.Models
             {
                 var data = ex.Message;
                 return data;
+            }
+        }
+        #endregion
+
+        #region Check Device Id
+        public bool CheckDeviceId(string DeviceId)
+        {
+            var data = entities.Users.Where(x => x.DeviceID == DeviceId).Select(x => x.DeviceID).FirstOrDefault();
+            if(data != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
         #endregion

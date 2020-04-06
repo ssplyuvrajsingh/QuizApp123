@@ -6576,3 +6576,39 @@ table .fc-head .fc-widget-header td, table .fc-head .fc-widget-header th, table 
 .PannelDiv{
     min-height:140px;
 }
+
+/*Support*/
+.header-sec {
+    background: #7267e8;
+    padding: 15px 10px;
+    color: #fff;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+    .header-sec h3 {
+        margin: 0;
+    }
+
+.form-sec .form-group label {
+    font-weight: normal;
+    display: block;
+}
+
+.form-sec .form-group .form-control {
+    font-weight: normal;
+    display: block;
+    border: 1px solid #ddd;
+    box-shadow: none;
+    height: auto;
+    padding: 12px;
+}
+
+.form-sec .btn-primary {
+    background: #7267e8;
+    border-radius: 30px;
+    font-weight: bold;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+}

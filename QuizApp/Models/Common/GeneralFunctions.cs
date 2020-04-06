@@ -24,9 +24,10 @@ namespace QuizApp.Models
         {
             //const string alphabetCharacters = "abcdefghijklmnopqrstuvwxyz";
             const string numCharacters = "0123456789";
+            const string numCharacter = "123456789";
             StringBuilder Code = new StringBuilder(length);
 
-            Code.Append(numCharacters[random.Next(numCharacters.Length)]);
+            Code.Append(numCharacter[random.Next(numCharacter.Length)]);
             Code.Append(numCharacters[random.Next(numCharacters.Length)]);
             Code.Append(numCharacters[random.Next(numCharacters.Length)]);
             Code.Append(numCharacters[random.Next(numCharacters.Length)]);

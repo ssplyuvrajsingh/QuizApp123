@@ -1,89 +1,123 @@
 ﻿@model QuizAdmin.Models.UserSupportModel
-@{
-    /**/
+@using System.Configuration;
+@using Microsoft.AspNet.Identity;
 
-    ViewBag.Title = "AddSupport";
+@{
+    var version = ConfigurationManager.AppSettings["jsversion"].ToString();
+    var Name = User.Identity.GetUserName();
     Layout = null;
 }
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/vendor/loaders.css/loaders.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CRubik:300,400,500%7CSource+Code+Pro" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/c3/c3.min.css">
+    <!--  Bootstrap -->
+    <link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome Icon Fonts -->
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Include MDI Icon Fonts -->
+    <link rel="stylesheet" href="/vendor/mdi/css/materialdesignicons.min.css">
+    <!-- Open Iconic Icon Fonts -->
+    <link href="/vendor/open-iconic/font/css/open-iconic-bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Switch -->
+    <link rel="stylesheet" href="/vendor/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css" />
+
+    <!-- Toastr Popups -->
+    <link rel="stylesheet" type="text/css" href="/vendor/toastr/toastr.min.css">
+    <!-- Sweet Alert Popups -->
+    <link rel="stylesheet" type="text/css" href="/vendor/sweetalert2/dist/sweetalert2.min.css">
+    <!-- iCheck Checkboxes -->
+    <link rel="stylesheet" href="/vendor/iCheck/skins/square/_all.css">
+    <!-- mscroll -->
+    <link rel="stylesheet" type="text/css" href="/vendor/mscroll/jquery.mCustomScrollbar.css">
+
+    <link rel="stylesheet" href="/css/extra/loaders.min.css">
+    <!-- Emphasize (Always Include Last)-->
+    <link rel="stylesheet" href="/css/style.css?ver=@version">
 
 
-<link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.min.css">
-<!-- Font Awesome Icon Fonts -->
-<link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
 
-<!-- Toastr Popups -->
-<link rel="stylesheet" type="text/css" href="/vendor/toastr/toastr.min.css">
-<link rel="stylesheet" href="/vendor/datatables/media/css/dataTables.bootstrap.min.css">
+    <style>
+        textarea {
+            width: 100%;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            height: 100px;
+        }
+    </style>
+    <!-- jQuery -->
+    <script src="/vendor/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap Javascript -->
+    <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/commonFunctions.js?ver=@version"></script>
+    <script src="~/js/admin.js?ver=@version"></script>
+    <script src="/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/media/js/dataTables.bootstrap.min.js"></script>
+    @*<script src="/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>*@
+    <script src="/vendor/bootstrap-datetimepicker/js/moment-with-locales.js"></script>
+    <script src="/vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/ckeditor/ckeditor.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/ckeditor/adapters/jquery.js")"></script>
 
-<style>
-    textarea {
-        width: 100%;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        height: 100px;
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            setTimeout(function () { $('.alert').fadeOut("slow", function () { $('.alert').remove() }) }, 5000);
+            //$(".alert").hide(3000);
+        });
+
+    </script>
+
+</head>
+<body>
+    @if (TempData["success"] != null)
+    {
+        <p class="alert alert-success" id="successMessage">@TempData["success"]</p>
     }
-</style>
+    @if (TempData["error"] != null)
+    {
+        <p class="alert alert-danger" id="errorMessage">@TempData["error"]</p>
+    }
+    <header class="header-sec">
+        <div class="container">
+            <h3>User support</h3>
+        </div>
+    </header>
 
-<header class="ribbon">
-    <h2>&nbsp;</h2>
-</header>
-@if (TempData["success"] != null)
-{
-    <p class="alert alert-success" id="successMessage">@TempData["success"]</p>
-}
-@if (TempData["error"] != null)
-{
-    <p class="alert alert-danger" id="errorMessage">@TempData["error"]</p>
-}
-
-<div class="page-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-
-                <div>
-                    <div class="panel-body">
-                        @using (Html.BeginForm())
-                        {
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>User Name<em>*</em></label>
-                                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control required" } })
-                                        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Phone Number<em>*</em></label>
-                                        @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control required" } })
-                                        @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Query<em>*</em></label>
-                                        @Html.TextAreaFor(model => model.UserQuery, new { htmlAttributes = new { @class = "form-control required support" } })
-                                        @Html.ValidationMessageFor(model => model.UserQuery, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        }
-
-                    </div>
-                    <!-- /.panel-body -->
+    <div class="container">
+        <div class="form-sec">
+            @using (Html.BeginForm())
+            {
+                <div class="form-group">
+                    <label>User Name</label>
+                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control required" } })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
                 </div>
-                <!-- /.panel-primary panel -->
-            </div>
-            <!-- /.col-md-7 -->
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control required" } })
+                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <label>Query</label>
+                    @Html.TextAreaFor(model => model.UserQuery, new { htmlAttributes = new { @class = "form-control required support" } })
+                    @Html.ValidationMessageFor(model => model.UserQuery, "", new { @class = "text-danger" })
+                </div>
+                <button type="submit" class="btn btn-primary"> Submit</button>
+            }
         </div>
     </div>
-</div>
+</body>
+</html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {

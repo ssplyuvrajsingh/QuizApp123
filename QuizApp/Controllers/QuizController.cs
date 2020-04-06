@@ -27,7 +27,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus = security.CheckDecypt(plainText);
+                bool isStatus = security.CheckDecypt(plainText,model.UserId);
                 if (isStatus)
                 {
                     QuizBinding quiz = new QuizBinding();
@@ -97,7 +97,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText, model.UserId);
                     if (isStatus)
                     {
                         QuizBinding quiz = new QuizBinding();
@@ -169,7 +169,7 @@ namespace QuizApp.Controllers
                     //model.ciphertoken = security.OpenSSLEncrypt(model.ciphertoken, secretKey);
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus =security.CheckDecypt(plainText);
+                    bool isStatus =security.CheckDecypt(plainText, model.UserId);
                     if (isStatus)
                     {
                         QuizBinding quiz = new QuizBinding();
@@ -217,7 +217,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus =  security.CheckDecypt(plainText);
+                    bool isStatus =  security.CheckDecypt(plainText, model.UserID);
                     if (isStatus)
                     {
                         QuizBinding quizBinding = new QuizBinding();
@@ -284,7 +284,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText, model.UserID);
                     if (isStatus)
                     {
                         QuizBinding quiz = new QuizBinding();
@@ -338,7 +338,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText, model.UserID);
                     if (isStatus)
                     {
                         QuizBinding quiz = new QuizBinding();
@@ -383,7 +383,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus = security.CheckDecypt(plainText);
+                bool isStatus = security.CheckDecypt(plainText, model.UserId);
                 if (isStatus)
                 {
                     QuizBinding quizBinding = new QuizBinding();
@@ -441,7 +441,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus = security.CheckDecypt(plainText);
+                bool isStatus = security.CheckDecypt(plainText, model.UserID);
                 if (isStatus)
                 {
                     QuizBinding quizBinding = new QuizBinding();
@@ -524,7 +524,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus =  security.CheckDecypt(plainText);
+                bool isStatus =  security.CheckDecypt(plainText, model.UserId);
                 if (isStatus)
                 {
                     QuizBinding quizBinding = new QuizBinding();
@@ -592,7 +592,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText, model.UserId);
                     if (isStatus)
                     {
                         QuizBinding quizBinding = new QuizBinding();
@@ -651,7 +651,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus = security.CheckDecypt(plainText);
+                bool isStatus = security.CheckDecypt(plainText, model.UserId);
                 if (true)
                 {
                     QuizBinding quizBinding = new QuizBinding();

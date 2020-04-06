@@ -82,7 +82,7 @@ namespace QuizApp.Controllers
 
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
                     if (isStatus)
                     {
                         var User = UserManager.FindByName(model.PhoneNumber);
@@ -187,7 +187,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus = security.CheckDecypt(plainText);
+                bool isStatus = security.CheckDecypt(plainText,model.UserId);
                 if (isStatus)
                 {
                     var getClient = new User();
@@ -256,37 +256,29 @@ namespace QuizApp.Controllers
                     result.error_message = "Given referal code is not valid";
                     return result;
                 }
-                //TODO: Decrypt the encrypted value
-                var security = new Security();
-                var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
-                var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
-                //Check Secret Code
-                bool isStatus = security.CheckDecypt(plainText);
-                if (isStatus)
+
+                if (registration.CheckDeviceId(model.DeviceID))
                 {
-                    var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber = model.PhoneNumber, EmailConfirmed = true, PhoneNumberConfirmed = false };
-
-
-                    IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
-
-                    if (!identityResult.Succeeded)
-                    {
-                        result.result = identityResult.Succeeded;
-                        result.error_message = "Username is already exists";
-                        return result;
-                    }
-
-                    model.UserId = user.Id;
-                    return registration.RegisterUser(model);
+                    result.result = false;
+                    result.error_message = "Username is already exists";
+                    return result;
                 }
-                else
+                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber = model.PhoneNumber, EmailConfirmed = true, PhoneNumberConfirmed = false};
+
+
+                IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
+
+                
+                if (!identityResult.Succeeded)
                 {
-                    return new TokenResult()
-                    {
-                        error_message = "Timeout Error",
-                        result = false
-                    };
+                    result.result = identityResult.Succeeded;
+                    result.error_message = "Username is already exists";
+                    return result;
                 }
+               
+                model.UserId = user.Id;
+                return registration.RegisterUser(model);
+
             }
             catch (Exception ex)
             {
@@ -315,7 +307,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText,model.UserId);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -382,7 +374,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
                     if (isStatus)
                     {
                         var user = UserManager.FindByName(model.PhoneNumber);
@@ -447,7 +439,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -500,7 +492,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -584,7 +576,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -770,7 +762,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText,model.UserId);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -837,7 +829,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText, model.UserId);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -896,7 +888,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus = security.CheckDecypt(plainText);
+                bool isStatus = security.CheckDecypt(plainText, model.UserId);
                 if (isStatus)
                 {
                     AccountBinding accountBinding = new AccountBinding();
@@ -997,7 +989,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText, model.UserID);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -1018,7 +1010,7 @@ namespace QuizApp.Controllers
                                 result = new ResultClass()
                                 {
                                     Data = data.RedeemBalance,
-                                    Message = "Your points is insufficient to complete this transaction( reedm values like 100, 200, 300 to 1000  etc not 150 or 125 etc)",
+                                    Message = "Your points are insufficient to complete this transaction( redeem values like 100, 200, 300 to 1000  etc not 150 or 125 etc)",
                                     Result = false
                                 };
                                 break;
@@ -1164,7 +1156,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText);
+                    bool isStatus = security.CheckDecypt(plainText, model.UserId);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -1210,7 +1202,7 @@ namespace QuizApp.Controllers
         }
         #endregion
 
-        #region Get User Profile
+        #region Post Message
         [HttpGet]
         [AllowAnonymous]
         [Route("PostMessage")]
@@ -1257,7 +1249,7 @@ namespace QuizApp.Controllers
         }
         #endregion
 
-        #region Get User Profile
+        #region Paytm Job
         [HttpGet]
         [AllowAnonymous]
         [Route("PaytmJob")]

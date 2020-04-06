@@ -43,6 +43,7 @@ namespace QuizApp.Models
                 if (existingData != null)
                 {
                     item.AlreadyPlayed = true;
+                    item.WinPrecentage = (int)existingData.PercentageEarn;
                 }
 
             }
@@ -465,7 +466,7 @@ namespace QuizApp.Models
         {
             try
             {
-                 var activeUsers = entities.Users.Where(x => x.isActive == true).ToList();
+               var activeUsers = entities.Users.Where(x => x.isActive == true).ToList();
                 //activeUsers = activeUsers.Where(x => x.LastActiveDate != null && (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date).ToList();
                 if (activeUsers.Any())
                 {

@@ -1386,13 +1386,14 @@
     <Content Include="Views\Home\TransactionPending.cshtml" />
     <Content Include="Views\Home\TransactionPendingPartialView.cshtml" />
     <Content Include="Views\Home\PrivacyPolicy.cshtml" />
-    <Content Include="Views\Home\Support.cshtml" />
-    <Content Include="Views\Home\AddSupport.cshtml" />
     <Content Include="Views\Home\TotalActiveUsers.cshtml" />
     <Content Include="Views\Home\GetLeveWiseUserInfo.cshtml" />
     <Content Include="Views\Home\GetActiveUsersLevelWisePartialView.cshtml" />
     <Content Include="Views\Home\GetContactSupport.cshtml" />
     <Content Include="Views\Home\GetContactSupportPartialView.cshtml" />
+    <Content Include="Views\Home\GetPublicSupportPartialView.cshtml" />
+    <Content Include="Views\Home\GetPublicSupport.cshtml" />
+    <Content Include="Views\Home\AddSupport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

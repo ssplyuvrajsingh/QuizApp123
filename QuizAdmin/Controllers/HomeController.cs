@@ -360,10 +360,12 @@ namespace QuizAdmin.Controllers
         #endregion
 
         #region Support
+        [AllowAnonymous]
         public ActionResult AddSupport()
         {
             return View();
         }
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult AddSupport(UserSupportModel model)
         {
@@ -395,14 +397,6 @@ namespace QuizAdmin.Controllers
                 return RedirectToAction("AddSupport", "Home");
             }
         }
-        #region Support
-        [AllowAnonymous]
-        public ActionResult Support()
-        {
-            RepoSupport repoSupport = new RepoSupport();
-            return View(repoSupport.GetSupportsList());
-        }
-        #endregion
         #endregion
 
         #region Get Level User Information
@@ -417,11 +411,13 @@ namespace QuizAdmin.Controllers
         }
         #endregion
 
+        #region Total Active Users
         public ActionResult TotalActiveUsers()
         {
             LevelWiseUserInfoModel adminProfile = new LevelWiseUserInfoModel();
             return View(adminProfile.TotalUsers());
         }
+        #endregion
 
         #region Get Contact Support
         public ActionResult GetContactSupport()
@@ -432,6 +428,18 @@ namespace QuizAdmin.Controllers
         {
             ContactSupportCls contact = new ContactSupportCls();
             return PartialView(contact.GetContectSupport());
+        }
+        #endregion
+
+        #region Get Public Support
+        public ActionResult GetPublicSupport()
+        {
+            return View();
+        }
+        public ActionResult GetPublicSupportPartialView()
+        {
+            RepoSupport repoSupport = new RepoSupport();
+            return View(repoSupport.GetSupportsList());
         }
         #endregion
 

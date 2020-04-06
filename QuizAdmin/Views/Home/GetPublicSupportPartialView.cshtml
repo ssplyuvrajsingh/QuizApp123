@@ -1,0 +1,67 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetPublicSupportPartialView</title>
+</head>
+<body>
+    <div>
+        @model IEnumerable<QuizAdmin.Models.SupportModel>
+
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h2>Public Contact Support</h2>
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped- table-bordered table-hover table-checkable datatable productTable" id="kt_table_1">
+                                <thead>
+                                    <tr>
+                                        <th>User Name</th>
+                                        <th>Phone Number</th>
+                                        <th>Query</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.UserName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.UserQuery)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                @*</table>*@
+                        </div>
+                    </div>
+                    <!-- /.panel -->
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('table.datatable').dataTable();
+            });
+        </script>
+    </div>
+</body>
+</html>

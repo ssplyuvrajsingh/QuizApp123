@@ -6,11 +6,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Configuration;
+using QuizApp.Models.Entities;
 
 namespace QuizApp.Models
 {
     public class Security
     {
+        #region Database Entities Declaration
+        QuizAppEntities entities = new QuizAppEntities();
+        #endregion
+
         #region Incrypt
         //Encryption
         public string OpenSSLEncrypt(string plainText, string passphrase)
@@ -178,8 +183,10 @@ namespace QuizApp.Models
         #endregion
 
         #region CheckDecypt
-        public bool CheckDecypt(string Value)
+        public bool CheckDecypt(string Value,string UserId)
         {
+            bool status = false;
+
             if (Value != null && Value != string.Empty)
             {
                 //Get Fix Two Value 
@@ -188,10 +195,60 @@ namespace QuizApp.Models
 
                 //Split Value Who get by Client Side
                 string[] Check = Value.Split('-');
+                string DeviceId = Check[5];
+
+                var User = UserInfo(UserId);
+                //Check First and Last Value
+                if (Check[0] == FirstValue && Check[4] == LastValue)
+                {
+                    if (DeviceId == User.DeviceID)
+                    {
+                        status = true;
+                    }
+                }
+            }
+            return status;
+        }
+        #endregion
+
+        #region Get User Info
+        public User UserInfo(string info)
+        {
+            var User = new User();
+            if (info.Count() == 10)
+            {
+                var data = entities.AspNetUsers.Where(x => x.PhoneNumber == info).FirstOrDefault();
+                    User = entities.Users.Where(x => x.UserID == data.Id).FirstOrDefault();
+                return User;
+            }
+            else
+            {
+                User = entities.Users.Where(x => x.UserID == info).FirstOrDefault();
+                return User;
+            }
+        }
+        #endregion
+
+        #region Demo CheckDecypt
+        public bool DemoCheckDecypt(string Value, string UserId)
+        {
+            bool status = false;
+
+            if (Value != null && Value != string.Empty)
+            {
+                //Get Fix Two Value 
+                string FirstValue = ConfigurationManager.AppSettings["FirstValue"].ToString();
+                string LastValue = ConfigurationManager.AppSettings["LastValue"].ToString();
+
+                //Split Value Who get by Client Side
+                string[] Check = Value.Split('-');
+                string DeviceId = Check[5];
+
+                var User = UserInfo(UserId);
 
                 string[] ClientYearTime = Check[3].Split(' ');
                 var Date = Convert.ToDateTime(Check[1] + "/" + Check[2] + "/" + ClientYearTime[0]);
-                
+
 
                 DateTime ClientTime = Convert.ToDateTime(ClientYearTime[1]);
                 string CT = ClientTime.Hour + ":" + ClientTime.Minute;
@@ -213,24 +270,17 @@ namespace QuizApp.Models
                     string SDT = SystemDateTime.Hour + ":" + SystemDateTime.Minute;
                     TimeSpan SystemHourMinutes = TimeSpan.Parse(SDT);
 
-                    if (SystemHourMinutes <= ClientHourMinutes && Date.Date==SystemDateTime.Date)
+                    if (SystemHourMinutes <= ClientHourMinutes && Date.Date == SystemDateTime.Date)
                     {
-                        return true;
+                        if (DeviceId == User.DeviceID)
+                        {
+                            status = true;
+                        }
                     }
-                    else
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-                    return false;
+
                 }
             }
-            else
-            {
-                return false;
-            }
+            return status;
         }
         #endregion
     }

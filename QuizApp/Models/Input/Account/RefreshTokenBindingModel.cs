@@ -11,6 +11,7 @@ namespace QuizApp.Models
         [Required]
         [Display(Name = "RefreshToken")]
         public string RefreshToken { get; set; }
+        public string UserId { get; set; }
         public string ciphertoken { get; set; }
     }
 }
