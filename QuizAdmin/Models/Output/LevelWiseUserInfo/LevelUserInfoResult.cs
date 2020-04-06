@@ -9,6 +9,7 @@ namespace QuizAdmin.Models
     {
         public string UserId { get; set; }
         public string Name { get; set; }
+        public bool Active { get; set; }
         public string PhoneNumber { get; set; }
         public string ReferalCode { get; set; }
         public int TotalUser { get; set; }

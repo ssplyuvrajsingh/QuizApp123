@@ -14,7 +14,7 @@ namespace QuizAdmin.Models
         {
             var data = (from u in db.Users
                         join au in db.AspNetUsers on u.UserID equals au.Id
-                        where u.UserID == au.Id
+                        where u.UserID == au.Id && u.isActive == true
                         select new LevelUserInfoResult
                         {
                             UserId = u.UserID,
@@ -49,7 +49,12 @@ namespace QuizAdmin.Models
             int totalLevelsUsers = 0;
             foreach(var Lvl in LevelUsers)
             {
-                  totalLevelsUsers = totalLevelsUsers + Convert.ToInt32(Lvl.Level1Users + Lvl.Level2Users + Lvl.Level3Users + Lvl.Level4Users + Lvl.Level5Users + Lvl.Level6Users + Lvl.Level7Users + Lvl.Level8Users + Lvl.Level9Users + Lvl.Level10Users);
+
+                var ActiveUser = db.Users.Where(x => x.isActive == true && x.UserID == Lvl.UserID).FirstOrDefault();
+                if (ActiveUser != null)
+                {
+                    totalLevelsUsers = totalLevelsUsers + Convert.ToInt32(Lvl.Level1Users + Lvl.Level2Users + Lvl.Level3Users + Lvl.Level4Users + Lvl.Level5Users + Lvl.Level6Users + Lvl.Level7Users + Lvl.Level8Users + Lvl.Level9Users + Lvl.Level10Users);
+                }
             }
             return new LevelUserInfoResult()
             {
