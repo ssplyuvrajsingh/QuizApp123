@@ -494,44 +494,28 @@ namespace QuizApp.Controllers
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
-                        var OTPVarification = accountBinding.OTPVerification(new OTPVerificationBindingModel()
-                        {
-                            OTP = model.OTP,
-                            PhoneNumber = model.PhoneNumber
-                        });
+                        var user = UserManager.FindByName(model.PhoneNumber);
+                        IdentityResult removePassoword = await UserManager.RemovePasswordAsync(user.Id);
 
-                        if (!OTPVarification)
+                        var addPassword = await UserManager.AddPasswordAsync(user.Id, model.NewPassword);
+                        if (!addPassword.Succeeded)
                         {
                             return new ResultClass()
                             {
                                 Result = false,
-                                Message = "OTP verification failed"
+                                Message = "Password change failed"
                             };
                         }
                         else
                         {
-                            var user = UserManager.FindByName(model.PhoneNumber);
-                            IdentityResult removePassoword = await UserManager.RemovePasswordAsync(user.Id);
-
-                            var addPassword = await UserManager.AddPasswordAsync(user.Id, model.NewPassword);
-                            if (!addPassword.Succeeded)
+                            var resultUpdatePassword = accountBinding.UpdatePassword(user.Id, model.NewPassword);
+                            return new ResultClass()
                             {
-                                return new ResultClass()
-                                {
-                                    Result = false,
-                                    Message = "Password change failed"
-                                };
-                            }
-                            else
-                            {
-                                var resultUpdatePassword = accountBinding.UpdatePassword(user.Id, model.NewPassword);
-                                return new ResultClass()
-                                {
-                                    Result = true,
-                                    Message = "Password change successfully"
-                                };
-                            }
+                                Result = true,
+                                Message = "Password change successfully"
+                            };
                         }
+
                     }
                     else
                     {
