@@ -73,18 +73,6 @@ namespace QuizApp.Controllers
                 else
                 {
                     AccountBinding ac = new AccountBinding();
-
-                    //TODO: Decrypt the encrypted value
-                    var security = new Security();
-                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
-
-                    //model.ciphertoken = security.OpenSSLEncrypt(model.ciphertoken, secretKey);
-
-                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
-                    //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
-                    if (isStatus)
-                    {
                         var User = UserManager.FindByName(model.PhoneNumber);
 
                             if (User != null)
@@ -98,14 +86,34 @@ namespace QuizApp.Controllers
                                     var userinfo = ac.GetUserInformation(User.Id);
                                     if (userinfo.isActive != false && userinfo.isBlocked != true)
                                     {
-                                        AuthRepository authRepository = new AuthRepository();
-                                        var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
-                                        var data1 = ac.GetRefferlCode(data.id);
-                                        data.RefferalCode = data1.RefferalCode;
-                                        data.UserName = data1.UserName;
-                                        data.MobileNumber = model.PhoneNumber;
-                                        return data;
+                                        //TODO: Decrypt the encrypted value
+                                        var security = new Security();
+                                        var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+
+                                        //model.ciphertoken = security.OpenSSLEncrypt(model.ciphertoken, secretKey);
+
+                                        var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                                        //Check Secret Code
+                                        bool isStatus = security.CheckDecypt(plainText, model.PhoneNumber);
+                                        if (isStatus)
+                                        {
+                                            AuthRepository authRepository = new AuthRepository();
+                                            var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
+                                            var data1 = ac.GetRefferlCode(data.id);
+                                            data.RefferalCode = data1.RefferalCode;
+                                            data.UserName = data1.UserName;
+                                            data.MobileNumber = model.PhoneNumber;
+                                            return data;
+                                        }
+                                    else
+                                    {
+                                        return new TokenResult()
+                                        {
+                                            error_message = "Timeout Error",
+                                            result = false
+                                        };
                                     }
+                                }
                                     else
                                     {
                                         return new TokenResult()
@@ -142,16 +150,6 @@ namespace QuizApp.Controllers
                                 result = false
                             };
                         }
-                    }
-                    else
-                    {
-                        return new TokenResult()
-                        {
-                            error_message = "Timeout Error",
-                            result = false
-                        };
-                    }
-                
                 }
             }
             catch (Exception ex)
