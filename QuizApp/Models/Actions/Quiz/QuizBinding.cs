@@ -467,7 +467,7 @@ namespace QuizApp.Models
             try
             {
                var activeUsers = entities.Users.Where(x => x.isActive == true).ToList();
-                //activeUsers = activeUsers.Where(x => x.LastActiveDate != null && (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date).ToList();
+                activeUsers = activeUsers.Where(x => x.LastActiveDate != null).ToList();
                 if (activeUsers.Any())
                 {
                     EaningHeadModel earningHeads = new EaningHeadModel();
@@ -479,13 +479,13 @@ namespace QuizApp.Models
                     foreach (var item in activeUsers)
                     {
                         //Check Last Active Date 
-                        if (item.LastActiveDate != null && (item.LastActiveDate.Value).Date == DateTime.Now.AddDays(-1).Date)
+                        if ((item.LastActiveDate.Value).Date == DateTime.Now.AddDays(-1).Date)
                         {
                             double totalTransactionAmt = 0;
                             List<LevelWithUser> lstLevelWithUser = new List<LevelWithUser>();
                             //Get Child Users
                             var childUsers = activeUsers.Where(x => !string.IsNullOrEmpty(x.ParentIDs) && x.ParentIDs.Split(',').Where(y => y == item.UserID).Any()).ToList();
-                            totalTransactionAmt += earningHeads.DirectIncome;
+                            totalTransactionAmt += earningHeads.DirectIncome/30;
                             if (childUsers.Any())
                             {
                                 foreach (var level in childUsers)
@@ -1089,6 +1089,12 @@ namespace QuizApp.Models
 
                             entities.Transactions.Add(transaction);
                             entities.SaveChanges();
+
+                            // -----Monthly Income Update
+                            totalTransactionAmt = totalTransactionAmt * 30;
+                            var UserMUpdate = entities.Users.Where(x => x.UserID == item.UserID).FirstOrDefault();
+                            UserMUpdate.MothlyIncome = totalTransactionAmt;
+                            entities.SaveChanges();
                         }
 
                         //Entery Update When Last Active Date User Not Active
@@ -1171,12 +1177,26 @@ namespace QuizApp.Models
         public List<LevelWiseActiveUsers> GetLevelWiseUserInformation(LevelWiseModel model)
         {
             var activeUsers = entities.Users.Where(x => x.ParentIDs.Contains(model.UserId)).ToList();
-            activeUsers = activeUsers.Where(x => x.LastActiveDate != null && (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date || (x.LastActiveDate.Value).Date == (DateTime.Now).Date).ToList();
+            activeUsers = activeUsers.Where(x => x.LastActiveDate != null).ToList();
+            activeUsers = activeUsers.Where(x =>  (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date || (x.LastActiveDate.Value).Date == (DateTime.Now).Date).ToList();
             List<LevelWiseActiveUsers> levelsUsers = new List<LevelWiseActiveUsers>();
             foreach (var childUsers in activeUsers)
             {
+                int lvlCount = 0;
                 string[] Sort = childUsers.ParentIDs.Split(',');
-                if (Sort.Count() == model.Level)
+                foreach(var item in Sort)
+                {
+                    if(item != model.UserId)
+                    {
+                        lvlCount = lvlCount + 1;
+                    }
+                    else
+                    {
+                        lvlCount = lvlCount + 1;
+                        break;
+                    }
+                }
+                if (lvlCount == model.Level)
                 {
                     var data = new LevelWiseActiveUsers();
                     var User = entities.AspNetUsers.Where(x => x.Id == childUsers.UserID).FirstOrDefault();
@@ -1273,260 +1293,268 @@ namespace QuizApp.Models
                 //Get Child Users Where Current User
                 var childUsers = activeUser.Where(x => !string.IsNullOrEmpty(x.ParentIDs) && x.ParentIDs.Split(',').Where(y => y == UserId).Any()).ToList();
 
-                childUsers = childUsers.Where(x => x.LastActiveDate != null && (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date || (x.LastActiveDate.Value).Date == (DateTime.Now).Date).ToList();
+                
 
-                totalTransactionAmt += earningHeads.DirectIncome;
+                //childUsers = childUsers.Where(x => x.LastActiveDate != null && (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date || (x.LastActiveDate.Value).Date == (DateTime.Now).Date).ToList();
+
+                totalTransactionAmt += earningHeads.DirectIncome/30;
                 if (childUsers.Any())
                 {
                     foreach (var level in childUsers)
                     {
-                        var parentIDs = level.ParentIDs.Split(',').ToList();
-                        var parentUserWithLevel = parentIDs.Select(x => new SetLevelForParentUser()
+                        if (level.LastActiveDate != null)
                         {
-                            UserId = x,
-                            Level = parentIDs.IndexOf(x) + 1,
-                            Count = parentIDs.Count()
-                        }).ToList();
+                            if ((level.LastActiveDate.Value).Date == DateTime.Now.AddDays(-1).Date || (level.LastActiveDate.Value).Date == (DateTime.Now).Date)
+                            {
+                                var parentIDs = level.ParentIDs.Split(',').ToList();
+                                var parentUserWithLevel = parentIDs.Select(x => new SetLevelForParentUser()
+                                {
+                                    UserId = x,
+                                    Level = parentIDs.IndexOf(x) + 1,
+                                    Count = parentIDs.Count()
+                                }).ToList();
 
-                        //Add Level 
-                        var level_1 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 1).FirstOrDefault();
-                        if (level_1 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 1).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l1 = new LevelWithUser();
-                                l1.Level = 1;
-                                l1.ChildUsers = new List<ChildUser>();
-                                l1.ChildUsers.Add(new ChildUser()
+                                //Add Level 
+                                var level_1 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 1).FirstOrDefault();
+                                if (level_1 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l1);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
-                            }
-                        }
+                                    var data = lstLevelWithUser.Where(x => x.Level == 1).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l1 = new LevelWithUser();
+                                        l1.Level = 1;
+                                        l1.ChildUsers = new List<ChildUser>();
+                                        l1.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l1);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
+                                }
 
-                        var level_2 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 2).FirstOrDefault();
-                        if (level_2 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 2).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l2 = new LevelWithUser();
-                                l2.Level = 2;
-                                l2.ChildUsers = new List<ChildUser>();
-                                l2.ChildUsers.Add(new ChildUser()
+                                var level_2 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 2).FirstOrDefault();
+                                if (level_2 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l2);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
-                            }
+                                    var data = lstLevelWithUser.Where(x => x.Level == 2).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l2 = new LevelWithUser();
+                                        l2.Level = 2;
+                                        l2.ChildUsers = new List<ChildUser>();
+                                        l2.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l2);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
 
-                        }
+                                }
 
-                        var level_3 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 3).FirstOrDefault();
-                        if (level_3 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 3).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l3 = new LevelWithUser();
-                                l3.Level = 3;
-                                l3.ChildUsers = new List<ChildUser>();
-                                l3.ChildUsers.Add(new ChildUser()
+                                var level_3 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 3).FirstOrDefault();
+                                if (level_3 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l3);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
-                            }
-                        }
+                                    var data = lstLevelWithUser.Where(x => x.Level == 3).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l3 = new LevelWithUser();
+                                        l3.Level = 3;
+                                        l3.ChildUsers = new List<ChildUser>();
+                                        l3.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l3);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
+                                }
 
-                        var level_4 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 4).FirstOrDefault();
-                        if (level_4 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 4).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l4 = new LevelWithUser();
-                                l4.Level = 4;
-                                l4.ChildUsers = new List<ChildUser>();
-                                l4.ChildUsers.Add(new ChildUser()
+                                var level_4 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 4).FirstOrDefault();
+                                if (level_4 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l4);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
-                            }
-                        }
+                                    var data = lstLevelWithUser.Where(x => x.Level == 4).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l4 = new LevelWithUser();
+                                        l4.Level = 4;
+                                        l4.ChildUsers = new List<ChildUser>();
+                                        l4.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l4);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
+                                }
 
-                        var level_5 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 5).FirstOrDefault();
-                        if (level_5 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 5).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l5 = new LevelWithUser();
-                                l5.Level = 5;
-                                l5.ChildUsers = new List<ChildUser>();
-                                l5.ChildUsers.Add(new ChildUser()
+                                var level_5 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 5).FirstOrDefault();
+                                if (level_5 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l5);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
-                            }
-                        }
+                                    var data = lstLevelWithUser.Where(x => x.Level == 5).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l5 = new LevelWithUser();
+                                        l5.Level = 5;
+                                        l5.ChildUsers = new List<ChildUser>();
+                                        l5.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l5);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
+                                }
 
-                        var level_6 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 6).FirstOrDefault();
-                        if (level_6 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 6).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l6 = new LevelWithUser();
-                                l6.Level = 6;
-                                l6.ChildUsers = new List<ChildUser>();
-                                l6.ChildUsers.Add(new ChildUser()
+                                var level_6 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 6).FirstOrDefault();
+                                if (level_6 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l6);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
-                            }
-                        }
+                                    var data = lstLevelWithUser.Where(x => x.Level == 6).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l6 = new LevelWithUser();
+                                        l6.Level = 6;
+                                        l6.ChildUsers = new List<ChildUser>();
+                                        l6.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l6);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
+                                }
 
-                        var level_7 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 7).FirstOrDefault();
-                        if (level_7 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 7).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l7 = new LevelWithUser();
-                                l7.Level = 7;
-                                l7.ChildUsers = new List<ChildUser>();
-                                l7.ChildUsers.Add(new ChildUser()
+                                var level_7 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 7).FirstOrDefault();
+                                if (level_7 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l7);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
-                            }
-                        }
+                                    var data = lstLevelWithUser.Where(x => x.Level == 7).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l7 = new LevelWithUser();
+                                        l7.Level = 7;
+                                        l7.ChildUsers = new List<ChildUser>();
+                                        l7.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l7);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
+                                }
 
-                        var level_8 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 8).FirstOrDefault();
-                        if (level_8 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 8).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l8 = new LevelWithUser();
-                                l8.Level = 8;
-                                l8.ChildUsers = new List<ChildUser>();
-                                l8.ChildUsers.Add(new ChildUser()
+                                var level_8 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 8).FirstOrDefault();
+                                if (level_8 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l8);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
-                            }
-                        }
+                                    var data = lstLevelWithUser.Where(x => x.Level == 8).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l8 = new LevelWithUser();
+                                        l8.Level = 8;
+                                        l8.ChildUsers = new List<ChildUser>();
+                                        l8.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l8);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
+                                }
 
-                        var level_9 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 9).FirstOrDefault();
-                        if (level_9 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 9).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l9 = new LevelWithUser();
-                                l9.Level = 9;
-                                l9.ChildUsers = new List<ChildUser>();
-                                l9.ChildUsers.Add(new ChildUser()
+                                var level_9 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 9).FirstOrDefault();
+                                if (level_9 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l9);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
-                            }
-                        }
+                                    var data = lstLevelWithUser.Where(x => x.Level == 9).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l9 = new LevelWithUser();
+                                        l9.Level = 9;
+                                        l9.ChildUsers = new List<ChildUser>();
+                                        l9.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l9);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
+                                }
 
-                        var level_10 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 10).FirstOrDefault();
-                        if (level_10 != null)
-                        {
-                            var data = lstLevelWithUser.Where(x => x.Level == 10).FirstOrDefault();
-                            if (data == null)
-                            {
-                                var l10 = new LevelWithUser();
-                                l10.Level = 10;
-                                l10.ChildUsers = new List<ChildUser>();
-                                l10.ChildUsers.Add(new ChildUser()
+                                var level_10 = parentUserWithLevel.Where(x => x.UserId == UserId && x.Level == 10).FirstOrDefault();
+                                if (level_10 != null)
                                 {
-                                    UserId = level.UserID
-                                });
-                                lstLevelWithUser.Add(l10);
-                            }
-                            else
-                            {
-                                data.ChildUsers.Add(new ChildUser()
-                                {
-                                    UserId = level.UserID
-                                });
+                                    var data = lstLevelWithUser.Where(x => x.Level == 10).FirstOrDefault();
+                                    if (data == null)
+                                    {
+                                        var l10 = new LevelWithUser();
+                                        l10.Level = 10;
+                                        l10.ChildUsers = new List<ChildUser>();
+                                        l10.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                        lstLevelWithUser.Add(l10);
+                                    }
+                                    else
+                                    {
+                                        data.ChildUsers.Add(new ChildUser()
+                                        {
+                                            UserId = level.UserID
+                                        });
+                                    }
+                                }
                             }
                         }
                     }
@@ -1559,7 +1587,7 @@ namespace QuizApp.Models
                                 if (lst.Level == 2)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level2Income / 30)), 2);
                                     userEarningExist.Level2Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1568,7 +1596,7 @@ namespace QuizApp.Models
                                 if (lst.Level == 3)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level3Income / 30)), 2);
                                     userEarningExist.Level3Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1577,7 +1605,7 @@ namespace QuizApp.Models
                                 if (lst.Level == 4)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level4Income / 30)), 2);
                                     userEarningExist.Level4Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1586,7 +1614,7 @@ namespace QuizApp.Models
                                 if (lst.Level == 5)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level5Income / 30)), 2);
                                     userEarningExist.Level5Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1595,7 +1623,7 @@ namespace QuizApp.Models
                                 if (lst.Level == 6)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level6Income / 30)), 2);
                                     userEarningExist.Level6Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1604,7 +1632,7 @@ namespace QuizApp.Models
                                 if (lst.Level == 7)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level7Income / 30)), 2);
                                     userEarningExist.Level7Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1612,7 +1640,7 @@ namespace QuizApp.Models
                                 if (lst.Level == 8)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level8Income / 30)), 2);
                                     userEarningExist.Level8Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1620,7 +1648,7 @@ namespace QuizApp.Models
                                 if (lst.Level == 9)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level9Income / 30)), 2);
                                     userEarningExist.Level9Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1628,13 +1656,10 @@ namespace QuizApp.Models
                                 if (lst.Level == 10)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level10Income / 30)), 2);
                                     userEarningExist.Level10Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
-
-
-
                             }
 
                             else
@@ -1795,7 +1820,7 @@ namespace QuizApp.Models
                     }
                 }
                 // -----Monthly Income Update
-                totalTransactionAmt = totalTransactionAmt * 30;
+                    totalTransactionAmt = totalTransactionAmt * 30;
                 var UserMUpdate = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
                 UserMUpdate.MothlyIncome = totalTransactionAmt;
                 entities.SaveChanges();

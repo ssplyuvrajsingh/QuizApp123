@@ -38,8 +38,10 @@ namespace QuizAdmin.Models
             }
             else
             {
+                model.isActive = old.isActive;
                 db.Entry(old).CurrentValues.SetValues(model);
-                return db.SaveChanges() > 0;
+                int value = db.SaveChanges();
+                return true;
             }
         }
         #endregion

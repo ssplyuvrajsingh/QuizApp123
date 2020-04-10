@@ -534,7 +534,8 @@ namespace QuizApp.Models
         #region Get User Information isActive or Blocked
         public User GetUserInformation(string UserId)
         {
-            return entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
+            var data = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
+            return data;
         }
         #endregion
 
@@ -584,7 +585,7 @@ namespace QuizApp.Models
                 //$username = "motanad";
                 //$password = "yadav@123456";
                 string message = uniqueNumber + " " + "%20is%20your%20Quiz%20verification%20code";
-                string url = "http://msg.msgclub.net/rest/services/sendSMS/sendGroupSms?AUTH_KEY=c24eb7fe1cecdca943c82c40976ea6c1&message=" + message + "&senderId=MOTANA&routeId=1&mobileNos=" + mobile + "&smsContentType=english";
+                string url = "http://msg.msgclub.net/rest/services/sendSMS/sendGroupSms?AUTH_KEY=c24eb7fe1cecdca943c82c40976ea6c1&message=" + message + "&senderId=QZGURU&routeId=1&mobileNos=" + mobile + "&smsContentType=english";
 
                 HttpClient client = new HttpClient();
 
