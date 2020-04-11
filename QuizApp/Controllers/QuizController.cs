@@ -101,23 +101,36 @@ namespace QuizApp.Controllers
                     if (isStatus)
                     {
                         QuizBinding quiz = new QuizBinding();
-                        var data = quiz.GetQuizQuestions(model.QuizId, model.UserId);
-                        if (data != null)
+                        bool maxQuiz = quiz.CheckMaxQuizPlayed(model.UserId);
+                        if (maxQuiz)
                         {
-                            ResultClass = new ResultClass()
+                            var data = quiz.GetQuizQuestions(model.QuizId, model.UserId);
+                            if (data != null)
                             {
-                                Data = data,
-                                Message = "Data found successfully",
-                                Result = true
-                            };
+                                ResultClass = new ResultClass()
+                                {
+                                    Data = data,
+                                    Message = "Data found successfully",
+                                    Result = true
+                                };
+                            }
+                            else
+                            {
+                                ResultClass = new ResultClass()
+                                {
+                                    Data = null,
+                                    Message = "Data Not Found",
+                                    Result = false
+                                };
+                            }
                         }
                         else
                         {
                             ResultClass = new ResultClass()
                             {
                                 Data = null,
-                                Message = "Data Not Found",
-                                Result = false
+                                Message = "You have reached to maximum Quiz allowed per day, start playing tomorrow.",
+                                Result = maxQuiz
                             };
                         }
                     }

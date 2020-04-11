@@ -55,10 +55,10 @@ namespace QuizApp.Models
             });
             //Update Last Active Date User
             var playedDataCount = entities.QuizPlayers.Where(a => a.UserID == userId && a.IsCompleted == true && a.PlayedDate != null).OrderByDescending(a => a.PlayedDate).ToList();
-            var d = DateTime.Now.Date;
+            //var d = DateTime.Now.Date;
             playedDataCount = playedDataCount.Where(a => (a.PlayedDate.Value).Date == (DateTime.Now).Date).OrderByDescending(a => a.PlayedDate).ToList();
             var eaningHeadModel = GetEaningHead();
-            if (playedDataCount.Count >= eaningHeadModel.MinimumQuiz)
+            if (playedDataCount.Count() >= eaningHeadModel.MinimumQuiz)
             {
                 var LastActiveDate = entities.Users.Where(x => x.UserID == userId).FirstOrDefault();
                 LastActiveDate.LastActiveDate = DateTime.Now;
@@ -1858,6 +1858,23 @@ namespace QuizApp.Models
                 CreateDate=DateTime.Now
             });
             return entities.SaveChanges() > 0;
+        }
+        #endregion
+
+        #region Check Max Quiz Played
+        public bool CheckMaxQuizPlayed(string userId)
+        {
+            bool res = false;
+            var playedDataCount = entities.QuizPlayers.Where(a => a.UserID == userId && a.IsCompleted == true && a.PlayedDate != null).OrderByDescending(a => a.PlayedDate).ToList();
+            //var d = DateTime.Now.Date;
+            playedDataCount = playedDataCount.Where(a => (a.PlayedDate.Value).Date == (DateTime.Now).Date).OrderByDescending(a => a.PlayedDate).ToList();
+            var eaningHeadModel = GetEaningHead();
+            int Count = playedDataCount.Count();
+            if (Count < eaningHeadModel.MaxQuiz)
+            {
+                res = true;
+            }
+            return res;
         }
         #endregion
     }

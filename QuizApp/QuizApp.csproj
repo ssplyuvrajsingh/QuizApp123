@@ -361,6 +361,7 @@
     <Compile Include="Models\Input\Quiz\SetQuestionAnswer.cs" />
     <Compile Include="Models\Input\Quiz\StartGameBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\WalletClass.cs" />
+    <Compile Include="Models\JsonFileClasses\AllowedUsers.cs" />
     <Compile Include="Models\Output\Account\CurrentAmountDetailsModel.cs" />
     <Compile Include="Models\Output\Account\paytmResponse.cs" />
     <Compile Include="Models\Output\Account\TokenResult.cs" />
@@ -438,6 +439,7 @@
     </Content>
     <Content Include="Connected Services\Application Insights\ConnectedService.json" />
     <Content Include="Models\JsonFile\LevelEarningMasterUser.json" />
+    <Content Include="Models\JsonFile\AllowUsers.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

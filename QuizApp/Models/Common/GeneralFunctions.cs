@@ -181,5 +181,19 @@ namespace QuizApp.Models
             return earningHeads;
         }
         #endregion
+
+        #region Get Earning Heads
+        public string getAllowedUser()
+        {
+            var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/AllowUsers.json");
+            AllowedUsers Users = new AllowedUsers();
+            using (StreamReader r = new StreamReader(jsonFilePath))
+            {
+                string json = r.ReadToEnd();
+                Users = JsonConvert.DeserializeObject<AllowedUsers>(json);
+            }
+            return Users.AllowUserId;
+        }
+        #endregion
     }
 }

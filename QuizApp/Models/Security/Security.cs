@@ -198,8 +198,15 @@ namespace QuizApp.Models
                 string DeviceId = Check[5];
 
                 var User = UserInfo(UserId);
+
+                bool AllowedUserId = false;//GetAllowedUser(User.UserID);
+
                 //Check First and Last Value
-                if (Check[0] == FirstValue && Check[4] == LastValue)
+                if(AllowedUserId)
+                {
+                    status = true;
+                }
+                else if (Check[0] == FirstValue && Check[4] == LastValue)
                 {
                     if (DeviceId == User.DeviceID)
                     {
@@ -226,6 +233,24 @@ namespace QuizApp.Models
                 User = entities.Users.Where(x => x.UserID == info).FirstOrDefault();
                 return User;
             }
+        }
+        #endregion
+
+        #region Get User Info
+        public bool GetAllowedUser(string userId)
+        {
+            bool res = false;
+            GeneralFunctions general = new GeneralFunctions();
+            string data = general.getAllowedUser();
+            string[] UserId = data.Split(',');
+            foreach(var item in UserId)
+            {
+                if(item == userId)
+                {
+                    res = true;
+                }
+            }
+            return res;
         }
         #endregion
 
