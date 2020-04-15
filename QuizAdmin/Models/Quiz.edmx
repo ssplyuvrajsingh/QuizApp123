@@ -66,6 +66,15 @@
           <Property Name="AccessFailedCount" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
         </EntityType>
+        <EntityType Name="Caption">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" />
+          <Property Name="Url" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="ContactSupport">
           <Key>
             <PropertyRef Name="ContactSupportId" />
@@ -299,6 +308,7 @@
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Caption" EntityType="Self.Caption" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ContactSupport" EntityType="Self.ContactSupport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DailyUserLog" EntityType="Self.DailyUserLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LevelEarnings" EntityType="Self.LevelEarnings" Schema="dbo" store:Type="Tables" />
@@ -402,6 +412,7 @@
             <End Role="Support" EntitySet="Supports" />
           </AssociationSet>
           <EntitySet Name="ContactSupports" EntityType="QuizAppModel.ContactSupport" />
+          <EntitySet Name="Captions" EntityType="QuizAppModel.Caption" />
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -902,6 +913,15 @@
           <Property Name="UserMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="Caption">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1208,6 +1228,16 @@
                 <ScalarProperty Name="Mobile" ColumnName="Mobile" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="ContactSupportId" ColumnName="ContactSupportId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Captions">
+            <EntityTypeMapping TypeName="QuizAppModel.Caption">
+              <MappingFragment StoreEntitySet="Caption">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

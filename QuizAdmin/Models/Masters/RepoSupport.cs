@@ -10,6 +10,7 @@ namespace QuizAdmin.Models
         #region Db Declaration
         QuizAppEntities db = new QuizAppEntities();
         #endregion
+
         #region Support List
         public List<SupportModel> GetSupportsList()
         {

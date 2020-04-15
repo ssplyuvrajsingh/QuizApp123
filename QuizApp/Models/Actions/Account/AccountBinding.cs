@@ -615,5 +615,16 @@ namespace QuizApp.Models
             }
         }
         #endregion
+
+        #region Add Caption
+        public List<CaptionModel> GetCaption()
+        {
+            return entities.Captions.OrderByDescending(x => x.CreateDate).Select(x => new CaptionModel()
+            {
+                Title = x.Title,
+                Url = x.Url
+            }).ToList();
+        }
+        #endregion
     }
 }

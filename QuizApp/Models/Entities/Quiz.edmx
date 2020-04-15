@@ -66,6 +66,32 @@
           <Property Name="AccessFailedCount" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
         </EntityType>
+        <EntityType Name="Caption">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" />
+          <Property Name="Url" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Challange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="20" />
+          <Property Name="ChallangeId" Type="int" />
+          <Property Name="IsAdmin" Type="bit" />
+          <Property Name="IsAccepted" Type="bit" />
+          <Property Name="StartDateTime" Type="datetime" />
+          <Property Name="IsCompleted" Type="bit" />
+          <Property Name="CompletedDateTime" Type="datetime" />
+          <Property Name="IsWinner" Type="bit" />
+          <Property Name="Points" Type="int" />
+        </EntityType>
         <EntityType Name="ContactSupport">
           <Key>
             <PropertyRef Name="ContactSupportId" />
@@ -281,6 +307,8 @@
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Caption" EntityType="Self.Caption" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Challange" EntityType="Self.Challange" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ContactSupport" EntityType="Self.ContactSupport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DailyUserLog" EntityType="Self.DailyUserLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LevelEarnings" EntityType="Self.LevelEarnings" Schema="dbo" store:Type="Tables" />
@@ -374,6 +402,8 @@
             <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
           </AssociationSet>
           <EntitySet Name="ContactSupports" EntityType="QuizAppModel.ContactSupport" />
+          <EntitySet Name="Captions" EntityType="QuizAppModel.Caption" />
+          <EntitySet Name="Challanges" EntityType="QuizAppModel.Challange" />
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -828,6 +858,32 @@
           <Property Name="UserMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="Caption">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Challange">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ChallangeId" Type="Int32" />
+          <Property Name="IsAdmin" Type="Boolean" />
+          <Property Name="IsAccepted" Type="Boolean" />
+          <Property Name="StartDateTime" Type="DateTime" Precision="3" />
+          <Property Name="IsCompleted" Type="Boolean" />
+          <Property Name="CompletedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="IsWinner" Type="Boolean" />
+          <Property Name="Points" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1115,6 +1171,34 @@
                 <ScalarProperty Name="Mobile" ColumnName="Mobile" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="ContactSupportId" ColumnName="ContactSupportId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Captions">
+            <EntityTypeMapping TypeName="QuizAppModel.Caption">
+              <MappingFragment StoreEntitySet="Caption">
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Challanges">
+            <EntityTypeMapping TypeName="QuizAppModel.Challange">
+              <MappingFragment StoreEntitySet="Challange">
+                <ScalarProperty Name="Points" ColumnName="Points" />
+                <ScalarProperty Name="IsWinner" ColumnName="IsWinner" />
+                <ScalarProperty Name="CompletedDateTime" ColumnName="CompletedDateTime" />
+                <ScalarProperty Name="IsCompleted" ColumnName="IsCompleted" />
+                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
+                <ScalarProperty Name="IsAccepted" ColumnName="IsAccepted" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="ChallangeId" ColumnName="ChallangeId" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

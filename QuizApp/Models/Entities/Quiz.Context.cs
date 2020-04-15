@@ -43,5 +43,7 @@ namespace QuizApp.Models.Entities
         public virtual DbSet<LevelEarningStatu> LevelEarningStatus { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<ContactSupport> ContactSupports { get; set; }
+        public virtual DbSet<Caption> Captions { get; set; }
+        public virtual DbSet<Challange> Challanges { get; set; }
     }
 }

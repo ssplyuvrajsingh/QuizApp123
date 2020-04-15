@@ -1248,5 +1248,57 @@ namespace QuizApp.Controllers
             }
         }
         #endregion
-    }
+
+        #region Get Caption
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("GetNewsList")]
+        public ResultClass GetNewsList(CaptionModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Result = false,
+                        Message = "Please send required fields"
+                    };
+                }
+                else
+                {
+                    AccountBinding binding = new AccountBinding();
+                    var res = binding.GetCaption();
+                    if(res!=null)
+                    {
+                        Result = new ResultClass()
+                        {
+                            Result = true,
+                            Message = "Data found successfully",
+                            Data = res
+                        };
+                    }
+                    else
+                    {
+                        Result = new ResultClass()
+                        {
+                            Result = false,
+                            Message = "Data not found"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message,
+                };
+            }
+            return Result;
+        }
+            #endregion
+        }
 }

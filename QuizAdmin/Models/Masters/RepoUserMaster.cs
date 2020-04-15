@@ -12,6 +12,7 @@ namespace QuizAdmin.Models
     public class RepoUserMaster
     {
         QuizAppEntities db = new QuizAppEntities();
+
         #region User Master
         #region User Maseter List
         public List<AllUser> getUser()

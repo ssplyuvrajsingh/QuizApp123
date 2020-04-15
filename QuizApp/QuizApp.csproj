@@ -259,6 +259,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\challangeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\QuizController.cs" />
     <Compile Include="Global.asax.cs">
@@ -267,6 +268,8 @@
     <Compile Include="Models\Actions\Account\AccountBinding.cs" />
     <Compile Include="Models\Actions\Account\AuthRepository.cs" />
     <Compile Include="Models\Actions\Account\PaytmBinding.cs" />
+    <Compile Include="Models\Actions\Challange\ChallangeBinding.cs" />
+    <Compile Include="Models\Actions\Challange\ChallangeModel.cs" />
     <Compile Include="Models\Actions\Quiz\QuizBinding.cs" />
     <Compile Include="Models\Common\Constants.cs" />
     <Compile Include="Models\Common\GeneralFunctions.cs" />
@@ -282,6 +285,12 @@
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\AspNetUserLogin.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\Caption.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\Challange.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\ContactSupport.cs">
@@ -343,6 +352,7 @@
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Input\Account\AddBankAccountDetailsModel.cs" />
+    <Compile Include="Models\Input\Account\CaptionModel.cs" />
     <Compile Include="Models\Input\Account\ChangePasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\ForgotPasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\OTPVerificationBindingModel.cs" />
@@ -471,6 +481,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\challange\" />
     <Folder Include="Views\Quiz\" />
   </ItemGroup>
   <ItemGroup>

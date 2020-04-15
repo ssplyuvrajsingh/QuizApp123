@@ -39,5 +39,7 @@
 
   "MinimumQuiz": 2,
 
-  "MaxQuiz": 2
+  "MaxQuiz": 2,
+
+  "Rewards": 20
 }

@@ -54,6 +54,7 @@ namespace QuizApp.Models
         public int WithdrawCharges { get; set; }
         public int MinimumQuiz { get; set; }
         public int MaxQuiz { get; set; }
+        public int Rewards { get; set; }  
     }
 
     public class LevelWithUser

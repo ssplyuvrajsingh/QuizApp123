@@ -1,0 +1,71 @@
+﻿@model IEnumerable<QuizAdmin.Models.CaptionModel>
+<!-- /.row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2>Caption</h2>
+            </div>
+            <div class="panel-highlight-action">
+                <a href="/Home/AddCaption">
+                    <button class="btn btn-round btn-danger btn-lg">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </a>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table datatable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Title
+                                </th>
+                                <th>
+                                   Url
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Url)
+                                    </td>
+                                    <td>
+                                        <a href="/Home/AddCaption/@item.Id?mode=edit">
+                                            <button class="btn btn-primary btn-round">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </a>
+                                        <a href="/Home/DeleteCaption/@item.Id" onclick="return confirm('Do you want to Delete ?')">
+                                            <button class="btn btn-danger btn-round">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.panel -->
+        </div>
+    </div>
+</div>
+<!-- /.row -->
+<script src="~/js/QuizActive.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('table.datatable').dataTable();
+    });
+</script>

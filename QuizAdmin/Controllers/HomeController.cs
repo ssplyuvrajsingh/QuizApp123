@@ -443,5 +443,79 @@ namespace QuizAdmin.Controllers
         }
         #endregion
 
+        #region Caption
+        public ActionResult Caption()
+        {
+            return View();
+        }
+        public ActionResult CaptionPartialView()
+        {
+            RepoCaption caption = new RepoCaption();
+
+            return PartialView(caption.GetCaption());
+        }
+
+        public ActionResult AddCaption(string mode, int id = 0)
+        {
+            if (!string.IsNullOrEmpty(mode) && mode == "edit")
+            {
+                RepoCaption db = new RepoCaption();
+                return View(db.GetCaptionById(Convert.ToInt32(id)));
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddCaption(CaptionModel model)
+        {
+            try
+            {
+                RepoCaption db = new RepoCaption();
+                bool result = db.AddCaption(model);
+                if (result)
+                {
+                    TempData["success"] = "Saved Successfully";
+                    return RedirectToAction("Caption", "Home");
+                }
+                else
+                {
+                    TempData["error"] = "Record Added & Updated Unsuccessfully";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Record Added & Updated Unsuccessfully";
+            }
+
+            return View();
+        }
+
+        public ActionResult DeleteCaption(int Id)
+        {
+            try
+            {
+                RepoCaption db = new RepoCaption();
+                if (db.DeleteCaption(Id))
+                {
+                    TempData["success"] = "Deleted Successfully";
+                    return RedirectToAction("Caption", "Home");
+                }
+                else
+                {
+                    TempData["error"] = "Record Deletion Unsuccessfull";
+                    return RedirectToAction("Caption", "Home");
+                }
+            }
+
+            catch (Exception ee)
+            {
+                TempData["error"] = "Record Not Found or Deleted by Another user";
+                return RedirectToAction("Quiz", "Home");
+            }
+        }
+        #endregion
     }
 }

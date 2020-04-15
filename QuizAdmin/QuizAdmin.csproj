@@ -228,6 +228,9 @@
     <Compile Include="Models\AspNetUserLogin.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Caption.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ContactSupport.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
@@ -250,6 +253,8 @@
     <Compile Include="Models\MobileOTP.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Output\Caption\CaptionModel.cs" />
+    <Compile Include="Models\Output\Caption\RepoCaption.cs" />
     <Compile Include="Models\Output\ContactSupport\ContactSupportCls.cs" />
     <Compile Include="Models\Output\ContactSupport\ContactSupportModel .cs" />
     <Compile Include="Models\Output\LevelWiseUserInfo\LevelUserInfoResult.cs" />
@@ -1394,6 +1399,9 @@
     <Content Include="Views\Home\GetPublicSupportPartialView.cshtml" />
     <Content Include="Views\Home\GetPublicSupport.cshtml" />
     <Content Include="Views\Home\AddSupport.cshtml" />
+    <Content Include="Views\Home\Caption.cshtml" />
+    <Content Include="Views\Home\CaptionPartialView.cshtml" />
+    <Content Include="Views\Home\AddCaption.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
