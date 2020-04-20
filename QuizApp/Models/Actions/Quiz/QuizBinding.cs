@@ -367,19 +367,13 @@ namespace QuizApp.Models
         public LevelEarningModelMaster GetLevelBaseEarningAmount(string Users)
         {
             //Update Active Users and Monthly Income
-            var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
-            EaningHeadModel earningHeads = new EaningHeadModel();
-            using (StreamReader r = new StreamReader(jsonFilePath))
-            {
-                string json = r.ReadToEnd();
-                earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
-            }
+            GeneralFunctions general = new GeneralFunctions();
+            var earningHeads = general.getEarningHeads();
 
-            RefreshLevelBaseActiveUsersandMonthlyIncome(jsonFilePath, Users);
+            RefreshLevelBaseActiveUsersandMonthlyIncome(Users);
             LevelEarningModelMaster levelEarningModelMaster = new LevelEarningModelMaster();
             var data = entities.LevelEarnings.Where(x => x.UserID == Users).FirstOrDefault();
             List<LevelEarningModel> levelEarnings = new List<LevelEarningModel>();
-            GeneralFunctions general = new GeneralFunctions();
             for (int i = 1; i <= 10; i++)
             {
                 var lvl = new LevelEarningModel();
@@ -470,12 +464,15 @@ namespace QuizApp.Models
                 //activeUsers = activeUsers.Where(x => x.LastActiveDate != null).ToList();
                 if (activeUsers.Any())
                 {
-                    EaningHeadModel earningHeads = new EaningHeadModel();
-                    using (StreamReader r = new StreamReader(jsonFilePath))
-                    {
-                        string json = r.ReadToEnd();
-                        earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
-                    }
+                    GeneralFunctions general = new GeneralFunctions();
+                    var earningHeads = general.getEarningHeads();
+                    //EaningHeadModel earningHeads = new EaningHeadModel();
+
+                    //using (StreamReader r = new StreamReader(jsonFilePath))
+                    //{
+                    //    string json = r.ReadToEnd();
+                    //    earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
+                    //}
                     foreach (var item in activeUsers)
                     {
                         //Check Last Active Date
@@ -1335,24 +1332,22 @@ namespace QuizApp.Models
             };
             entities.LevelEarningStatus.Add(obj);
             entities.SaveChanges();
+            MailSenderRepo mailSenderRepo = new MailSenderRepo();
+            mailSenderRepo.MailSender("ssplyuvraj@gmail.com", obj.LevelHangFireStatus.ToString(), "Quiz Exception");
         }
         #endregion
 
         #region Refresh Level Base Active Users and Monthly Income
-        public bool RefreshLevelBaseActiveUsersandMonthlyIncome(string jsonFilePath, string UserId)
+        public bool RefreshLevelBaseActiveUsersandMonthlyIncome(string UserId)
         {
             try
             {
                 var activeUser = entities.Users.Where(x => x.isActive == true).ToList();
 
                 //Read Json File
-                EaningHeadModel earningHeads = new EaningHeadModel();
-                using (StreamReader r = new StreamReader(jsonFilePath))
-                {
-                    string json = r.ReadToEnd();
-                    earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
-                }
-
+                GeneralFunctions general = new GeneralFunctions();
+                var earningHeads = general.getEarningHeads();
+               
                 double totalTransactionAmt = 0;
                 List<LevelWithUser> lstLevelWithUser = new List<LevelWithUser>();
 
@@ -1820,6 +1815,59 @@ namespace QuizApp.Models
                         if (userEarningExist == null)
                         {
                             entities.LevelEarnings.Add(le);
+                        }
+                        entities.SaveChanges();
+                    }
+                    else
+                    {
+                        var le = new LevelEarning();
+                        var userEarningExist = entities.LevelEarnings.Where(x => x.UserID == UserId).FirstOrDefault();
+                        if (userEarningExist == null)
+                        {
+                            le.Level1 = 0;
+                            le.Level2 = 0;
+                            le.Level3 = 0;
+                            le.Level4 = 0;
+                            le.Level5 = 0;
+                            le.Level6 = 0;
+                            le.Level7 = 0;
+                            le.Level8 = 0;
+                            le.Level9 = 0;
+                            le.Level10 = 0;
+                            le.Level1Users = 0;
+                            le.Level2Users = 0;
+                            le.Level3Users = 0;
+                            le.Level4Users = 0;
+                            le.Level5Users = 0;
+                            le.Level6Users = 0;
+                            le.Level7Users = 0;
+                            le.Level8Users = 0;
+                            le.Level9Users = 0;
+                            le.Level10Users = 0;
+                            entities.LevelEarnings.Add(le);
+                        }
+                        else
+                        {
+                            userEarningExist.Level1 = 0;
+                            userEarningExist.Level2 = 0;
+                            userEarningExist.Level3 = 0;
+                            userEarningExist.Level4 = 0;
+                            userEarningExist.Level5 = 0;
+                            userEarningExist.Level6 = 0;
+                            userEarningExist.Level7 = 0;
+                            userEarningExist.Level8 = 0;
+                            userEarningExist.Level9 = 0;
+                            userEarningExist.Level10 = 0;
+                            userEarningExist.Level1Users = 0;
+                            userEarningExist.Level2Users = 0;
+                            userEarningExist.Level3Users = 0;
+                            userEarningExist.Level4Users = 0;
+                            userEarningExist.Level5Users = 0;
+                            userEarningExist.Level6Users = 0;
+                            userEarningExist.Level7Users = 0;
+                            userEarningExist.Level8Users = 0;
+                            userEarningExist.Level9Users = 0;
+                            userEarningExist.Level10Users = 0;
                         }
                         entities.SaveChanges();
                     }

@@ -37,7 +37,7 @@
 
   "WithdrawCharges": 4, //5
 
-  "MinimumQuiz": 2,
+  "MinimumQuiz": 1,
 
   "MaxQuiz": 2,
 

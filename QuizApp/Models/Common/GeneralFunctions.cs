@@ -171,7 +171,7 @@ namespace QuizApp.Models
         #region Get Earning Heads
         public EaningHeadModel getEarningHeads()
         {
-            var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
+            var jsonFilePath = Path.Combine(HttpRuntime.AppDomainAppPath, "Models/JsonFile/LevelEarningMasterUser.json");
             EaningHeadModel earningHeads = new EaningHeadModel();
             using (StreamReader r = new StreamReader(jsonFilePath))
             {
@@ -185,7 +185,7 @@ namespace QuizApp.Models
         #region Get Earning Heads
         public string getAllowedUser()
         {
-            var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/AllowUsers.json");
+            var jsonFilePath = Path.Combine(HttpRuntime.AppDomainAppPath, "Models/JsonFile/LevelEarningMasterUser.json");
             AllowedUsers Users = new AllowedUsers();
             using (StreamReader r = new StreamReader(jsonFilePath))
             {

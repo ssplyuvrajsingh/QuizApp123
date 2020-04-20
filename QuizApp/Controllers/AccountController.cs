@@ -73,7 +73,8 @@ namespace QuizApp.Controllers
                 else
                 {
                     AccountBinding ac = new AccountBinding();
-                        var User = UserManager.FindByName(model.PhoneNumber);
+                    AuthRepository authRepository = new AuthRepository();
+                    var User = UserManager.FindByName(model.PhoneNumber);
 
                             if (User != null)
                         {
@@ -95,9 +96,8 @@ namespace QuizApp.Controllers
                                         var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                                         //Check Secret Code
                                         bool isStatus = security.CheckDecypt(plainText, model.PhoneNumber);
-                                        if (isStatus)
+                                        if (isStatus) 
                                         {
-                                            AuthRepository authRepository = new AuthRepository();
                                             var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
                                             var data1 = ac.GetRefferlCode(data.id);
                                             data.RefferalCode = data1.RefferalCode;
@@ -154,6 +154,8 @@ namespace QuizApp.Controllers
             }
             catch (Exception ex)
             {
+                MailSenderRepo mailSenderRepo = new MailSenderRepo();
+                mailSenderRepo.MailSender("ssplyuvraj@gmail.com", ex.Message + ex.StackTrace, "Quiz Exception");
                 return new TokenResult()
                 {
                     error_message = ex.Message + "--" + ex.StackTrace,
@@ -1249,7 +1251,7 @@ namespace QuizApp.Controllers
         }
         #endregion
 
-        #region Get Caption
+        #region Get RSS Url
         [HttpPost]
         [AllowAnonymous]
         [Route("GetNewsList")]
@@ -1300,5 +1302,86 @@ namespace QuizApp.Controllers
             return Result;
         }
             #endregion
+
+        #region Read RSS Url
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("ReadRssUrl")]
+        public ResultClass ReadRssUrl(RssPagingModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Result = false,
+                        Message = "Please send required fields"
+                    };
+                }
+                else
+                {
+                    RssFeedBinding rSS = new RssFeedBinding();
+                    var data = rSS.RssData(model.Url,model.PageNo);
+                    if(data != null)
+                    {
+                        Result = new ResultClass()
+                        {
+                            Result = true,
+                            Message = "Data found successfully",
+                            Data = data
+                        };
+                    }
+                    else
+                    {
+                        Result = new ResultClass()
+                        {
+                            Result = false,
+                            Message = "Data not found"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message,
+                };
+            }
+            return Result;
         }
+        #endregion
+
+        #region Paytm Job Call
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("PaytmJobCall")]
+        public ResultClass PaytmJobCall()
+        {
+            var Result = new ResultClass();
+            try
+            {
+                    PaytmBinding binding = new PaytmBinding();
+                    binding.paytmJob();
+                        Result = new ResultClass()
+                        {
+                            Result = true,
+                            Message = "Data found successfully",
+                        };
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message,
+                };
+            }
+            return Result;
+        }
+        #endregion
+    }
 }

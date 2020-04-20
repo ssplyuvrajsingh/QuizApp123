@@ -17,7 +17,7 @@ namespace QuizApp
             {
                 System.Net.Mail.MailMessage msg = new System.Net.Mail.MailMessage();
                 SmtpClient smtpClient = new SmtpClient();
-                msg.From = new System.Net.Mail.MailAddress(ConfigurationManager.AppSettings["MailSenderUserName"].ToString(), ConfigurationManager.AppSettings["MailSenderDisplayName"].ToString());
+                msg.From =msg.From = new System.Net.Mail.MailAddress(ConfigurationManager.AppSettings["MailSenderUserName"].ToString(), ConfigurationManager.AppSettings["MailSenderDisplayName"].ToString());
                 msg.To.Add(to);
                 msg.Subject = subject;
                 msg.Body = html;

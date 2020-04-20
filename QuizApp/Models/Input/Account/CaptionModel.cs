@@ -11,4 +11,9 @@ namespace QuizApp.Models
         public string Title { get; set; }
         public string Url { get; set; }
     }
+    public class RssPagingModel
+    {
+        public string Url { get; set; }
+        public int PageNo { get; set; }
+    }
 }

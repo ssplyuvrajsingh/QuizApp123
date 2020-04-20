@@ -34,7 +34,7 @@ namespace QuizApp
         {
         GlobalConfiguration.Configuration.UseSqlServerStorage("defaultconnection");
         QuizBinding quizbinding = new QuizBinding();
-            RecurringJob.AddOrUpdate(() => quizbinding.CallLevelBaseEarningAmount(jsonfilepath), Cron.Daily(20,30));
+            RecurringJob.AddOrUpdate(() => quizbinding.CallLevelBaseEarningAmount(jsonfilepath), Cron.Daily(02,00));
 
         app.UseHangfireServer();
         app.UseHangfireDashboard();
@@ -43,7 +43,6 @@ namespace QuizApp
         {
             GlobalConfiguration.Configuration.UseSqlServerStorage("defaultconnection");
             PaytmBinding paytmBinding = new PaytmBinding();
-            QuizBinding quizbinding = new QuizBinding();
             RecurringJob.AddOrUpdate(() => paytmBinding.paytmJob(), Cron.Hourly());
 
             app.UseHangfireServer();

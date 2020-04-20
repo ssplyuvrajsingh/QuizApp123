@@ -198,7 +198,7 @@ namespace QuizApp.Models
                 string DeviceId = Check[5];
 
                 var User = UserInfo(UserId);
-
+                CheckDeviceId(User, DeviceId);
                 bool AllowedUserId = false;//GetAllowedUser(User.UserID);
 
                 //Check First and Last Value
@@ -251,6 +251,17 @@ namespace QuizApp.Models
                 }
             }
             return res;
+        }
+        #endregion
+
+        #region Check Device Id
+        public void CheckDeviceId(User model,string DeviceId)
+        {
+            if(model.DeviceID == null || model.DeviceID == string.Empty)
+            {
+                model.DeviceID = DeviceId;
+                entities.SaveChanges();
+            }
         }
         #endregion
 
