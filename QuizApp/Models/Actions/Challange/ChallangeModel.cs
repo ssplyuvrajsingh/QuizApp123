@@ -35,11 +35,13 @@ namespace QuizApp.Models
         public string UserID { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
+        public bool Status { get; set; }
     }
 
     public class SearchKeyModel
     {
         public string UserID { get; set; }
+        public int ChallangeId { get; set; }
         public string Search { get; set; }
     }
     #endregion
@@ -54,6 +56,25 @@ namespace QuizApp.Models
         public Nullable<bool> IsAdmin { get; set; }
         public Nullable<bool> IsAccepted { get; set; }
         public Nullable<int> Points { get; set; }
+    }
+    #endregion
+
+    #region Winner Users List
+    public class WinnerUsersModel
+    {
+        public string UserId { get; set; }
+        public string Name { get; set; }
+        public int ChallangeId { get; set; }
+        public string WinDate { get; set; }
+    }
+    #endregion
+
+    #region Winner User Details
+    public class WinnerDetailsModel
+    {
+        public string Name { get; set; }
+        public string Phone { get; set; }
+        public int Points { get; set; }
     }
     #endregion
 }
