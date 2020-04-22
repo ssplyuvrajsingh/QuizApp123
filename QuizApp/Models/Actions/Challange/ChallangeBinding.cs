@@ -145,10 +145,12 @@ namespace QuizApp.Models
         #endregion
 
         #region Five Screen Get Challangers List
-        public List<ChallangesListModel> GetChallangersList(ChallangeIdModel model)
+        public ChallangeListsModel GetChallangersList(ChallangeIdModel model)
         {
             var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAccepted == true).ToList();
+            ChallangeListsModel challangeListsModel = new ChallangeListsModel();
             List<ChallangesListModel> challangesListModels = new List<ChallangesListModel>();
+            int TotalPoints = 0;
             foreach(var item in data)
             {
                 var CLD = new ChallangesListModel();
@@ -159,9 +161,12 @@ namespace QuizApp.Models
                 CLD.IsAdmin = item.IsAdmin;
                 CLD.IsAccepted = item.IsAccepted;
                 CLD.Points = item.Points;
+                TotalPoints = Convert.ToInt32(TotalPoints + item.Points);
                 challangesListModels.Add(CLD);
             }
-            return challangesListModels;
+            challangeListsModel.challangesLists = challangesListModels;
+            challangeListsModel.TotalPoints = TotalPoints;
+            return challangeListsModel;
         }
         #endregion
 

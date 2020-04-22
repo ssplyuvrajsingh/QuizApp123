@@ -57,6 +57,11 @@ namespace QuizApp.Models
         public Nullable<bool> IsAccepted { get; set; }
         public Nullable<int> Points { get; set; }
     }
+    public class ChallangeListsModel
+    {
+        public List<ChallangesListModel> challangesLists { get; set; }
+        public int TotalPoints { get; set; }
+    }
     #endregion
 
     #region Winner Users List
