@@ -61,6 +61,7 @@ namespace QuizApp.Models
     {
         public List<ChallangesListModel> challangesLists { get; set; }
         public int TotalPoints { get; set; }
+        public int MinimumChallangerUsers { get; set; }
     }
     #endregion
 
@@ -80,6 +81,16 @@ namespace QuizApp.Models
         public string Name { get; set; }
         public string Phone { get; set; }
         public int Points { get; set; }
+        public Nullable<bool> IsWinner { get; set; }
+    }
+    #endregion
+
+    #region Saved Challange List
+    public class SavedChallangeModel
+    {
+        public int ChallangeId { get; set; }
+        public string StartDateTime { get; set; }
+        public string UserId { get; set; }
     }
     #endregion
 }

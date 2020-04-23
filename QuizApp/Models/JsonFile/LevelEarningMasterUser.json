@@ -35,11 +35,13 @@
 
   "PointAmount": 0.01,
 
-  "WithdrawCharges": 4, //5
+  "WithdrawCharges": 4,
 
   "MinimumQuiz": 1,
 
   "MaxQuiz": 2,
 
-  "Rewards": 20
+  "Rewards": 20,
+
+  "MinimumChallangerUsers": 2
 }

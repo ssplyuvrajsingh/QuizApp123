@@ -55,6 +55,7 @@ namespace QuizApp.Models
         public int MinimumQuiz { get; set; }
         public int MaxQuiz { get; set; }
         public int Rewards { get; set; }  
+        public int MinimumChallangerUsers { get; set; }
     }
 
     public class LevelWithUser

@@ -86,7 +86,6 @@ namespace QuizApp.Models
                 Phone = model.Phone,
                 ChallangeId = model.ChallangeId,
                 IsAdmin = false,
-                IsAccepted = true,
                 StartDateTime = DateTime.Now,
                 IsCompleted = false,
                 CompletedDateTime = null,
@@ -122,6 +121,19 @@ namespace QuizApp.Models
                 ChallangesListModel.Add(CLD);
             }
             return ChallangesListModel;
+        }
+        public bool ChallangeAccept(ChallangeModel model)
+        {
+            var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.ChallangeId == model.ChallangeId).FirstOrDefault();
+            if(data!=null)
+            {
+                data.IsAccepted = model.IsAccepted;
+                return entities.SaveChanges() > 0;
+            }
+            else
+            {
+                return false;
+            }
         }
         #endregion
 
@@ -164,8 +176,12 @@ namespace QuizApp.Models
                 TotalPoints = Convert.ToInt32(TotalPoints + item.Points);
                 challangesListModels.Add(CLD);
             }
+            GeneralFunctions general = new GeneralFunctions();
+            EaningHeadModel Challangers = new EaningHeadModel();
+            Challangers = general.getEarningHeads();
             challangeListsModel.challangesLists = challangesListModels;
             challangeListsModel.TotalPoints = TotalPoints;
+            challangeListsModel.MinimumChallangerUsers = Challangers.MinimumChallangerUsers;
             return challangeListsModel;
         }
         #endregion
@@ -256,16 +272,78 @@ namespace QuizApp.Models
         }
         #endregion
 
-        #region Winner User List
-        public WinnerDetailsModel WinnerUserDetails(WinnerUsersModel model)
+        #region Winner User Details
+        public List<WinnerDetailsModel> WinnerUserDetails(WinnerUsersModel model)
         {
-            var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.ChallangeId == model.ChallangeId).Select(x => new WinnerDetailsModel()
+            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAccepted == true).Select(x => new WinnerDetailsModel()
             {
                 Name = x.Name,
                 Phone = x.Phone,
-                Points = (int)x.Points
-            }).FirstOrDefault();
+                Points = (int)x.Points,
+                IsWinner = x.IsWinner
+            }).ToList();
             return data;
+        }
+        #endregion
+
+        #region Get Challange Ids for Challange Notification
+        public List<string> GetNotificationForChallange(UserModel model)
+        {
+            var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.IsAccepted.ToString() == string.Empty).OrderByDescending(x => x.StartDateTime).ToList();
+            var ChallangeIds = new List<string>();
+            foreach(var item in data)
+            {
+                ChallangeIds.Add(item.ChallangeId.ToString());
+            }
+            return ChallangeIds;
+        }
+        #endregion
+
+        #region Get Challange List created by User
+        public List<SavedChallangeModel> SaveChallangeList(UserModel model)
+        {
+            var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.IsCompleted == false && x.IsAdmin == true).OrderByDescending(x => x.StartDateTime).ToList();
+            List<SavedChallangeModel> saveds = new List<SavedChallangeModel>();
+           foreach(var item in data)
+            {
+                var List = new SavedChallangeModel();
+                
+                List.ChallangeId = (int)item.ChallangeId;
+                List.StartDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", item.StartDateTime);
+                List.UserId = item.UserId;
+                saveds.Add(List);
+
+                // Send request for challange get list here
+                
+                var res = entities.Challanges.Where(x => x.IsCompleted == false && x.IsAdmin == false && x.ChallangeId == item.ChallangeId).OrderByDescending(x => x.StartDateTime).FirstOrDefault();
+                if (res != null)
+                {
+                    var List1 = new SavedChallangeModel();
+                    List1.ChallangeId = (int)res.ChallangeId;
+                    List1.StartDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", res.StartDateTime);
+                    List1.UserId = res.UserId;
+                    saveds.Add(List1);
+                }
+            }
+            return saveds;
+        }
+        #endregion
+
+        #region Get Challange List come request for challange by Other User
+        public List<SavedChallangeModel> RequestChallangeList(UserModel model)
+        {
+            var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.IsCompleted == false && x.IsAdmin == false).OrderByDescending(x => x.StartDateTime).ToList();
+            List<SavedChallangeModel> saveds = new List<SavedChallangeModel>();
+            foreach (var item in data)
+            {
+                var res = entities.Challanges.Where(x =>x.IsCompleted == false && x.IsAdmin == true && x.ChallangeId == item.ChallangeId).OrderByDescending(x => x.StartDateTime).FirstOrDefault();
+                var List = new SavedChallangeModel();
+                List.ChallangeId = (int)res.ChallangeId;
+                List.StartDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", res.StartDateTime);
+                List.UserId = res.UserId;
+                saveds.Add(List);
+            }
+            return saveds;
         }
         #endregion
     }

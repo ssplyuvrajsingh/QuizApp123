@@ -182,7 +182,7 @@ namespace QuizApp.Models
         }
         #endregion
 
-        #region Get Earning Heads
+        #region Get Allowed Users
         public string getAllowedUser()
         {
             var jsonFilePath = Path.Combine(HttpRuntime.AppDomainAppPath, "Models/JsonFile/LevelEarningMasterUser.json");

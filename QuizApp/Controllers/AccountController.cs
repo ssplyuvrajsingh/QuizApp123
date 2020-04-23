@@ -74,6 +74,7 @@ namespace QuizApp.Controllers
                 {
                     AccountBinding ac = new AccountBinding();
                     AuthRepository authRepository = new AuthRepository();
+                    ChallangeBinding challangeBinding = new ChallangeBinding();
                     var User = UserManager.FindByName(model.PhoneNumber);
 
                             if (User != null)
@@ -103,6 +104,12 @@ namespace QuizApp.Controllers
                                             data.RefferalCode = data1.RefferalCode;
                                             data.UserName = data1.UserName;
                                             data.MobileNumber = model.PhoneNumber;
+                                        
+                                            data.ChallangeIds = challangeBinding.GetNotificationForChallange(new UserModel()
+                                        {
+                                            UserId = data.id
+                                        });
+                                       // data.ChallangeId = challangeId;
                                             return data;
                                         }
                                     else

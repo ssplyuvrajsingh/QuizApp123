@@ -141,6 +141,46 @@ namespace QuizApp.Controllers
         }
         #endregion
 
+        #region Challange Accept
+        [HttpPost]
+        public ResultClass ChallangeAccept(ChallangeModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.ChallangeAccept(model);
+                if (data)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = null,
+                        Message = "Challange accepted successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Challange not accepted",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
         #region Fourth Screen Add Invest Point for Challange  
         [HttpPost]
         public ResultClass AddInvestPoint(ChallangeModel model)
@@ -352,6 +392,86 @@ namespace QuizApp.Controllers
                 ChallangeBinding challangeBinding = new ChallangeBinding();
                 var data = challangeBinding.WinnerUserDetails(model);
                 if (data != null)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Data not found",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region SavedChallangeList
+        [HttpPost]
+        public ResultClass SaveChallangeList(UserModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.SaveChallangeList(model);
+                if (data.Any())
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Data not found",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region Request Challange List
+        [HttpPost]
+        public ResultClass RequestChallangeList(UserModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.RequestChallangeList(model);
+                if (data.Any())
                 {
                     Result = new ResultClass()
                     {

@@ -17,5 +17,6 @@ namespace QuizApp.Models
         public string RefferalCode { get; set; }
         public string MobileNumber { get; set; }
         public string UserName { get; set; }
+        public List<string> ChallangeIds { get; set; }
     }
 }
