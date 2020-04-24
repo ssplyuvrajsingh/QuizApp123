@@ -62,6 +62,7 @@ namespace QuizApp.Models
         public List<ChallangesListModel> challangesLists { get; set; }
         public int TotalPoints { get; set; }
         public int MinimumChallangerUsers { get; set; }
+        public int AdminPoints { get; set; }
     }
     #endregion
 

@@ -101,7 +101,7 @@ namespace QuizApp.Models
         }
         public List<SearchModel> AddedChallangersList(ChallangeIdModel model)
         {
-            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAccepted == true).ToList();
+            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId).ToList();
             List<SearchModel> ChallangesListModel = new List<SearchModel>();
             foreach (var item in data)
             {
@@ -159,7 +159,7 @@ namespace QuizApp.Models
         #region Five Screen Get Challangers List
         public ChallangeListsModel GetChallangersList(ChallangeIdModel model)
         {
-            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAccepted == true).ToList();
+            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId).ToList();
             ChallangeListsModel challangeListsModel = new ChallangeListsModel();
             List<ChallangesListModel> challangesListModels = new List<ChallangesListModel>();
             int TotalPoints = 0;
@@ -175,6 +175,10 @@ namespace QuizApp.Models
                 CLD.Points = item.Points;
                 TotalPoints = Convert.ToInt32(TotalPoints + item.Points);
                 challangesListModels.Add(CLD);
+                if((bool)item.IsAdmin)
+                {
+                    challangeListsModel.AdminPoints = (int)item.Points;
+                }
             }
             GeneralFunctions general = new GeneralFunctions();
             EaningHeadModel Challangers = new EaningHeadModel();
@@ -315,13 +319,13 @@ namespace QuizApp.Models
 
                 // Send request for challange get list here
                 
-                var res = entities.Challanges.Where(x => x.IsCompleted == false && x.IsAdmin == false && x.ChallangeId == item.ChallangeId).OrderByDescending(x => x.StartDateTime).FirstOrDefault();
-                if (res != null)
+                var res = entities.Challanges.Where(x => x.IsCompleted == false && x.IsAdmin == false && x.ChallangeId == item.ChallangeId).OrderByDescending(x => x.StartDateTime).ToList();
+                foreach (var sendRequest in res)
                 {
                     var List1 = new SavedChallangeModel();
-                    List1.ChallangeId = (int)res.ChallangeId;
-                    List1.StartDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", res.StartDateTime);
-                    List1.UserId = res.UserId;
+                    List1.ChallangeId = (int)sendRequest.ChallangeId;
+                    List1.StartDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", sendRequest.StartDateTime);
+                    List1.UserId = sendRequest.UserId;
                     saveds.Add(List1);
                 }
             }
