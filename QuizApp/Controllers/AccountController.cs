@@ -74,7 +74,6 @@ namespace QuizApp.Controllers
                 {
                     AccountBinding ac = new AccountBinding();
                     AuthRepository authRepository = new AuthRepository();
-                    ChallangeBinding challangeBinding = new ChallangeBinding();
                     var User = UserManager.FindByName(model.PhoneNumber);
 
                             if (User != null)
@@ -104,12 +103,6 @@ namespace QuizApp.Controllers
                                             data.RefferalCode = data1.RefferalCode;
                                             data.UserName = data1.UserName;
                                             data.MobileNumber = model.PhoneNumber;
-                                        
-                                            data.ChallangeIds = challangeBinding.GetNotificationForChallange(new UserModel()
-                                        {
-                                            UserId = data.id
-                                        });
-                                       // data.ChallangeId = challangeId;
                                             return data;
                                         }
                                     else
@@ -1332,6 +1325,58 @@ namespace QuizApp.Controllers
                     RssFeedBinding rSS = new RssFeedBinding();
                     var data = rSS.RssData(model.Url,model.PageNo);
                     if(data != null)
+                    {
+                        Result = new ResultClass()
+                        {
+                            Result = true,
+                            Message = "Data found successfully",
+                            Data = data
+                        };
+                    }
+                    else
+                    {
+                        Result = new ResultClass()
+                        {
+                            Result = false,
+                            Message = "Data not found"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message,
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region Read RSS Url
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("FilterRssUrl")]
+        public ResultClass FilterRssUrl(RssPagingModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Result = false,
+                        Message = "Please send required fields"
+                    };
+                }
+                else
+                {
+                    RssFeedBinding rSS = new RssFeedBinding();
+                    var data = rSS.RssFilterData(model.Url,model.Title);
+                    if (data != null)
                     {
                         Result = new ResultClass()
                         {

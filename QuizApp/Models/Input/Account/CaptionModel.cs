@@ -15,5 +15,6 @@ namespace QuizApp.Models
     {
         public string Url { get; set; }
         public int PageNo { get; set; }
+        public string Title { get; set; }
     }
 }

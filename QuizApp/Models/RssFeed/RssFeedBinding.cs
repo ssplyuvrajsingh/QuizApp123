@@ -11,20 +11,22 @@ namespace QuizApp.Models
 {
     public class RssFeedBinding
     {
+        #region Read Rss Feed Url
         public IEnumerable<RSSFeed> RssData(string RSSURL, int PageNo)
         {
 
             var rssFeed = XDocument.Load(RSSURL);
 
-            int iPageSize = 5;
+            int iPageSize = 10;
             var skip = (PageNo - 1) * iPageSize;
             var rssFeedOut = (from item in rssFeed.Descendants("item")
                               select new RSSFeed
                               {
                                   Title = ((string)item.Element("title")),
-                                  Link = ((string)item.Element("link")),
-                                  Description = ((string)item.Element("description")), 
-                                  PubDate = ((string)item.Element("pubDate")) 
+                                  //Link = ((string)item.Element("link")),
+
+                                  Img = Regex.Match((item.Element("description").Value), "<img[^>]+>").ToString(),
+                                  //PubDate = ((string)item.Element("pubDate"))
                               }).Skip(skip).Take(iPageSize);
             if (rssFeedOut.Any())
             {
@@ -34,30 +36,34 @@ namespace QuizApp.Models
             {
                 return null;
             }
-            #region Test
-            //WebClient wclient = new WebClient();
-            //string RSSData = wclient.DownloadString(RSSURL);
-
-            //XDocument xml = XDocument.Parse(RSSData);
-            //int iPageSize = 5;
-            //var skip = (PageNo - 1) * iPageSize;
-            //var RSSFeedData = (from x in xml.Descendants("item")
-            //                   select new RSSFeed
-            //                   {
-            //                       Title = ((string)x.Element("title")),
-            //                       Link = ((string)x.Element("link")),
-            //                       Description = ((string)x.Element("description")),
-            //                       PubDate = ((string)x.Element("pubDate"))
-            //                   }).Skip(skip).Take(iPageSize);
-            //if (RSSFeedData.Any())
-            //{
-            //    return RSSFeedData;
-            //}
-            //else
-            //{
-            //    return null;
-            //}
-            #endregion
         }
+        #endregion
+
+        #region Rss Filter Data
+        public RSSFeedDesc RssFilterData(string RSSURL, string Title)
+        {
+
+            var rssFeed = XDocument.Load(RSSURL);
+
+            var data = rssFeed;
+            var rssFeedOut = (from item in rssFeed.Descendants("item")
+                              where
+                              ((string)item.Element("title")).Trim() == Title.Trim()
+                              select new RSSFeedDesc
+                              {
+                                  Title = ((string)item.Element("title")),
+                                  Description = ((string)item.Element("description")),
+                              }).FirstOrDefault();
+            if (rssFeedOut != null)
+            {
+                return rssFeedOut;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+        #endregion
     }
 }

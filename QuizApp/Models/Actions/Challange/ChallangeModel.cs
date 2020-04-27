@@ -38,6 +38,12 @@ namespace QuizApp.Models
         public bool Status { get; set; }
     }
 
+    public class AddUserModel
+    {
+        public List<SearchModel> AddUsers { get; set; }
+        public int MinimumChallangerUsers { get; set; }
+    }
+
     public class SearchKeyModel
     {
         public string UserID { get; set; }
@@ -92,6 +98,15 @@ namespace QuizApp.Models
         public int ChallangeId { get; set; }
         public string StartDateTime { get; set; }
         public string UserId { get; set; }
+    }
+    #endregion
+    #region Request Challange List
+    public class RequestChallangeModel
+    {
+        public int ChallangeId { get; set; }
+        public string StartDateTime { get; set; }
+        public string UserId { get; set; }
+        public string Name { get; set; }
     }
     #endregion
 }

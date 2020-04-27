@@ -109,13 +109,13 @@ namespace QuizApp.Controllers
             try
             {
                 ChallangeBinding challangeBinding = new ChallangeBinding();
-                var data = challangeBinding.AddUserChallange(model);
-                if (data != null)
+                bool data = challangeBinding.AddUserChallange(model);
+                if (data)
                 {
                     Result = new ResultClass()
                     {
                         Data = data,
-                        Message = "Data found successfully",
+                        Message = "User added successfully",
                         Result = true
                     };
                 }
@@ -123,7 +123,48 @@ namespace QuizApp.Controllers
                 {
                     Result = new ResultClass()
                     {
-                        Message = "Data not found",
+                        Message = "User not added",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region Added User List
+        [HttpPost]
+        public ResultClass AddUserList(ChallangeModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.AddedUserList(model);
+                if (data.AddUsers.Any())
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Added user found successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Added user not found",
                         Result = false
                     };
                 }
@@ -485,6 +526,86 @@ namespace QuizApp.Controllers
                     Result = new ResultClass()
                     {
                         Message = "Data not found",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region Get Challanges Id's according user
+        [HttpPost]
+        public ResultClass GetChallangesIds(UserModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.GetNotificationForChallange(model);
+                if (data.Any())
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Data not found",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region Delete saved challenge
+        [HttpPost]
+        public ResultClass DeleteSavedChallenge(ChallangeIdModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.DeleteSavedChallenge(model);
+                if (data)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data deleted successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Data not deleted",
                         Result = false
                     };
                 }
