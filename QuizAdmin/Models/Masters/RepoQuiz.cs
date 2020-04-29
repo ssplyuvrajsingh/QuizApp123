@@ -30,7 +30,7 @@ namespace QuizAdmin.Models
             if (old == null)
             {
                 model.QuizID = Guid.NewGuid();
-                model.CreatedDate = DateTime.Now;
+                model.CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                 model.isActive = false;
                 db.QuizDatas.Add(model);
                 db.SaveChanges();
@@ -111,7 +111,7 @@ namespace QuizAdmin.Models
             var old = db.QuizQuestions.Where(a => a.QuizQuestionID == model.QuizQuestionID).FirstOrDefault();
             if (old == null)
             {
-                model.CreatedDate = DateTime.Now;
+                model.CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                 db.QuizQuestions.Add(model);
                 db.SaveChanges();
                 return true;

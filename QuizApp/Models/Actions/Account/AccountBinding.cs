@@ -58,8 +58,8 @@ namespace QuizApp.Models
                         Name = model.Name,
                         Password = model.Password,
                         UserID = model.UserId,
-                        CreatedDate = DateTime.Now,
-                        LastUpdateDate = DateTime.Now,
+                        CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
+                        LastUpdateDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                         ReferalCode = GeneralFunctions.GetReferalCode(),
                         DeviceID = model.DeviceID,
                         IP = model.IP,
@@ -76,7 +76,7 @@ namespace QuizApp.Models
                     {
                         PhoneNumber = model.PhoneNumber,
                         OTP = Otp,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
                     };
 
                     entities.MobileOTPs.Add(mobileOTP);
@@ -100,11 +100,11 @@ namespace QuizApp.Models
                                         UserName = U.Name,
                                         MobileNumber = A.UserName
                                     }).FirstOrDefault();
-                        var uniqueKey = $"{UserId}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
+                        var uniqueKey = $"{UserId}~{DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).ToString("dd-MM-yyy")}~Earning";
                         Transaction transaction = new Transaction()
                         {
                             UserID = UserId,
-                            transactionDateTime = DateTime.Now,
+                            transactionDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                             UniqueKey = uniqueKey,
                             paymentStatus = "Earning",
                             amount = earningHeads.RegistrationIncome,
@@ -243,7 +243,7 @@ namespace QuizApp.Models
                 {
                     PhoneNumber = model.PhoneNumber,
                     OTP = OTP,
-                    CreatedDate = DateTime.Now,
+                    CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
 
                 };
 
@@ -265,7 +265,7 @@ namespace QuizApp.Models
                 if (userInfo != null)
                 {
                     userInfo.Password = Password;
-                    userInfo.LastUpdateDate = DateTime.Now;
+                    userInfo.LastUpdateDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                     model.Entry(userInfo).State = EntityState.Modified;
                     return model.SaveChanges() > 0;
 
@@ -335,7 +335,7 @@ namespace QuizApp.Models
                 var data1 = entities.AspNetUsers.Where(x => x.Id == model.UserId).FirstOrDefault();
                 if (data.CurrentBalance >= model.amount)
                 {
-                    var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
+                    var uniqueKey = $"{data.UserID}~{DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).ToString("dd-MM-yyy")}~Earning";
                     if (model.WithdrawType == "Bank")
                     {
                         if (earningHeads.MaximumWithdrawLimit >= model.amount && model.amount >= earningHeads.BankMinimumWithdrawlLimit)
@@ -348,7 +348,7 @@ namespace QuizApp.Models
                                 Transaction transaction = new Transaction()
                                 {
                                     UserID = model.UserId,
-                                    transactionDateTime = DateTime.Now,
+                                    transactionDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                                     UniqueKey = uniqueKey,
                                     paymentStatus = "Pending",
                                     amount = model.amount,
@@ -398,7 +398,7 @@ namespace QuizApp.Models
                             Transaction transaction = new Transaction()
                             {
                                 UserID = model.UserId,
-                                transactionDateTime = DateTime.Now,
+                                transactionDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                                 UniqueKey = uniqueKey,
                                 paymentStatus = pay,
                                 amount = model.amount,
@@ -477,11 +477,11 @@ namespace QuizApp.Models
                     UserPoint Point = new UserPoint()
                     {
                         UserID = model.UserID,
-                        TransactionDate = DateTime.Now,
+                        TransactionDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                         PointsWithdraw = model.PointsWithdraw,
                         PointsEarned = 0,
                         Description = "Point Withdrawal in Account",
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
                     };
                     entities.UserPoints.Add(Point);
                     entities.SaveChanges();
@@ -490,11 +490,11 @@ namespace QuizApp.Models
                     double balance = model.PointsWithdraw * earningHeads.PointAmount;
                     GeneralFunctions generalFunctions = new GeneralFunctions();
                     balance = Convert.ToDouble(generalFunctions.GetDecimalvalue(balance.ToString()));
-                    var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
+                    var uniqueKey = $"{data.UserID}~{DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).ToString("dd-MM-yyy")}~Earning";
                     Transaction transaction = new Transaction()
                     {
                         UserID = model.UserID,
-                        transactionDateTime = DateTime.Now,
+                        transactionDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                         UniqueKey = uniqueKey,
                         paymentStatus = "points",
                         amount = balance,

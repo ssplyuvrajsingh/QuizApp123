@@ -31,8 +31,8 @@ namespace QuizAdmin.Models
                 UserName = model.UserName,
                 PhoneNumber = model.PhoneNumber,
                 UserQuery = model.UserQuery,
-                CreatedDate=DateTime.Now
-            };
+                CreatedDate= DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
+           };
             db.Supports.Add(query);
             return db.SaveChanges() > 0;
         }

@@ -136,7 +136,7 @@ namespace QuizAdmin.Models
             var data = db.Transactions.Where(x => x.TransactionID == TransactionID).FirstOrDefault();
             if (data != null)
             {
-                var uniqueKey = $"{data.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
+                var uniqueKey = $"{data.UserID}~{DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).ToString("dd-MM-yyy")}~Earning";
                 //Entery in Transaction Table for Withdrawal Amount in Bank
                 data.paymentStatus = "Confirm_Withdraw";
                 data.comment = "Withdrawal Amount in Bank Successfully";

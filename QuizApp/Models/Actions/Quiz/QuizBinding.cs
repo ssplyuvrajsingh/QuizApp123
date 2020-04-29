@@ -51,17 +51,17 @@ namespace QuizApp.Models
             data.ForEach(a =>
             {
                 a.StartDateStr = a.StartDate.ToString("dd MMM yyyy");
-                a.isActive = DateTime.Compare(a.StartDate, DateTime.Now) <= 0;
+                a.isActive = DateTime.Compare(a.StartDate, DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)) <= 0;
             });
             //Update Last Active Date User
             var playedDataCount = entities.QuizPlayers.Where(a => a.UserID == userId && a.IsCompleted == true && a.PlayedDate != null).OrderByDescending(a => a.PlayedDate).ToList();
             //var d = DateTime.Now.Date;
-            playedDataCount = playedDataCount.Where(a => (a.PlayedDate.Value).Date == (DateTime.Now).Date).OrderByDescending(a => a.PlayedDate).ToList();
+            playedDataCount = playedDataCount.Where(a => (a.PlayedDate.Value).Date == (DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)).Date).OrderByDescending(a => a.PlayedDate).ToList();
             var eaningHeadModel = GetEaningHead();
             if (playedDataCount.Count() >= eaningHeadModel.MinimumQuiz)
             {
                 var LastActiveDate = entities.Users.Where(x => x.UserID == userId).FirstOrDefault();
-                LastActiveDate.LastActiveDate = DateTime.Now;
+                LastActiveDate.LastActiveDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                 entities.SaveChanges();
             }
 
@@ -141,12 +141,12 @@ namespace QuizApp.Models
             {
                 var player = new QuizPlayer()
                 {
-                    CreatedDate = DateTime.Now,
+                    CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                     IsCompleted = false,
                     IsWon = false,
                     Language = "",
                     PercentageEarn = 0,
-                    PlayedDate = DateTime.Now,
+                    PlayedDate = DateTime.UtcNow,
                     PointEarn = 0,
                     QuizID = model.QuizId,
                     UserID = model.UserId
@@ -184,7 +184,7 @@ namespace QuizApp.Models
                     TimeTaken = item.TimeTaken,
                     IsCorrect = item.IsCorrect,
                     PointEarn = item.PointEarn,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
                 });
             }
             entities.SaveChanges();
@@ -224,48 +224,15 @@ namespace QuizApp.Models
                 UserPoint userPoint = new UserPoint()
                 {
                     UserID = model.UserID,
-                    TransactionDate = DateTime.Now,
+                    TransactionDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                     PointsEarned = userAnswerTotal,
                     PointsWithdraw = 0,
                     Description = "Point earnd from quiz id : " + model.QuizID,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
                 };
                 entities.UserPoints.Add(userPoint);
 
-                ////Update or Insert Userwallet
-                //var userWallet = entities.UserWallets.Where(x => x.UserID == model.UserID).FirstOrDefault();
-
-                //if (userWallet != null)
-                //{
-                //    UserWallet wallet = new UserWallet()
-                //    {
-                //        CurrentBalance = userWallet.CurrentBalance + userAnswerTotal,
-                //        CurrentPoint = userWallet.CurrentPoint + userAnswerTotal,
-                //        LastUpdated = DateTime.Now,
-                //        TotalEarn = userWallet.TotalEarn + userAnswerTotal,
-                //        TotalWithdraw = userWallet.TotalWithdraw + userAnswerTotal,
-                //        PendingWithdraw = userWallet.PendingWithdraw + userAnswerTotal,
-                //        CreatedDate = userWallet.CreatedDate,
-                //        WalletID = userWallet.WalletID,
-                //        UserID = userWallet.UserID
-                //    };
-                //    entities.Entry(userWallet).CurrentValues.SetValues(wallet);
-                //}
-                //else
-                //{
-                //    UserWallet wallet = new UserWallet()
-                //    {
-                //        UserID = model.UserID,
-                //        CurrentBalance = userAnswerTotal,
-                //        CurrentPoint = userAnswerTotal,
-                //        LastUpdated = DateTime.Now,
-                //        TotalEarn = userAnswerTotal,
-                //        TotalWithdraw = userAnswerTotal,
-                //        PendingWithdraw = userAnswerTotal,
-                //        CreatedDate = DateTime.Now,
-                //    };
-                //    entities.UserWallets.Add(wallet);
-                //}
+                
 
                 //Update QuizPlayer
                 var quizPlayer = entities.QuizPlayers.Where(x => x.PlayerID == model.PlayerID).FirstOrDefault();
@@ -280,7 +247,7 @@ namespace QuizApp.Models
                         IsCompleted = true,
                         IsWon = isWon,
                         PointEarn = userAnswerTotal,
-                        PlayedDate = DateTime.Now,
+                        PlayedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                         PercentageEarn = percentageEarn,
                         Language = "English",
                         UserID = quizPlayer.UserID,
@@ -450,13 +417,13 @@ namespace QuizApp.Models
         #endregion
 
         #region Add Level Base Earning Amount
-        public bool CallLevelBaseEarningAmount(string jsonFilePath)
+        public bool CallLevelBaseEarningAmount()
         {
-            var data = AddLevelBaseEarningAmount(jsonFilePath);
+            var data = AddLevelBaseEarningAmount();
             LevelFirebaseUpdates(data);
             return data;
         }
-        public bool AddLevelBaseEarningAmount(string jsonFilePath)
+        public bool AddLevelBaseEarningAmount()
         {
             try
             {
@@ -478,7 +445,7 @@ namespace QuizApp.Models
                         //Check Last Active Date
                         if (item.LastActiveDate != null)
                         {
-                            if ((item.LastActiveDate.Value).Date == DateTime.Now.AddDays(-1).Date)
+                            if ((item.LastActiveDate.Value).Date == DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).AddDays(-1).Date)
                             {
                                 double totalTransactionAmt = 0;
                                 List<LevelWithUser> lstLevelWithUser = new List<LevelWithUser>();
@@ -491,7 +458,7 @@ namespace QuizApp.Models
                                     {
                                         if (level.LastActiveDate != null)
                                         {
-                                            if ((level.LastActiveDate.Value).Date == DateTime.Now.AddDays(-1).Date)
+                                            if ((level.LastActiveDate.Value).Date == DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).AddDays(-1).Date)
                                             {
                                                 var parentIDs = level.ParentIDs.Split(',').ToList();
                                                 var parentUserWithLevel = parentIDs.Select(x => new SetLevelForParentUser()
@@ -751,7 +718,7 @@ namespace QuizApp.Models
                                     {
                                         var le = new LevelEarning();
                                         GeneralFunctions generalFunctions = new GeneralFunctions();
-                                        var userEarningExist = new LevelUsersModel(); //
+                                        var userEarningExist = new LevelUsersModel();
                                         var userOld = entities.LevelEarnings.Where(x => x.UserID == item.UserID).FirstOrDefault();
                                         foreach (var lst in lstLevelWithUser)
                                         {
@@ -766,7 +733,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
                                                     userEarningExist.Level1 = actualEarning;
                                                     userEarningExist.Level1Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
 
@@ -776,7 +743,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level2Income / 30)), 2);
                                                     userEarningExist.Level2 = actualEarning;
                                                     userEarningExist.Level2Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 3)
@@ -785,7 +752,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level3Income / 30)), 2);
                                                     userEarningExist.Level3 = actualEarning;
                                                     userEarningExist.Level3Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 4)
@@ -794,7 +761,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level4Income / 30)), 2);
                                                     userEarningExist.Level4 = actualEarning;
                                                     userEarningExist.Level4Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 5)
@@ -803,7 +770,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level5Income / 30)), 2);
                                                     userEarningExist.Level5 = actualEarning;
                                                     userEarningExist.Level5Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 6)
@@ -812,7 +779,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level6Income / 30)), 2);
                                                     userEarningExist.Level6 = actualEarning;
                                                     userEarningExist.Level6Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 7)
@@ -821,7 +788,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level7Income / 30)), 2);
                                                     userEarningExist.Level7 = actualEarning;
                                                     userEarningExist.Level7Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 8)
@@ -830,7 +797,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level8Income / 30)), 2);
                                                     userEarningExist.Level8 = actualEarning;
                                                     userEarningExist.Level8Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 9)
@@ -839,7 +806,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level9Income / 30)), 2);
                                                     userEarningExist.Level9 = actualEarning;
                                                     userEarningExist.Level9Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 10)
@@ -848,7 +815,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level10Income / 30)), 2);
                                                     userEarningExist.Level10 = actualEarning;
                                                     userEarningExist.Level10Users = userCount;
-                                                    userEarningExist.LastUpdate = DateTime.Now;
+                                                    userEarningExist.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                             }
@@ -862,7 +829,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
                                                     le.Level1 = actualEarning;
                                                     le.Level1Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 2)
@@ -871,7 +838,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level2Income / 30)), 2);
                                                     le.Level2 = actualEarning;
                                                     le.Level2Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 3)
@@ -880,7 +847,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level3Income / 30)), 2);
                                                     le.Level3 = actualEarning;
                                                     le.Level3Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 4)
@@ -889,7 +856,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level4Income / 30)), 2);
                                                     le.Level4 = actualEarning;
                                                     le.Level4Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 5)
@@ -898,7 +865,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level5Income / 30)), 2);
                                                     le.Level5 = actualEarning;
                                                     le.Level5Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 6)
@@ -907,7 +874,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level6Income / 30)), 2);
                                                     le.Level6 = actualEarning;
                                                     le.Level6Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 7)
@@ -916,7 +883,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level7Income / 30)), 2);
                                                     le.Level7 = actualEarning;
                                                     le.Level7Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 8)
@@ -925,7 +892,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level8Income / 30)), 2);
                                                     le.Level8 = actualEarning;
                                                     le.Level8Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 9)
@@ -934,7 +901,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level9Income / 30)), 2);
                                                     le.Level9 = actualEarning;
                                                     le.Level9Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                                 if (lst.Level == 10)
@@ -943,7 +910,7 @@ namespace QuizApp.Models
                                                     actualEarning = Math.Round((userCount * (earningHeads.Level10Income / 30)), 2);
                                                     le.Level10 = actualEarning;
                                                     le.Level10Users = userCount;
-                                                    le.LastUpdate = DateTime.Now;
+                                                    le.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                                     totalTransactionAmt += actualEarning;
                                                 }
                                             }
@@ -1042,7 +1009,7 @@ namespace QuizApp.Models
                                         CNE.Level8Users = 0;
                                         CNE.Level9Users = 0;
                                         CNE.Level10Users = 0;
-                                        CNE.LastUpdate = DateTime.Now;
+                                        CNE.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                         entities.LevelEarnings.Add(CNE);
                                         entities.SaveChanges();
                                     }
@@ -1069,18 +1036,18 @@ namespace QuizApp.Models
                                         childUsersNotExists.Level8Users = 0;
                                         childUsersNotExists.Level9Users = 0;
                                         childUsersNotExists.Level10Users = 0;
-                                        childUsersNotExists.LastUpdate = DateTime.Now;
+                                        childUsersNotExists.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
 
                                         entities.SaveChanges();
                                     }
                                 }
                                 //---------------- Make Transaction for Each user
                                 var ud = entities.Users.FirstOrDefault(f => f.UserID == item.UserID);
-                                var uniqueKey = $"{item.UserID}~{DateTime.Now.ToString("dd-MM-yyy")}~Earning";
+                                var uniqueKey = $"{item.UserID}~{DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).ToString("dd-MM-yyy")}~Earning";
                                 var transaction = new Transaction()
                                 {
                                     UserID = item.UserID,
-                                    transactionDateTime = DateTime.Now,
+                                    transactionDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                                     UniqueKey = uniqueKey,
                                     comment = "Level Earnings",
                                     paymentStatus = "Earning",
@@ -1127,7 +1094,7 @@ namespace QuizApp.Models
                                     UserNotActive.Level8Users = 0;
                                     UserNotActive.Level9Users = 0;
                                     UserNotActive.Level10Users = 0;
-                                    UserNotActive.LastUpdate = DateTime.Now;
+                                    UserNotActive.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
 
                                     entities.SaveChanges();
                                 }
@@ -1155,7 +1122,7 @@ namespace QuizApp.Models
                                     CNE.Level8Users = 0;
                                     CNE.Level9Users = 0;
                                     CNE.Level10Users = 0;
-                                    CNE.LastUpdate = DateTime.Now;
+                                    CNE.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                     entities.LevelEarnings.Add(CNE);
                                     entities.SaveChanges();
                                 }
@@ -1189,7 +1156,7 @@ namespace QuizApp.Models
                                 UserNotActive.Level8Users = 0;
                                 UserNotActive.Level9Users = 0;
                                 UserNotActive.Level10Users = 0;
-                                UserNotActive.LastUpdate = DateTime.Now;
+                                UserNotActive.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
 
                                 entities.SaveChanges();
                             }
@@ -1217,7 +1184,7 @@ namespace QuizApp.Models
                                 CNE.Level8Users = 0;
                                 CNE.Level9Users = 0;
                                 CNE.Level10Users = 0;
-                                CNE.LastUpdate = DateTime.Now;
+                                CNE.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                                 entities.LevelEarnings.Add(CNE);
                                 entities.SaveChanges();
                             }
@@ -1241,7 +1208,7 @@ namespace QuizApp.Models
         {
             var activeUsers = entities.Users.Where(x => x.ParentIDs.Contains(model.UserId)).ToList();
             activeUsers = activeUsers.Where(x => x.LastActiveDate != null).ToList();
-            activeUsers = activeUsers.Where(x =>  (x.LastActiveDate.Value).Date == (DateTime.Now.AddDays(-1)).Date || (x.LastActiveDate.Value).Date == (DateTime.Now).Date).ToList();
+            activeUsers = activeUsers.Where(x =>  (x.LastActiveDate.Value).Date == (DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).AddDays(-1)).Date || (x.LastActiveDate.Value).Date == (DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)).Date).ToList();
             List<LevelWiseActiveUsers> levelsUsers = new List<LevelWiseActiveUsers>();
             foreach (var childUsers in activeUsers)
             {
@@ -1328,7 +1295,7 @@ namespace QuizApp.Models
             LevelEarningStatu obj = new LevelEarningStatu()
             {
                 LevelHangFireStatus = status,
-                StatusTime = DateTime.Now
+                StatusTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
             };
             entities.LevelEarningStatus.Add(obj);
             entities.SaveChanges();
@@ -1365,7 +1332,7 @@ namespace QuizApp.Models
                     {
                         if (level.LastActiveDate != null)
                         {
-                            if ((level.LastActiveDate.Value).Date == DateTime.Now.AddDays(-1).Date || (level.LastActiveDate.Value).Date == (DateTime.Now).Date)
+                            if ((level.LastActiveDate.Value).Date == DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).AddDays(-1).Date || (level.LastActiveDate.Value).Date == (DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)).Date)
                             {
                                 var parentIDs = level.ParentIDs.Split(',').ToList();
                                 var parentUserWithLevel = parentIDs.Select(x => new SetLevelForParentUser()
@@ -1901,7 +1868,7 @@ namespace QuizApp.Models
                         CNE.Level8Users = 0;
                         CNE.Level9Users = 0;
                         CNE.Level10Users = 0;
-                        CNE.LastUpdate = DateTime.Now;
+                        CNE.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                         entities.LevelEarnings.Add(CNE);
                         entities.SaveChanges();
                     }
@@ -1928,7 +1895,7 @@ namespace QuizApp.Models
                         childUsersNotExists.Level8Users = 0;
                         childUsersNotExists.Level9Users = 0;
                         childUsersNotExists.Level10Users = 0;
-                        childUsersNotExists.LastUpdate = DateTime.Now;
+                        childUsersNotExists.LastUpdate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
 
                         entities.SaveChanges();
                     }
@@ -1969,7 +1936,7 @@ namespace QuizApp.Models
                 UserId=model.UserId,
                 Mobile=model.Mobile,
                 UserMessage=model.UserMessage,
-                CreateDate=DateTime.Now
+                CreateDate= DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
             });
             return entities.SaveChanges() > 0;
         }
@@ -1981,7 +1948,7 @@ namespace QuizApp.Models
             bool res = false;
             var playedDataCount = entities.QuizPlayers.Where(a => a.UserID == userId && a.IsCompleted == true && a.PlayedDate != null).OrderByDescending(a => a.PlayedDate).ToList();
             //var d = DateTime.Now.Date;
-            playedDataCount = playedDataCount.Where(a => (a.PlayedDate.Value).Date == (DateTime.Now).Date).OrderByDescending(a => a.PlayedDate).ToList();
+            playedDataCount = playedDataCount.Where(a => (a.PlayedDate.Value).Date == (DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)).Date).OrderByDescending(a => a.PlayedDate).ToList();
             var eaningHeadModel = GetEaningHead();
             int Count = playedDataCount.Count();
             if (Count < eaningHeadModel.MaxQuiz)

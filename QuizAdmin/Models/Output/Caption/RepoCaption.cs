@@ -45,7 +45,7 @@ namespace QuizAdmin.Models
                 {
                     Title = model.Title,
                     Url = model.Url,
-                    CreateDate = DateTime.Now
+                    CreateDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
                 });
                 return db.SaveChanges() > 0;
             }

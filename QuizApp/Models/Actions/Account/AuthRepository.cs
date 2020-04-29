@@ -38,8 +38,8 @@ namespace QuizApp.Models
                     refreshToken = _ctx.RefreshTokens.Where(x => x.UserId == UserId && x.ProtectedTicket == RefreshTokenStr).FirstOrDefault();
                     if (refreshToken != null)
                     {
-                        refreshToken.ExpiresUtc = DateTime.Now.AddHours(Constants.TimeOfExpireRefreshTokenHours);
-                        refreshToken.IssuedUtc = DateTime.Now;
+                        refreshToken.ExpiresUtc = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).AddHours(Constants.TimeOfExpireRefreshTokenHours);
+                        refreshToken.IssuedUtc = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                         _ctx.SaveChanges();
                     }
                     tokenResult.refresh_token = RefreshTokenStr;
@@ -65,8 +65,8 @@ namespace QuizApp.Models
             RefreshToken refreshToken = new RefreshToken();
             refreshToken.UserId = UserId;
             TimeSpan m = TimeSpan.FromMinutes(1);
-            refreshToken.ExpiresUtc =DateTime.Now.AddHours(Constants.TimeOfExpireRefreshTokenHours);
-            refreshToken.IssuedUtc = DateTime.Now;
+            refreshToken.ExpiresUtc = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).AddHours(Constants.TimeOfExpireRefreshTokenHours);
+            refreshToken.IssuedUtc = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
             refreshToken.ProtectedTicket = GeneralFunctions.RandomString(100);
             _ctx.RefreshTokens.Add(refreshToken);
             _ctx.SaveChanges();
@@ -90,7 +90,7 @@ namespace QuizApp.Models
             }
             else
             {
-                if (DateTime.Compare(refresh.ExpiresUtc.Value, DateTime.Now) > 0)
+                if (DateTime.Compare(refresh.ExpiresUtc.Value, DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)) > 0)
                 {
                    var data= _ctx.Users.Where(a => a.UserID == refresh.UserId).FirstOrDefault();
                     return data;

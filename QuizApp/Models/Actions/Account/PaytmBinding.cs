@@ -19,7 +19,7 @@ namespace QuizApp.Models
         public string PaytmResponse(string Phone, string PaymentText, string Amount,string Ip)
         {
             string merchantguid = "7f1c79d3-5386-47d7-ac46-707ae6126842";
-            string orderid = DateTime.Now.Ticks.ToString();
+            string orderid = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00).Ticks.ToString();
             string AesKey = "ZBVhw3s0alzVds@k"; // 16 digits Merchant Key or Aes Key
             string saleswalletid = "b6961cdb-cc23-4d74-927e-5555f9ba52a2";
             //string phone = "9785507506";

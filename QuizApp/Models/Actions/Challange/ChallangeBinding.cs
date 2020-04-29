@@ -22,7 +22,7 @@ namespace QuizApp.Models
                 Phone = model.Phone,
                 IsAdmin = true,
                 IsAccepted = true,
-                StartDateTime = DateTime.Now,
+                StartDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                 IsCompleted = false,
                 CompletedDateTime = null,
                 IsWinner = false,
@@ -86,7 +86,7 @@ namespace QuizApp.Models
                 Phone = model.Phone,
                 ChallangeId = model.ChallangeId,
                 IsAdmin = false,
-                StartDateTime = DateTime.Now,
+                StartDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                 IsCompleted = false,
                 CompletedDateTime = null,
                 IsWinner = false,
@@ -205,17 +205,17 @@ namespace QuizApp.Models
                 if(item.UserId != model.UserId && item.ChallangeId == model.ChallangeId)
                 {
                     item.IsCompleted = true;
-                    item.CompletedDateTime = DateTime.Now;
+                    item.CompletedDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
                     item.IsWinner = false;
                     Points = Convert.ToInt32(Points + item.Points);
                     UserPoint PointWithdrawal = new UserPoint()
                     {
                         UserID = item.UserId,
-                        TransactionDate = DateTime.Now,
+                        TransactionDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                         PointsWithdraw = item.Points,
                         PointsEarned = 0,
                         Description = "Point Withdrawal for Lose ChallangeId= "+model.ChallangeId,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
                     };
                     entities.UserPoints.Add(PointWithdrawal);
                     entities.SaveChanges();
@@ -223,17 +223,17 @@ namespace QuizApp.Models
             }
 
             WinUser.IsCompleted = true;
-            WinUser.CompletedDateTime = DateTime.Now;
+            WinUser.CompletedDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
             WinUser.IsWinner = true;
             WinUser.Points = Points;
             UserPoint Point = new UserPoint()
             {
                 UserID = model.UserId,
-                TransactionDate = DateTime.Now,
+                TransactionDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                 PointsWithdraw = 0,
                 PointsEarned = Points,
                 Description = "Point Earn for Win ChallangeId= " + model.ChallangeId,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
             };
             entities.UserPoints.Add(Point);
             entities.SaveChanges();
@@ -249,11 +249,11 @@ namespace QuizApp.Models
             UserPoint Point = new UserPoint()
             {
                 UserID = model.UserId,
-                TransactionDate = DateTime.Now,
+                TransactionDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
                 PointsWithdraw = 0,
                 PointsEarned = earning.Rewards,
                 Description = "Point Earn Rewards",
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
             };
             entities.UserPoints.Add(Point);
             return entities.SaveChanges() > 0;

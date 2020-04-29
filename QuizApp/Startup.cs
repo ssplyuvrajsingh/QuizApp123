@@ -19,22 +19,19 @@ namespace QuizApp
         {
            ConfigureAuth(app);
            GetHangfireServers(app);
-            var jsonfilepath = HttpContext.Current.Server.MapPath("~/models/jsonfile/levelearningmasteruser.json");
-           if (!string.IsNullOrEmpty(jsonfilepath))
-           {
-                GetHangfireServers(app, jsonfilepath);
-           }
+           GetHangfireServersLevel(app);
+           //var jsonfilepath = HttpContext.Current.Server.MapPath("~/models/jsonfile/levelearningmasteruser.json");
         }
         /// <summary>
         /// This function will be callled every day at 2.00 am
         /// </summary>
         /// <param name="app"></param> 
         /// <param name="jsonFilePath">Read json file</param>
-        private void GetHangfireServers(IAppBuilder app, string jsonfilepath)
+        private void GetHangfireServersLevel(IAppBuilder app)
         {
         GlobalConfiguration.Configuration.UseSqlServerStorage("defaultconnection");
         QuizBinding quizbinding = new QuizBinding();
-            RecurringJob.AddOrUpdate(() => quizbinding.CallLevelBaseEarningAmount(jsonfilepath), Cron.Daily(02,00));
+        RecurringJob.AddOrUpdate(() => quizbinding.CallLevelBaseEarningAmount(), Cron.Daily(02,00));
 
         app.UseHangfireServer();
         app.UseHangfireDashboard();
