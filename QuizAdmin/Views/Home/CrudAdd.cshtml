@@ -1,0 +1,75 @@
+﻿@model QuizAdmin.Models.FilterWordModel
+@{
+    ViewBag.Title = "AddQuiz";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    textarea {
+        width: 100%;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin: 0px;
+        width: 1085px;
+        height: 178px;
+    }
+</style>
+
+<script src="/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/js/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
+<link href="/Content/Css/fineuploader-3.7.0.min.css" rel="stylesheet" type="text/css" />
+<script src="/js/jquery.fineuploader-3.7.0.min.js" type="text/javascript"></script>
+<header class="ribbon">
+    <h2>&nbsp;</h2>
+</header>
+<div class="page-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h2>Crud</h2>
+                    </div>
+                    <div class="panel-highlight-action">
+                        <a href="/Home/Crud">
+                            <button class="btn btn-round btn-danger btn-lg">
+                                <i class="fa fa-chevron-left"></i>
+                            </button>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        @using (Html.BeginForm())
+                        {
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Text<em>*</em></label>
+                                        @Html.TextAreaFor(model => model.FilterData, new { htmlAttributes = new { @class = "form-control required" } })
+                                        @Html.ValidationMessageFor(model => model.FilterData, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        }
+
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-primary panel -->
+            </div>
+            <!-- /.col-md-7 -->
+        </div>
+    </div>
+</div>
+
+<script>
+    addDatepicker();
+</script>

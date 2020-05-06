@@ -702,5 +702,50 @@ namespace QuizApp.Controllers
             return result;
         }
         #endregion
+
+        #region GetFilterData
+        [HttpPost]
+        [AllowAnonymous]
+        public ResultClass GetFilterData()
+        {
+            ResultClass result = null;
+            try
+            {
+                    QuizBinding quizBinding = new QuizBinding();
+                    var data = quizBinding.GetFilterData();
+                    if (data.Any())
+                    {
+                        result = new ResultClass()
+                        {
+                            Data = data,
+                            Message = "Data found Successfully",
+                            Result = true
+                        };
+                    }
+                    else
+                    {
+                        result = new ResultClass()
+                        {
+                            Data = null,
+                            Message = "Data not found",
+                            Result = true
+                        };
+                    }
+                
+            }
+
+            catch (Exception ex)
+            {
+                result = new ResultClass()
+                {
+                    Data = ex,
+                    Message = ex.Message,
+                    Result = true
+                };
+            }
+
+            return result;
+        }
+        #endregion
     }
 }

@@ -6612,3 +6612,10 @@ table .fc-head .fc-widget-header td, table .fc-head .fc-widget-header th, table 
     padding: 12px;
     font-size: 16px;
 }
+
+/*Crud*/
+textareaCrud {
+    margin: 0px; 
+    width: 1092px; 
+    height: 327px;
+}

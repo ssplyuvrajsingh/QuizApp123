@@ -240,6 +240,9 @@
     <Compile Include="Models\DailyUserLog.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\FilterWord.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Input\Quiz\QuizBindingModel.cs" />
     <Compile Include="Models\Input\Quiz\QuizQuestionBindingModel.cs" />
@@ -257,6 +260,8 @@
     <Compile Include="Models\Output\Caption\RepoCaption.cs" />
     <Compile Include="Models\Output\ContactSupport\ContactSupportCls.cs" />
     <Compile Include="Models\Output\ContactSupport\ContactSupportModel .cs" />
+    <Compile Include="Models\Output\Crud\CrudModel.cs" />
+    <Compile Include="Models\Output\Crud\CrudRepo.cs" />
     <Compile Include="Models\Output\LevelWiseUserInfo\LevelUserInfoResult.cs" />
     <Compile Include="Models\Output\LevelWiseUserInfo\LevelWiseUserInfoModel.cs" />
     <Compile Include="Models\Output\Quiz\QuizUserCount.cs" />
@@ -1402,6 +1407,9 @@
     <Content Include="Views\Home\Caption.cshtml" />
     <Content Include="Views\Home\CaptionPartialView.cshtml" />
     <Content Include="Views\Home\AddCaption.cshtml" />
+    <Content Include="Views\Home\Crud.cshtml" />
+    <Content Include="Views\Home\CrudPartialView.cshtml" />
+    <Content Include="Views\Home\CrudAdd.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

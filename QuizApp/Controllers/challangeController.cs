@@ -622,5 +622,166 @@ namespace QuizApp.Controllers
             return Result;
         }
         #endregion
+
+        #region Get Challenge Time
+        [HttpPost]
+        public ResultClass GetChallengeTime(ChallangeIdModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.GetChallengeTime(model);
+                if (data!=null)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Data=data,
+                        Message = "Data not found",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region Set Temporary Winner
+        [HttpPost]
+        public ResultClass SetTemporaryWinner(ChallangeIdModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.SetTemporaryWinner(model);
+                if (data!=null)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data save successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Data not deleted",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region SetWinnerUser
+        [HttpPost]
+        public ResultClass SetWinnerUser(ChallangeIdModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.SetWinnerUser(model);
+                if (data!=null)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data deleted successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Data not deleted",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region Save Minimum Entry Points
+        [HttpPost]
+        public ResultClass SaveMinimumEntryPoints(ChallangeModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.SaveMinimumEntryPoints(model);
+                if (data)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Points save successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Your points are insufficient",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
     }
 }

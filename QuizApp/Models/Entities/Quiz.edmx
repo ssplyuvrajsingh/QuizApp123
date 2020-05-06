@@ -91,6 +91,9 @@
           <Property Name="CompletedDateTime" Type="datetime" />
           <Property Name="IsWinner" Type="bit" />
           <Property Name="Points" Type="int" />
+          <Property Name="TemporaryWinner" Type="bit" />
+          <Property Name="ChallangeStartDateTime" Type="datetime" />
+          <Property Name="MinimumEntryPoints" Type="int" />
         </EntityType>
         <EntityType Name="ContactSupport">
           <Key>
@@ -110,6 +113,13 @@
           <Property Name="UserID" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="LogDate" Type="datetime" Nullable="false" />
           <Property Name="VideoWatched" Type="bit" />
+        </EntityType>
+        <EntityType Name="FilterWord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FilterData" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="LevelEarnings">
           <Key>
@@ -311,6 +321,7 @@
           <EntitySet Name="Challange" EntityType="Self.Challange" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ContactSupport" EntityType="Self.ContactSupport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DailyUserLog" EntityType="Self.DailyUserLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FilterWord" EntityType="Self.FilterWord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LevelEarnings" EntityType="Self.LevelEarnings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LevelEarningStatus" EntityType="Self.LevelEarningStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileOTP" EntityType="Self.MobileOTP" Schema="dbo" store:Type="Tables" />
@@ -404,6 +415,7 @@
           <EntitySet Name="ContactSupports" EntityType="QuizAppModel.ContactSupport" />
           <EntitySet Name="Captions" EntityType="QuizAppModel.Caption" />
           <EntitySet Name="Challanges" EntityType="QuizAppModel.Challange" />
+          <EntitySet Name="FilterWords" EntityType="QuizAppModel.FilterWord" />
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -883,6 +895,16 @@
           <Property Name="CompletedDateTime" Type="DateTime" Precision="3" />
           <Property Name="IsWinner" Type="Boolean" />
           <Property Name="Points" Type="Int32" />
+          <Property Name="TemporaryWinner" Type="Boolean" />
+          <Property Name="ChallangeStartDateTime" Type="DateTime" Precision="3" />
+          <Property Name="MinimumEntryPoints" Type="Int32" />
+        </EntityType>
+        <EntityType Name="FilterWord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FilterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -1187,6 +1209,9 @@
           <EntitySetMapping Name="Challanges">
             <EntityTypeMapping TypeName="QuizAppModel.Challange">
               <MappingFragment StoreEntitySet="Challange">
+                <ScalarProperty Name="MinimumEntryPoints" ColumnName="MinimumEntryPoints" />
+                <ScalarProperty Name="ChallangeStartDateTime" ColumnName="ChallangeStartDateTime" />
+                <ScalarProperty Name="TemporaryWinner" ColumnName="TemporaryWinner" />
                 <ScalarProperty Name="Points" ColumnName="Points" />
                 <ScalarProperty Name="IsWinner" ColumnName="IsWinner" />
                 <ScalarProperty Name="CompletedDateTime" ColumnName="CompletedDateTime" />
@@ -1198,6 +1223,14 @@
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FilterWords">
+            <EntityTypeMapping TypeName="QuizAppModel.FilterWord">
+              <MappingFragment StoreEntitySet="FilterWord">
+                <ScalarProperty Name="FilterData" ColumnName="FilterData" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

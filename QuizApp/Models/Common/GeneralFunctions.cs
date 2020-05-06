@@ -195,5 +195,28 @@ namespace QuizApp.Models
             return Users.AllowUserId;
         }
         #endregion
+
+        #region Return Temporary User
+        public static int GetTemporaryUser(int Count)
+        {
+            int length = random.Next(4, 4);
+
+            string OTP = GenerateRandomOTP(length);
+            return Convert.ToInt32(OTP);
+        }
+        public static string GetRandomTemporaryUser(int length)
+        {
+            string num = string.Empty;
+            for(int i=0;i<length;i++)
+            {
+                num =num + i;
+            }
+            //const string alphabetCharacters = "abcdefghijklmnopqrstuvwxyz";
+            StringBuilder Code = new StringBuilder(1);
+
+            Code.Append(num[random.Next(num.Length)]);
+            return Code.ToString();
+        }
+        #endregion
     }
 }

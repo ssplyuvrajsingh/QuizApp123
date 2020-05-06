@@ -69,6 +69,7 @@ namespace QuizApp.Models
         public int TotalPoints { get; set; }
         public int MinimumChallangerUsers { get; set; }
         public int AdminPoints { get; set; }
+        public int MinimumEntryPoints { get; set; }
     }
     #endregion
 
@@ -109,4 +110,12 @@ namespace QuizApp.Models
         public string Name { get; set; }
     }
     #endregion
+
+    public class WinnerUserModel
+    {
+        public string ChallangeStartDateTime { get; set; }
+        public string Phone { get; set; }
+        public bool IsStatus { get; set; }
+        public string Name { get; set; }
+    }
 }

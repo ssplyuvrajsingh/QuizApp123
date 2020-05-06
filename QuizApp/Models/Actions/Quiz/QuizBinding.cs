@@ -66,7 +66,8 @@ namespace QuizApp.Models
             }
 
             var userWallet = GetWalletInfo(new UserModel() { UserId = userId });
-            var earningHeads = GetEarningHeadModel();
+            GeneralFunctions general = new GeneralFunctions();
+            var earningHeads = general.getEarningHeads();
             var model = new UserQuizWallet()
             {
                 CurrentBalance = userWallet.CurrentBalance,
@@ -1915,20 +1916,6 @@ namespace QuizApp.Models
         }
         #endregion
 
-        #region Get EarningHead Model
-        public EaningHeadModel GetEarningHeadModel()
-        {
-            var jsonFilePath = HttpContext.Current.Server.MapPath("~/Models/JsonFile/LevelEarningMasterUser.json");
-            EaningHeadModel earningHeads = new EaningHeadModel();
-            using (StreamReader r = new StreamReader(jsonFilePath))
-            {
-                string json = r.ReadToEnd();
-                earningHeads = JsonConvert.DeserializeObject<EaningHeadModel>(json);
-            }
-            return earningHeads;
-        }
-        #endregion
-
         #region Contact Support
         public bool ContactSupport(ContactSupportModel model)
         {
@@ -1956,6 +1943,17 @@ namespace QuizApp.Models
                 res = true;
             }
             return res;
+        }
+        #endregion
+
+        #region Get Filter Data
+        public List<FilterDataModel> GetFilterData()
+        {
+            var data = entities.FilterWords.Select(x=> new FilterDataModel() { 
+            FilterData = x.FilterData
+            }).ToList();
+            
+            return data;
         }
         #endregion
     }

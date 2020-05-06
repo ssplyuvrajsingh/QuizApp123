@@ -26,5 +26,8 @@ namespace QuizApp.Models.Entities
         public Nullable<System.DateTime> CompletedDateTime { get; set; }
         public Nullable<bool> IsWinner { get; set; }
         public Nullable<int> Points { get; set; }
+        public Nullable<bool> TemporaryWinner { get; set; }
+        public Nullable<System.DateTime> ChallangeStartDateTime { get; set; }
+        public Nullable<int> MinimumEntryPoints { get; set; }
     }
 }

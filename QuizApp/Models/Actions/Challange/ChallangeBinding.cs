@@ -26,7 +26,8 @@ namespace QuizApp.Models
                 IsCompleted = false,
                 CompletedDateTime = null,
                 IsWinner = false,
-                Points = 0
+                Points = 0,
+                ChallangeStartDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(32.00)
             };
             entities.Challanges.Add(Challange);
             entities.SaveChanges();
@@ -127,9 +128,11 @@ namespace QuizApp.Models
         public bool ChallangeAccept(ChallangeModel model)
         {
             var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.ChallangeId == model.ChallangeId).FirstOrDefault();
-            if(data!=null)
+            var Admin = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAdmin == true).FirstOrDefault();
+            if (data!=null)
             {
                 data.IsAccepted = model.IsAccepted;
+                data.ChallangeStartDateTime = Admin.ChallangeStartDateTime;
                 return entities.SaveChanges() > 0;
             }
             else
@@ -180,6 +183,7 @@ namespace QuizApp.Models
                 if((bool)item.IsAdmin)
                 {
                     challangeListsModel.AdminPoints = (int)item.Points;
+                    challangeListsModel.MinimumEntryPoints = (int)item.MinimumEntryPoints;
                 }
             }
             GeneralFunctions general = new GeneralFunctions();
@@ -371,5 +375,106 @@ namespace QuizApp.Models
             return res;
         }
         #endregion
+
+        #region set Temporary Winner
+        public WinnerUserModel SetTemporaryWinner(ChallangeIdModel model)
+        {
+            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAccepted == true).ToList();
+           
+
+            var TempWinUser = data.Where(x => x.TemporaryWinner == true).FirstOrDefault();
+            if (TempWinUser == null)
+            {
+                string RandomUser = GeneralFunctions.GetRandomTemporaryUser(data.Count());
+                int count = 0;
+                foreach (var item in data)
+                {
+                    if (count == Convert.ToInt32(RandomUser))
+                    {
+                        item.TemporaryWinner = true;
+                    }
+                    else
+                    {
+                        item.TemporaryWinner = false;
+                    }
+                    entities.SaveChanges();
+                    count++;
+                }         
+            }
+            return new WinnerUserModel() {
+                Phone = TempWinUser.Phone
+            };
+        }
+        #endregion
+
+        #region Get Challenge Time
+        public WinnerUserModel GetChallengeTime(ChallangeIdModel model)
+        {
+            var WinUser= entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsWinner == true).FirstOrDefault();
+            if (WinUser == null)
+            {
+                var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAdmin == true).FirstOrDefault();
+
+                if (data != null)
+                {
+                    return new WinnerUserModel()
+                    {
+                        ChallangeStartDateTime = string.Format("{0:MMMM dd, yyyy HH:mm:ss}", data.ChallangeStartDateTime),
+                        IsStatus = false
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return new WinnerUserModel()
+            {
+                ChallangeStartDateTime = string.Format("{0:MMMM dd, yyyy HH:mm:ss}", WinUser.ChallangeStartDateTime),
+                IsStatus = true,
+                Phone = WinUser.Phone,
+                Name = WinUser.Name
+            };
+        }
+        #endregion
+
+        #region Set Winner User
+        public WinnerUserModel SetWinnerUser(ChallangeIdModel model)
+        {
+            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.TemporaryWinner == true).FirstOrDefault();
+            var winner = new WinnerUserModel();
+            if (data.IsWinner != true)
+            {
+                SetChallangeResult(new ChallangeModel()
+                {
+                    UserId = data.UserId,
+                    ChallangeId = data.ChallangeId
+                });
+                winner.IsStatus = true;
+            }
+
+            winner.ChallangeStartDateTime = string.Format("{0:dd MMMM, yyyy HH:mm:ss}", data.ChallangeStartDateTime);
+            winner.Phone = data.Phone;
+            winner.Name = data.Name;
+            return winner;
+
+        }
+        #endregion
+
+        #region Save Minimum Entry Points
+        public bool SaveMinimumEntryPoints(ChallangeModel model)
+        {
+            bool res = false;
+                var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.ChallangeId == model.ChallangeId && x.IsAdmin == true).OrderByDescending(x => x.StartDateTime).FirstOrDefault();
+                if (data != null)
+                {
+                    data.MinimumEntryPoints = model.Points;
+                    entities.SaveChanges();
+                    res = true;
+                }
+            
+            return res;
+        }
+#endregion
     }
 }

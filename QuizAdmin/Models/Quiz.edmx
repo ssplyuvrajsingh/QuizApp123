@@ -94,6 +94,13 @@
           <Property Name="LogDate" Type="datetime" Nullable="false" />
           <Property Name="VideoWatched" Type="bit" />
         </EntityType>
+        <EntityType Name="FilterWord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FilterData" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="LevelEarnings">
           <Key>
             <PropertyRef Name="LevelID" />
@@ -311,6 +318,7 @@
           <EntitySet Name="Caption" EntityType="Self.Caption" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ContactSupport" EntityType="Self.ContactSupport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DailyUserLog" EntityType="Self.DailyUserLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FilterWord" EntityType="Self.FilterWord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LevelEarnings" EntityType="Self.LevelEarnings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MobileOTP" EntityType="Self.MobileOTP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QuizData" EntityType="Self.QuizData" Schema="dbo" store:Type="Tables" />
@@ -413,6 +421,7 @@
           </AssociationSet>
           <EntitySet Name="ContactSupports" EntityType="QuizAppModel.ContactSupport" />
           <EntitySet Name="Captions" EntityType="QuizAppModel.Caption" />
+          <EntitySet Name="FilterWords" EntityType="QuizAppModel.FilterWord" />
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -922,6 +931,13 @@
           <Property Name="Url" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="FilterWord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FilterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1237,6 +1253,14 @@
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="Url" ColumnName="Url" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FilterWords">
+            <EntityTypeMapping TypeName="QuizAppModel.FilterWord">
+              <MappingFragment StoreEntitySet="FilterWord">
+                <ScalarProperty Name="FilterData" ColumnName="FilterData" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

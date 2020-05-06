@@ -10,6 +10,7 @@
         <EntityTypeShape EntityType="QuizAppModel.Support" Width="1.5" PointX="6.875" PointY="0.75" />
         <EntityTypeShape EntityType="QuizAppModel.ContactSupport" Width="1.5" PointX="5.375" PointY="4.75" />
         <EntityTypeShape EntityType="QuizAppModel.Caption" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="QuizAppModel.FilterWord" Width="1.5" PointX="3.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

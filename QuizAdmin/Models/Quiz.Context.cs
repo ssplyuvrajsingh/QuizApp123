@@ -45,5 +45,6 @@ namespace QuizAdmin.Models
         public virtual DbSet<Support> Supports { get; set; }
         public virtual DbSet<ContactSupport> ContactSupports { get; set; }
         public virtual DbSet<Caption> Captions { get; set; }
+        public virtual DbSet<FilterWord> FilterWords { get; set; }
     }
 }

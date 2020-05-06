@@ -303,6 +303,9 @@
     <Compile Include="Models\Entities\DailyUserLog.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\FilterWord.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\LevelEarning.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
@@ -380,6 +383,7 @@
     <Compile Include="Models\Output\Account\UserTransactionModel.cs" />
     <Compile Include="Models\Output\Common\ResultClass.cs" />
     <Compile Include="Models\Output\QuizData\EndGameResult.cs" />
+    <Compile Include="Models\Output\QuizData\FilterDataModel.cs" />
     <Compile Include="Models\Output\QuizData\GetScoreResult.cs" />
     <Compile Include="Models\Output\QuizData\LevelEarningModelMaster.cs" />
     <Compile Include="Models\Output\QuizData\LevelWiseModel.cs" />
@@ -454,7 +458,18 @@
     <Content Include="Models\JsonFile\LevelEarningMasterUser.json" />
     <Content Include="Models\JsonFile\AllowUsers.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <Content Include="Scripts\ChallangeScript\bower.json" />
+    <Content Include="Scripts\ChallangeScript\package.json" />
+    <Content Include="Scripts\ChallangeScript\README.md" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\ChallangeScript\.gitignore" />
+    <Content Include="Scripts\ChallangeScript\.idea\deployment.xml" />
+    <Content Include="Scripts\ChallangeScript\doc\images\counter.jpg" />
+    <Content Include="Scripts\ChallangeScript\doc\images\[media.giphy.com][38]source.gif" />
+    <Content Include="Scripts\ChallangeScript\Gruntfile.js" />
+    <Content Include="Scripts\ChallangeScript\jquery.incremental-counter.css" />
+    <Content Include="Scripts\ChallangeScript\jquery.incremental-counter.js" />
+    <Content Include="Scripts\ChallangeScript\jquery.incremental-counter.min.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -481,6 +496,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\ChallangeResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
