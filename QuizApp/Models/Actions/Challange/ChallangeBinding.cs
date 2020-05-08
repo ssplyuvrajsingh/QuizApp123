@@ -28,8 +28,7 @@ namespace QuizApp.Models
                 IsCompleted = false,
                 CompletedDateTime = null,
                 IsWinner = false,
-                Points = 0,
-                ChallangeStartDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(32.00)
+                Points = 0
             };
             entities.Challanges.Add(Challange);
             entities.SaveChanges();
@@ -509,7 +508,7 @@ namespace QuizApp.Models
             List<ChallengeStartSoonModel> challengeStartSoons = new List<ChallengeStartSoonModel>();
             foreach(var item in data)
             {
-                if (item.ChallangeStartDateTime > DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00))
+                if (item.ChallangeStartDateTime > DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00) && item.ChallangeStartDateTime != null)
                 {
 
                     var ChallengeData = new ChallengeStartSoonModel();
@@ -523,6 +522,19 @@ namespace QuizApp.Models
                 }
             }
             return challengeStartSoons;
+        }
+        #endregion
+
+        #region Set Starting Challenge Time
+        public bool SetStartingChallengeTime(ChallangeIdModel model)
+        {
+            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId).ToList();
+            foreach(var item in data)
+            {
+                item.ChallangeStartDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(32.00);
+                entities.SaveChanges();
+            }
+            return true;
         }
         #endregion
     }

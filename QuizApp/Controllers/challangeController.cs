@@ -863,5 +863,45 @@ namespace QuizApp.Controllers
             return Result;
         }
         #endregion
+
+        #region Set Starting Challenge Time
+        [HttpPost]
+        public ResultClass SetStartingChallengeTime(ChallangeIdModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.SetStartingChallengeTime(model);
+                if (data)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Challenge starting time set successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Challenge Starting Time not set",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
     }
 }
