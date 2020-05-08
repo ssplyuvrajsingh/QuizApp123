@@ -526,15 +526,18 @@ namespace QuizApp.Models
         #endregion
 
         #region Set Starting Challenge Time
-        public bool SetStartingChallengeTime(ChallangeIdModel model)
+        public string SetStartingChallengeTime(ChallangeIdModel model)
         {
-            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId).ToList();
-            foreach(var item in data)
+            var ChallengeStartDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(32.00);
+            var data = entities.Database.ExecuteSqlCommand("Update Challange  set ChallangeStartDateTime='" + ChallengeStartDateTime + "'where ChallangeId=" + model.ChallangeId);
+            if (data > 0)
             {
-                item.ChallangeStartDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(32.00);
-                entities.SaveChanges();
+                return string.Format("{0:dd MMMM, yyyy hh:mm tt}", ChallengeStartDateTime);
             }
-            return true;
+            else
+            {
+                return null;
+            }
         }
         #endregion
     }

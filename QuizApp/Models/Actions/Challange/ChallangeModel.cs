@@ -128,4 +128,5 @@ namespace QuizApp.Models
         public string challengeCreatedDatetime { get; set; }
         public string ChallengeStartDateTime { get; set; }
     }
+    
 }

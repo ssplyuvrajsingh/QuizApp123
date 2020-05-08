@@ -873,7 +873,7 @@ namespace QuizApp.Controllers
             {
                 ChallangeBinding challangeBinding = new ChallangeBinding();
                 var data = challangeBinding.SetStartingChallengeTime(model);
-                if (data)
+                if (data!=null)
                 {
                     Result = new ResultClass()
                     {
