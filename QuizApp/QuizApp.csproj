@@ -268,6 +268,7 @@
     </Compile>
     <Compile Include="Models\Actions\Account\AccountBinding.cs" />
     <Compile Include="Models\Actions\Account\AuthRepository.cs" />
+    <Compile Include="Models\Actions\Account\FCMPushNotification.cs" />
     <Compile Include="Models\Actions\Account\PaytmBinding.cs" />
     <Compile Include="Models\Actions\Challange\ChallangeBinding.cs" />
     <Compile Include="Models\Actions\Challange\ChallangeModel.cs" />
@@ -358,6 +359,7 @@
     <Compile Include="Models\Input\Account\AddBankAccountDetailsModel.cs" />
     <Compile Include="Models\Input\Account\CaptionModel.cs" />
     <Compile Include="Models\Input\Account\ChangePasswordBindingModel.cs" />
+    <Compile Include="Models\Input\Account\FCMtokenModel .cs" />
     <Compile Include="Models\Input\Account\ForgotPasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\OTPVerificationBindingModel.cs" />
     <Compile Include="Models\Input\Account\PointsRedeemModel.cs" />

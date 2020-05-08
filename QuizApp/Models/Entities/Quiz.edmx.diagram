@@ -29,9 +29,7 @@
         <EntityTypeShape EntityType="QuizAppModel.Transaction" Width="1.5" PointX="5.25" PointY="33.125" />
         <AssociationConnector Association="QuizAppModel.FK_AspNetUsers_Id" />
         <EntityTypeShape EntityType="QuizAppModel.LevelEarning" Width="1.5" PointX="5.25" PointY="45.5" />
-        <EntityTypeShape EntityType="QuizAppModel.User" Width="1.5" PointX="5.25" PointY="38.375" />
         <AssociationConnector Association="QuizAppModel.FK__LevelEarn__UserI__625A9A57" />
-        <AssociationConnector Association="QuizAppModel.FK_UserID_UserID" />
         <EntityTypeShape EntityType="QuizAppModel.MobileOTP" Width="1.5" PointX="3" PointY="2" />
         <EntityTypeShape EntityType="QuizAppModel.LevelEarningStatu" Width="1.5" PointX="0.75" PointY="4.75" />
         <EntityTypeShape EntityType="QuizAppModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="15.75" />
@@ -40,6 +38,8 @@
         <EntityTypeShape EntityType="QuizAppModel.Caption" Width="1.5" PointX="7.375" PointY="5.75" />
         <EntityTypeShape EntityType="QuizAppModel.Challange" Width="1.5" PointX="8.375" PointY="0.75" />
         <EntityTypeShape EntityType="QuizAppModel.FilterWord" Width="1.5" PointX="3.375" PointY="8.75" />
+        <EntityTypeShape EntityType="QuizAppModel.User" Width="1.5" PointX="5.25" PointY="52" />
+        <AssociationConnector Association="QuizAppModel.UserId" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

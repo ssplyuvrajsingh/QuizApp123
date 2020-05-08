@@ -284,6 +284,7 @@
           <Property Name="Passcode" Type="nvarchar" MaxLength="4" />
           <Property Name="googleAdsId" Type="nvarchar" MaxLength="500" />
           <Property Name="facebookAdsId" Type="nvarchar" MaxLength="500" />
+          <Property Name="FCMToken" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="UserAnswer">
           <Key>
@@ -310,6 +311,20 @@
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
         </EntityType>
+        <Association Name="UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="QuizAppModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -333,6 +348,10 @@
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserAnswer" EntityType="Self.UserAnswer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPoints" EntityType="Self.UserPoints" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="UserId" Association="Self.UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -396,14 +415,9 @@
             <End Role="Transaction" EntitySet="Transactions" />
           </AssociationSet>
           <EntitySet Name="LevelEarnings" EntityType="QuizAppModel.LevelEarning" />
-          <EntitySet Name="Users" EntityType="QuizAppModel.User" />
           <AssociationSet Name="FK__LevelEarn__UserI__625A9A57" Association="QuizAppModel.FK__LevelEarn__UserI__625A9A57">
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="LevelEarning" EntitySet="LevelEarnings" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserID_UserID" Association="QuizAppModel.FK_UserID_UserID">
-            <End Role="AspNetUser" EntitySet="AspNetUsers" />
-            <End Role="User" EntitySet="Users" />
           </AssociationSet>
           <EntitySet Name="MobileOTPs" EntityType="QuizAppModel.MobileOTP" />
           <EntitySet Name="LevelEarningStatus" EntityType="QuizAppModel.LevelEarningStatu" />
@@ -416,6 +430,11 @@
           <EntitySet Name="Captions" EntityType="QuizAppModel.Caption" />
           <EntitySet Name="Challanges" EntityType="QuizAppModel.Challange" />
           <EntitySet Name="FilterWords" EntityType="QuizAppModel.FilterWord" />
+          <EntitySet Name="Users" EntityType="QuizAppModel.User" />
+          <AssociationSet Name="UserId" Association="QuizAppModel.UserId">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -469,8 +488,8 @@
           <NavigationProperty Name="AspNetRoles" Relationship="QuizAppModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
           <NavigationProperty Name="Transactions" Relationship="QuizAppModel.FK_AspNetUsers_Id" FromRole="AspNetUser" ToRole="Transaction" />
           <NavigationProperty Name="LevelEarnings" Relationship="QuizAppModel.FK__LevelEarn__UserI__625A9A57" FromRole="AspNetUser" ToRole="LevelEarning" />
-          <NavigationProperty Name="Users" Relationship="QuizAppModel.FK_UserID_UserID" FromRole="AspNetUser" ToRole="User" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="QuizAppModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
+          <NavigationProperty Name="Users" Relationship="QuizAppModel.UserId" FromRole="AspNetUser" ToRole="User" />
         </EntityType>
         <EntityType Name="DailyUserLog">
           <Key>
@@ -758,42 +777,6 @@
           <Property Name="LastUpdate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK__LevelEarn__UserI__625A9A57" FromRole="LevelEarning" ToRole="AspNetUser" />
         </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="ParentIDs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="DeviceID" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Platform" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="LastActiveDate" Type="DateTime" Precision="3" />
-          <Property Name="ReferalCode" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="UsedReferalCode" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="NotificationKey" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="isActive" Type="Boolean" />
-          <Property Name="isBlocked" Type="Boolean" />
-          <Property Name="otp" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="IP" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="LastUpdateDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CurrentPoint" Type="Int32" />
-          <Property Name="CurrentBalance" Type="Double" />
-          <Property Name="TotalEarn" Type="Double" />
-          <Property Name="TotalWithdraw" Type="Double" />
-          <Property Name="PendingWithdraw" Type="Double" />
-          <Property Name="MothlyIncome" Type="Double" />
-          <Property Name="AccountNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NameInAccount" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Bank" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="IFSCCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.FK_UserID_UserID" FromRole="User" ToRole="AspNetUser" />
-          <Property Name="Passcode" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="googleAdsId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="facebookAdsId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-        </EntityType>
         <Association Name="FK__LevelEarn__UserI__625A9A57">
           <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
           <End Type="QuizAppModel.LevelEarning" Role="LevelEarning" Multiplicity="*" />
@@ -802,18 +785,6 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="LevelEarning">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UserID_UserID">
-          <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
-          <End Type="QuizAppModel.User" Role="User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUser">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="User">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
@@ -906,6 +877,57 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FilterData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ParentIDs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DeviceID" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Platform" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="LastActiveDate" Type="DateTime" Precision="3" />
+          <Property Name="ReferalCode" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UsedReferalCode" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="NotificationKey" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="isBlocked" Type="Boolean" />
+          <Property Name="otp" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="IP" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="LastUpdateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CurrentPoint" Type="Int32" />
+          <Property Name="CurrentBalance" Type="Double" />
+          <Property Name="TotalEarn" Type="Double" />
+          <Property Name="TotalWithdraw" Type="Double" />
+          <Property Name="PendingWithdraw" Type="Double" />
+          <Property Name="MothlyIncome" Type="Double" />
+          <Property Name="AccountNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NameInAccount" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Bank" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IFSCCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Passcode" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="googleAdsId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="facebookAdsId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FCMToken" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="QuizAppModel.UserId" FromRole="User" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="UserId">
+          <End Type="QuizAppModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="QuizAppModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1121,42 +1143,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="QuizAppModel.User">
-              <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="facebookAdsId" ColumnName="facebookAdsId" />
-                <ScalarProperty Name="googleAdsId" ColumnName="googleAdsId" />
-                <ScalarProperty Name="Passcode" ColumnName="Passcode" />
-                <ScalarProperty Name="IFSCCode" ColumnName="IFSCCode" />
-                <ScalarProperty Name="Bank" ColumnName="Bank" />
-                <ScalarProperty Name="NameInAccount" ColumnName="NameInAccount" />
-                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
-                <ScalarProperty Name="MothlyIncome" ColumnName="MothlyIncome" />
-                <ScalarProperty Name="PendingWithdraw" ColumnName="PendingWithdraw" />
-                <ScalarProperty Name="TotalWithdraw" ColumnName="TotalWithdraw" />
-                <ScalarProperty Name="TotalEarn" ColumnName="TotalEarn" />
-                <ScalarProperty Name="CurrentBalance" ColumnName="CurrentBalance" />
-                <ScalarProperty Name="CurrentPoint" ColumnName="CurrentPoint" />
-                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
-                <ScalarProperty Name="IP" ColumnName="IP" />
-                <ScalarProperty Name="otp" ColumnName="otp" />
-                <ScalarProperty Name="isBlocked" ColumnName="isBlocked" />
-                <ScalarProperty Name="isActive" ColumnName="isActive" />
-                <ScalarProperty Name="NotificationKey" ColumnName="NotificationKey" />
-                <ScalarProperty Name="UsedReferalCode" ColumnName="UsedReferalCode" />
-                <ScalarProperty Name="ReferalCode" ColumnName="ReferalCode" />
-                <ScalarProperty Name="LastActiveDate" ColumnName="LastActiveDate" />
-                <ScalarProperty Name="Platform" ColumnName="Platform" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ParentIDs" ColumnName="ParentIDs" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MobileOTPs">
             <EntityTypeMapping TypeName="QuizAppModel.MobileOTP">
               <MappingFragment StoreEntitySet="MobileOTP">
@@ -1232,6 +1218,43 @@
               <MappingFragment StoreEntitySet="FilterWord">
                 <ScalarProperty Name="FilterData" ColumnName="FilterData" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="QuizAppModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="FCMToken" ColumnName="FCMToken" />
+                <ScalarProperty Name="facebookAdsId" ColumnName="facebookAdsId" />
+                <ScalarProperty Name="googleAdsId" ColumnName="googleAdsId" />
+                <ScalarProperty Name="Passcode" ColumnName="Passcode" />
+                <ScalarProperty Name="IFSCCode" ColumnName="IFSCCode" />
+                <ScalarProperty Name="Bank" ColumnName="Bank" />
+                <ScalarProperty Name="NameInAccount" ColumnName="NameInAccount" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="MothlyIncome" ColumnName="MothlyIncome" />
+                <ScalarProperty Name="PendingWithdraw" ColumnName="PendingWithdraw" />
+                <ScalarProperty Name="TotalWithdraw" ColumnName="TotalWithdraw" />
+                <ScalarProperty Name="TotalEarn" ColumnName="TotalEarn" />
+                <ScalarProperty Name="CurrentBalance" ColumnName="CurrentBalance" />
+                <ScalarProperty Name="CurrentPoint" ColumnName="CurrentPoint" />
+                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="otp" ColumnName="otp" />
+                <ScalarProperty Name="isBlocked" ColumnName="isBlocked" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="NotificationKey" ColumnName="NotificationKey" />
+                <ScalarProperty Name="UsedReferalCode" ColumnName="UsedReferalCode" />
+                <ScalarProperty Name="ReferalCode" ColumnName="ReferalCode" />
+                <ScalarProperty Name="LastActiveDate" ColumnName="LastActiveDate" />
+                <ScalarProperty Name="Platform" ColumnName="Platform" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ParentIDs" ColumnName="ParentIDs" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -783,5 +783,85 @@ namespace QuizApp.Controllers
             return Result;
         }
         #endregion
+
+        #region Send Challenge Start Notification
+        [HttpPost]
+        public ResultClass SendChallengeStartNotification(ChallangeIdModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.SendChallengeStartNotification(model);
+                if (data)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = null,
+                        Message = "Message send successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Message not send",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
+
+        #region Challenge Starting Soon
+        [HttpPost]
+        public ResultClass ChallengeStartingSoon(UserModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.ChallengeStartingSoon(model);
+                if (data.Any())
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = data,
+                        Message = "Data found successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Data not fond",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
     }
 }

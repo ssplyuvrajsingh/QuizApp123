@@ -1435,5 +1435,73 @@ namespace QuizApp.Controllers
             return Result;
         }
         #endregion
+
+        #region Update FCM Token 
+        [HttpPost]
+        [Route("UpdateFCMToken")]
+        public ResultClass UpdateFCMToken(FCMtokenModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return new ResultClass()
+                    {
+                        Message = "Please send required fields",
+                        Result = false
+                    };
+                }
+                else
+                {
+                    //TODO: Decrypt the encrypted value
+                    var security = new Security();
+                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
+                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                    //Check Secret Code
+                    bool isStatus = security.CheckDecypt(plainText, model.UserID);
+                    if (isStatus)
+                    {
+                        AccountBinding accountBinding = new AccountBinding();
+                        bool data = accountBinding.UpdateFCMToken(model);
+                        if (data)
+                        {
+                            return new ResultClass()
+                            {
+                                Data = null,
+                                Message = "Data update successfully",
+                                Result = true
+                            };
+                        }
+                        else
+                        {
+                            return new ResultClass()
+                            {
+                                Data = null,
+                                Message = "Data not update",
+                                Result = false
+                            };
+                        }
+                    }
+                    else
+                    {
+                        return new ResultClass()
+                        {
+                            Message = "Timeout Error",
+                            Result = false
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResultClass()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    Result = false
+                };
+            }
+        }
+        #endregion
     }
 }

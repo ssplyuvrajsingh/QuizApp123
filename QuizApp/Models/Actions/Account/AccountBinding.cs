@@ -626,5 +626,20 @@ namespace QuizApp.Models
             }).ToList();
         }
         #endregion
+
+        #region Update FCM Token
+        public bool UpdateFCMToken(FCMtokenModel model)
+        {
+            bool res = false;
+            var data = entities.Users.Where(x => x.UserID == model.UserID).FirstOrDefault();
+            if(data!=null)
+            {
+                data.FCMToken = model.FCMToken;
+                entities.SaveChanges();
+                res = true;
+            }
+            return res;
+        }
+        #endregion
     }
 }

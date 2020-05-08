@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using QuizApp.Models.Entities;
 
@@ -401,6 +403,7 @@ namespace QuizApp.Models
                     count++;
                 }         
             }
+            TempWinUser = data.Where(x => x.TemporaryWinner == true).FirstOrDefault();
             return new WinnerUserModel() {
                 Phone = TempWinUser.Phone
             };
@@ -475,6 +478,52 @@ namespace QuizApp.Models
             
             return res;
         }
-#endregion
+        #endregion
+
+        #region Send Challenge Start Notification
+        public bool SendChallengeStartNotification(ChallangeIdModel model)
+        {
+            bool res = false;
+            var data = entities.Challanges.Where(x => x.IsAccepted == true && x.ChallangeId == model.ChallangeId).ToList();
+            foreach(var item in data)
+            {
+                var FCM = entities.Users.Where(x => x.UserID == item.UserId).FirstOrDefault();
+                var result = FCMPushNotification.SendNotificationFromFirebaseCloud(FCM.FCMToken);
+                if (result.success == 1)
+                {
+                    res = true;
+                }
+                else
+                {
+                    res = false;
+                }
+            }
+            return res;
+        }
+        #endregion
+
+        #region Challenge Starting Soon
+        public List<ChallengeStartSoonModel> ChallengeStartingSoon(UserModel model)
+        {
+            var data = entities.Challanges.Where(x => x.IsAccepted == true && x.IsCompleted != true && x.UserId == model.UserId).OrderByDescending(x=>x.StartDateTime).ToList();
+            List<ChallengeStartSoonModel> challengeStartSoons = new List<ChallengeStartSoonModel>();
+            foreach(var item in data)
+            {
+                if (item.ChallangeStartDateTime > DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00))
+                {
+
+                    var ChallengeData = new ChallengeStartSoonModel();
+                    var AdminName = entities.Challanges.Where(x => x.ChallangeId == item.ChallangeId).Select(x => x.Name).FirstOrDefault();
+                    ChallengeData.ChallengeId = (int)item.ChallangeId;
+                    ChallengeData.UserId = item.UserId;
+                    ChallengeData.CreatedByUsername = AdminName;
+                    ChallengeData.challengeCreatedDatetime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", item.StartDateTime);
+                    ChallengeData.ChallengeStartDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", item.ChallangeStartDateTime);
+                    challengeStartSoons.Add(ChallengeData);
+                }
+            }
+            return challengeStartSoons;
+        }
+        #endregion
     }
 }

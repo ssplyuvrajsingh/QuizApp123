@@ -44,6 +44,7 @@ namespace QuizApp.Models.Entities
         public string Passcode { get; set; }
         public string googleAdsId { get; set; }
         public string facebookAdsId { get; set; }
+        public string FCMToken { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
     }

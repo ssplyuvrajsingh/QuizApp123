@@ -116,7 +116,6 @@
                 }
                 else if(IsStatus == 'false') {
                     var ChallangeStartTime = JSON.stringify(r.Data["ChallangeStartDateTime"]).replace(/['"]+/g, '');
-
                     TimeCount(ChallangeStartTime);
                 }
             }
@@ -184,41 +183,41 @@
         //*** Set Winner User ***//
 
         //*** Time Count Function ***//
-         function TimeCount(DateTime){
-        //var countDownDate = new Date("May 4, 2020 17:37:25").getTime();
-         var countDownDate = new Date(DateTime).getTime();
+        function TimeCount(DateTime) {
+            //var countDownDate = new Date("May 4, 2020 17:37:25").getTime();
+            var countDownDate = new Date(DateTime).getTime();
 
-    // Update the count down every 1 second
-    var x = setInterval(function () {
+            // Update the count down every 1 second
+            var x = setInterval(function () {
 
-        // Get today's date and time
-        var now = new Date().getTime();
+                // Get today's date and time
+                var now = new Date().getTime();
 
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
+                // Find the distance between now and the count down date
+                var distance = countDownDate - now;
 
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                // Time calculations for days, hours, minutes and seconds
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // Output the result in an element with id="demo"
-        document.getElementById("demo").innerHTML = minutes + "m " + seconds + "s ";
-        // If the count down is over, write some text
-        if (distance > 0) {
-            $("#jquery-script-menu").css("display", "block");
-        }
-        if (distance < 0) {
-            clearInterval(x);
-            document.getElementById("demo").innerHTML = 00 + "m " + 00 + "s ";
-            $("#divcounter").css("display", "block");
-            $("#jquery-script-menu").css("display", "none");
-            //$("body").css("background-image", "url('https://media.giphy.com/media/nbJUuYFI6s0w0/source.gif')");
+                // Output the result in an element with id="demo"
+                document.getElementById("demo").innerHTML = minutes + "m " + seconds + "s ";
+                // If the count down is over, write some text
+                if (distance > 0) {
+                    $("#jquery-script-menu").css("display", "block");
+                }
+                if (distance < 0) {
+                    clearInterval(x);
+                    document.getElementById("demo").innerHTML = 00 + "m " + 00 + "s ";
+                    $("#divcounter").css("display", "block");
+                    $("#jquery-script-menu").css("display", "none");
+                    //$("body").css("background-image", "url('https://media.giphy.com/media/nbJUuYFI6s0w0/source.gif')");
 
-            SetTemporaryWinner();
-        }
-    }, 1000);
+                    SetTemporaryWinner();
+                }
+            }, 1000);
         }
         //*** Time Count Function ***//
     })

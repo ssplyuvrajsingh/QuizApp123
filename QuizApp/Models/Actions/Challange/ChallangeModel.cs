@@ -101,6 +101,7 @@ namespace QuizApp.Models
         public string UserId { get; set; }
     }
     #endregion
+
     #region Request Challange List
     public class RequestChallangeModel
     {
@@ -117,5 +118,14 @@ namespace QuizApp.Models
         public string Phone { get; set; }
         public bool IsStatus { get; set; }
         public string Name { get; set; }
+    }
+
+    public class ChallengeStartSoonModel
+    {
+        public int ChallengeId { get; set; }
+        public string UserId { get; set; }
+        public string CreatedByUsername { get; set; }
+        public string challengeCreatedDatetime { get; set; }
+        public string ChallengeStartDateTime { get; set; }
     }
 }
