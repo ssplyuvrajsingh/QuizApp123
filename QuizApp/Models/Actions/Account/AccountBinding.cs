@@ -29,7 +29,8 @@ namespace QuizApp.Models
         {
             return entities.Users.Where(x => x.UserID == userId).Select(x => new TokenResult() {
                 RefferalCode = x.ReferalCode,
-                UserName = x.Name
+                UserName = x.Name,
+                FCMToken = x.FCMToken
             }).FirstOrDefault();
 
         }
