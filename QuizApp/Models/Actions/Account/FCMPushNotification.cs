@@ -10,7 +10,7 @@ namespace QuizApp.Models
 {
     public class FCMPushNotification
     {
-        public static FCMResponse SendNotificationFromFirebaseCloud(string to)
+        public static FCMResponse SendNotificationFromFirebaseCloud(string to,string ChallengeDateTime)
         {
             var result = "-1";
             var webAddr = "https://fcm.googleapis.com/fcm/send";
@@ -21,7 +21,7 @@ namespace QuizApp.Models
 
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
-                string strNJson = "{\"to\": \""+ to +"\",\"notification\": {\"body\": \"New news added in application!\",\"title\":\"" + "test" + "\",\"content_available\":\""+true+ "\",\"priority\":\"high\",\"pushType\":\"user_challenge\"},\"data\":{\"body\": \"New news added in application!\",\"title\":\"" + "test" + "\",\"content_available\":\"" + true + "\",\"priority\":\"high\"}}";
+                string strNJson = "{\"to\": \""+ to + "\",\"notification\": {\"body\": \"Challange will start soon\",\"title\":\"" + ""+ ChallengeDateTime +"" + "\",\"content_available\":\""+true+ "\",\"priority\":\"high\",\"pushType\":\"user_challenge\"},\"data\":{\"body\": \"Challange will start soon\",\"title\":\"" + ChallengeDateTime + "\",\"content_available\":\"" + true + "\",\"priority\":\"high\"}}";
                 streamWriter.Write(strNJson);
                 streamWriter.Flush();
             }

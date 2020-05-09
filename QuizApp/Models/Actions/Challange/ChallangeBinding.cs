@@ -349,11 +349,14 @@ namespace QuizApp.Models
             {
                 var res = entities.Challanges.Where(x =>x.IsCompleted == false && x.IsAdmin == true && x.ChallangeId == item.ChallangeId).OrderByDescending(x => x.StartDateTime).FirstOrDefault();
                 var List = new RequestChallangeModel();
-                List.ChallangeId = (int)res.ChallangeId;
-                List.StartDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", res.StartDateTime);
-                List.UserId = res.UserId;
-                List.Name = res.Name;
-                saveds.Add(List);
+                if (res != null)
+                {
+                    List.ChallangeId = (int)res.ChallangeId;
+                    List.StartDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", res.StartDateTime);
+                    List.UserId = res.UserId;
+                    List.Name = res.Name;
+                    saveds.Add(List);
+                }
             }
             return saveds;
         }
@@ -362,18 +365,15 @@ namespace QuizApp.Models
         #region Delete Saved Challenge
         public bool DeleteSavedChallenge(ChallangeIdModel model)
         {
-            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId).ToList();
-            bool res = false;
-            foreach (var item in data)
+            var data = entities.Database.ExecuteSqlCommand("Delete Challange where ChallangeId=" + model.ChallangeId);
+            if (data > 0)
             {
-                entities.Challanges.Remove(item);
-                res = entities.SaveChanges() > 0 ? true : false;
-                if(!res)
-                {
-                    break;
-                }
+                return true;
             }
-            return res;
+            else
+            {
+                return false;
+            }
         }
         #endregion
 
@@ -487,14 +487,19 @@ namespace QuizApp.Models
             foreach(var item in data)
             {
                 var FCM = entities.Users.Where(x => x.UserID == item.UserId).FirstOrDefault();
-                var result = FCMPushNotification.SendNotificationFromFirebaseCloud(FCM.FCMToken);
-                if (result.success == 1)
+                if (FCM.FCMToken != null && item.IsAdmin != true)
                 {
-                    res = true;
-                }
-                else
-                {
-                    res = false;
+                    string ChallengeDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", item.StartDateTime);
+                    var result = FCMPushNotification.SendNotificationFromFirebaseCloud(FCM.FCMToken, ChallengeDateTime);
+                    if (result.success == 1)
+                    {
+                        res = true;
+                    }
+                    else
+                    {
+                        res = false;
+                        break;
+                    }
                 }
             }
             return res;
