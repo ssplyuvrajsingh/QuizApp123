@@ -205,26 +205,24 @@ namespace QuizApp.Models
             var WinUser = data.Where(x => x.UserId == model.UserId && x.ChallangeId == model.ChallangeId).FirstOrDefault();
 
             int Points = 0;
-            foreach(var item in data)
+            foreach (var item in data)
             {
-                if(item.UserId != model.UserId && item.ChallangeId == model.ChallangeId)
+                item.IsCompleted = true;
+                item.CompletedDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
+                item.IsWinner = false;
+                Points = Convert.ToInt32(Points + item.Points);
+                UserPoint PointWithdrawal = new UserPoint()
                 {
-                    item.IsCompleted = true;
-                    item.CompletedDateTime = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00);
-                    item.IsWinner = false;
-                    Points = Convert.ToInt32(Points + item.Points);
-                    UserPoint PointWithdrawal = new UserPoint()
-                    {
-                        UserID = item.UserId,
-                        TransactionDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
-                        PointsWithdraw = item.Points,
-                        PointsEarned = 0,
-                        Description = "Point Withdrawal for Lose ChallangeId= "+model.ChallangeId,
-                        CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
-                    };
-                    entities.UserPoints.Add(PointWithdrawal);
-                    entities.SaveChanges();
-                }
+                    UserID = item.UserId,
+                    TransactionDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
+                    PointsWithdraw = item.Points,
+                    PointsEarned = 0,
+                    Description = "Point Withdrawal for ChallangeId= " + model.ChallangeId,
+                    CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00)
+                };
+                entities.UserPoints.Add(PointWithdrawal);
+                entities.SaveChanges();
+
             }
 
             WinUser.IsCompleted = true;
