@@ -286,14 +286,28 @@ namespace QuizApp.Models
         #region Winner User Details
         public List<WinnerDetailsModel> WinnerUserDetails(WinnerUsersModel model)
         {
-            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAccepted == true).Select(x => new WinnerDetailsModel()
+            var data = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAccepted == true).ToList();
+            List<WinnerDetailsModel> winnerDetails = new List<WinnerDetailsModel>();
+            foreach(var item in data)
             {
-                Name = x.Name,
-                Phone = x.Phone,
-                Points = (int)x.Points,
-                IsWinner = x.IsWinner
-            }).ToList();
-            return data;
+                var Win = new WinnerDetailsModel();
+                if((bool)item.IsWinner)
+                {
+                    Win.Name = item.Name;
+                    Win.Phone = item.Phone;
+                    Win.Points = (int)item.Points;
+                    Win.IsWinner = item.IsWinner;
+                }
+                else
+                {
+                    Win.Name = item.Name;
+                    Win.Phone = item.Phone;
+                    Win.Points = 0;
+                    Win.IsWinner = item.IsWinner;
+                }
+                winnerDetails.Add(Win);
+            }
+            return winnerDetails;
         }
         #endregion
 
