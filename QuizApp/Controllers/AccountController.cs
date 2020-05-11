@@ -103,6 +103,7 @@ namespace QuizApp.Controllers
                                             data.RefferalCode = data1.RefferalCode;
                                             data.UserName = data1.UserName;
                                             data.MobileNumber = model.PhoneNumber;
+                                            data.FCMToken = data1.FCMToken;
                                             return data;
                                         }
                                     else

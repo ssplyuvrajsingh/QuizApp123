@@ -184,7 +184,7 @@ namespace QuizApp.Models
                 if((bool)item.IsAdmin)
                 {
                     challangeListsModel.AdminPoints = (int)item.Points;
-                    challangeListsModel.MinimumEntryPoints = (int)item.MinimumEntryPoints;
+                    challangeListsModel.MinimumEntryPoints = item.MinimumEntryPoints!=null ? (int)item.MinimumEntryPoints:0;
                 }
             }
             GeneralFunctions general = new GeneralFunctions();
