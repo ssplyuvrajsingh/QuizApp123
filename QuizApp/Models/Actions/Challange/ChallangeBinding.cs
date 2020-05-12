@@ -527,12 +527,12 @@ namespace QuizApp.Models
             {
                 if (item.ChallangeStartDateTime > DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00) && item.ChallangeStartDateTime != null)
                 {
-
                     var ChallengeData = new ChallengeStartSoonModel();
-                    var AdminName = entities.Challanges.Where(x => x.ChallangeId == item.ChallangeId).Select(x => x.Name).FirstOrDefault();
+                    var AdminInfo = entities.Challanges.Where(x => x.ChallangeId == item.ChallangeId).FirstOrDefault();
                     ChallengeData.ChallengeId = (int)item.ChallangeId;
                     ChallengeData.UserId = item.UserId;
-                    ChallengeData.CreatedByUsername = AdminName;
+                    ChallengeData.CreatedByUsername = AdminInfo.Name;
+                    ChallengeData.CreatedByUserId = AdminInfo.UserId;
                     ChallengeData.challengeCreatedDatetime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", item.StartDateTime);
                     ChallengeData.ChallengeStartDateTime = string.Format("{0:dd MMMM, yyyy hh:mm tt}", item.ChallangeStartDateTime);
                     challengeStartSoons.Add(ChallengeData);

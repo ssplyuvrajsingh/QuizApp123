@@ -125,8 +125,9 @@ namespace QuizApp.Models
         public int ChallengeId { get; set; }
         public string UserId { get; set; }
         public string CreatedByUsername { get; set; }
+        public string CreatedByUserId { get; set; }
         public string challengeCreatedDatetime { get; set; }
         public string ChallengeStartDateTime { get; set; }
     }
-    
+
 }
