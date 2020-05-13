@@ -21,6 +21,7 @@ namespace QuizApp.Models
         public Nullable<System.DateTime> CompletedDateTime { get; set; }
         public Nullable<bool> IsWinner { get; set; }
         public Nullable<int> Points { get; set; }
+        public Nullable<bool> IsRejected { get; set; }
     }
 
     public class ChallangeIdModel
@@ -61,6 +62,7 @@ namespace QuizApp.Models
         public Nullable<int> ChallangeId { get; set; }
         public Nullable<bool> IsAdmin { get; set; }
         public Nullable<bool> IsAccepted { get; set; }
+        public Nullable<bool> IsRejected { get; set; }
         public Nullable<int> Points { get; set; }
     }
     public class ChallangeListsModel

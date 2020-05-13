@@ -133,7 +133,25 @@ namespace QuizApp.Models
             if (data!=null)
             {
                 data.IsAccepted = model.IsAccepted;
+                data.IsRejected = false;
                 data.ChallangeStartDateTime = Admin.ChallangeStartDateTime;
+                return entities.SaveChanges() > 0;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool ChallengeReject(ChallangeModel model)
+        {
+            var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.ChallangeId == model.ChallangeId).FirstOrDefault();
+            var Admin = entities.Challanges.Where(x => x.ChallangeId == model.ChallangeId && x.IsAdmin == true).FirstOrDefault();
+            if (data != null)
+            {
+                data.IsRejected = model.IsRejected;
+                data.IsAccepted = false;
+                //data.ChallangeStartDateTime = Admin.ChallangeStartDateTime;
                 return entities.SaveChanges() > 0;
             }
             else
@@ -169,7 +187,7 @@ namespace QuizApp.Models
             ChallangeListsModel challangeListsModel = new ChallangeListsModel();
             List<ChallangesListModel> challangesListModels = new List<ChallangesListModel>();
             int TotalPoints = 0;
-            foreach(var item in data)
+            foreach (var item in data)
             {
                 var CLD = new ChallangesListModel();
                 CLD.UserId = item.UserId;
@@ -178,13 +196,14 @@ namespace QuizApp.Models
                 CLD.Phone = item.Phone;
                 CLD.IsAdmin = item.IsAdmin;
                 CLD.IsAccepted = item.IsAccepted;
+                CLD.IsRejected = item.IsRejected;
                 CLD.Points = item.Points;
                 TotalPoints = Convert.ToInt32(TotalPoints + item.Points);
                 challangesListModels.Add(CLD);
-                if((bool)item.IsAdmin)
+                if ((bool)item.IsAdmin)
                 {
                     challangeListsModel.AdminPoints = (int)item.Points;
-                    challangeListsModel.MinimumEntryPoints = item.MinimumEntryPoints!=null ? (int)item.MinimumEntryPoints:0;
+                    challangeListsModel.MinimumEntryPoints = item.MinimumEntryPoints != null ? (int)item.MinimumEntryPoints : 0;
                 }
             }
             GeneralFunctions general = new GeneralFunctions();
@@ -355,7 +374,7 @@ namespace QuizApp.Models
         #region Get Challange List come request for challange by Other User
         public List<RequestChallangeModel> RequestChallangeList(UserModel model)
         {
-            var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.IsCompleted == false && x.IsAdmin == false).OrderByDescending(x => x.StartDateTime).ToList();
+            var data = entities.Challanges.Where(x => x.UserId == model.UserId && x.IsCompleted == false && x.IsAdmin == false && x.IsRejected != true).OrderByDescending(x => x.StartDateTime).ToList();
             List<RequestChallangeModel> saveds = new List<RequestChallangeModel>();
             foreach (var item in data)
             {

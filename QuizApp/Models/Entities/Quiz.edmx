@@ -94,6 +94,7 @@
           <Property Name="TemporaryWinner" Type="bit" />
           <Property Name="ChallangeStartDateTime" Type="datetime" />
           <Property Name="MinimumEntryPoints" Type="int" />
+          <Property Name="IsRejected" Type="bit" />
         </EntityType>
         <EntityType Name="ContactSupport">
           <Key>
@@ -311,20 +312,6 @@
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
         </EntityType>
-        <Association Name="UserId">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="User" Type="Self.User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="QuizAppModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -348,10 +335,6 @@
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserAnswer" EntityType="Self.UserAnswer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPoints" EntityType="Self.UserPoints" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="UserId" Association="Self.UserId">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="User" EntitySet="User" />
-          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -869,6 +852,7 @@
           <Property Name="TemporaryWinner" Type="Boolean" />
           <Property Name="ChallangeStartDateTime" Type="DateTime" Precision="3" />
           <Property Name="MinimumEntryPoints" Type="Int32" />
+          <Property Name="IsRejected" Type="Boolean" />
         </EntityType>
         <EntityType Name="FilterWord">
           <Key>
@@ -1195,6 +1179,7 @@
           <EntitySetMapping Name="Challanges">
             <EntityTypeMapping TypeName="QuizAppModel.Challange">
               <MappingFragment StoreEntitySet="Challange">
+                <ScalarProperty Name="IsRejected" ColumnName="IsRejected" />
                 <ScalarProperty Name="MinimumEntryPoints" ColumnName="MinimumEntryPoints" />
                 <ScalarProperty Name="ChallangeStartDateTime" ColumnName="ChallangeStartDateTime" />
                 <ScalarProperty Name="TemporaryWinner" ColumnName="TemporaryWinner" />

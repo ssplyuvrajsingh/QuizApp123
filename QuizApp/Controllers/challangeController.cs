@@ -903,5 +903,45 @@ namespace QuizApp.Controllers
             return Result;
         }
         #endregion
+
+        #region Reject Challenge Request
+        [HttpPost]
+        public ResultClass RejectChallengeRequest(ChallangeModel model)
+        {
+            var Result = new ResultClass();
+            try
+            {
+                ChallangeBinding challangeBinding = new ChallangeBinding();
+                var data = challangeBinding.ChallengeReject(model);
+                if (data)
+                {
+                    Result = new ResultClass()
+                    {
+                        Data = null,
+                        Message = "Challenge rejected successfully",
+                        Result = true
+                    };
+                }
+                else
+                {
+                    Result = new ResultClass()
+                    {
+                        Message = "Challene not rejected",
+                        Result = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = new ResultClass()
+                {
+                    Result = false,
+                    Message = ex.Message + "---" + ex.StackTrace,
+                    Data = null
+                };
+            }
+            return Result;
+        }
+        #endregion
     }
 }
