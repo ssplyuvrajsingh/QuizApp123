@@ -46,34 +46,39 @@
         }
     </style>
     <link href="~/Scripts/ChallangeScript/jquery.incremental-counter.css" rel="stylesheet" type="text/css">
+    <link href="~/StyleSheet/Challenge.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div style="display:none;" id="jquery-script-menu">
-        <div class="jquery-script-center">
-            <p>Challenge will start </p>
-            <p id="demo"></p><br /><br />
+    <div style="display:none;" class="centered">
+        <div class="loader"></div>
+    </div>
+        <div style="display:none;" id="jquery-script-menu">
+            <div class="jquery-script-center">
+                <p>Challenge will start </p>
+                <p id="demo"></p><br /><br />
+            </div>
         </div>
-    </div>
-    <div id="divcounter" display="none" class="container">
-        <div class="incremental-counter" data-value=""></div>
-    </div>
-    <div id="UserInfo" class="container">
-        <h1 style="display:none;" id="WinnerHeading">Winner of Challenge</h1>
-        <span id="UserName"> </span><br /><br />
-        <span id="UserPhone"> </span>
-    </div>
-    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="~/Scripts/ChallangeScript/jquery.incremental-counter.js"></script>
-    @*<script>
-            $(".incremental-counter").incrementalCounter();
-        </script>*@
+        <div id="divcounter" display="none" class="container">
+            <div class="incremental-counter" data-value=""></div>
+        </div>
+        <div id="UserInfo" class="container">
+            <h1 style="display:none;" id="WinnerHeading">Winner of Challenge</h1>
+            <span id="UserName"> </span><br /><br />
+            <span id="UserPhone"> </span>
+        </div>
+        <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="~/Scripts/ChallangeScript/jquery.incremental-counter.js"></script>
+        @*<script>
+                $(".incremental-counter").incrementalCounter();
+            </script>*@
 </body>
 </html>
 <script>
     $(document).ready(function () {
           $("#divcounter").css("display", "none");
         $("#jquery-script-menu").css("display", "none");
+        $(".centered").css("display", "block");
 
         //*** Get Url Perameter ***//
         var getUrlParameter = function getUrlParameter(sParam) {
@@ -113,10 +118,12 @@
                     $("#WinnerHeading").css("display", "block");
                     $("#UserName").text(Name);
                     $("#UserPhone").text(Phone);
+                    $(".centered").css("display", "none");
                 }
                 else if(IsStatus == 'false') {
                     var ChallangeStartTime = JSON.stringify(r.Data["ChallangeStartDateTime"]).replace(/['"]+/g, '');
                     TimeCount(ChallangeStartTime);
+                    $(".centered").css("display", "none");
                 }
             }
         });
@@ -136,22 +143,8 @@
                     $("body").css("background-color", "#384047");
                     $(".incremental-counter").attr("data-value", Phone);
                     $(".incremental-counter").incrementalCounter();
+                    
                     SetWinnerUser(15000);
-                    //var Phone = JSON.stringify(r.Data["Phone"]).replace(/['"]+/g, '');
-                    //var IsStatus = JSON.stringify(r.Data["IsStatus"]).replace(/['"]+/g, '');
-                    //var Name = JSON.stringify(r.Data["Name"]).replace(/['"]+/g, '');
-                    //if (IsStatus == 'false') {
-                    //    $("body").css("background-image", "url('/Images/Challenge/[media.giphy.com][840]B5aTato.gif')");
-                    //    $("#WinnerHeading").css("display", "block");
-                    //    $("#UserName").text(Name);
-                    //    $("#UserPhone").text(Phone);
-                    //}
-                    //else {
-                    ////    $("body").css("background-color", "#384047");
-                    ////    $(".incremental-counter").attr("data-value", Phone);
-                    ////    $(".incremental-counter").incrementalCounter();
-                    ////    CallAgain(15000);
-                    //}
                 }
             });
         }
