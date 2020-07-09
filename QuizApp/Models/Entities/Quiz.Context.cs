@@ -46,5 +46,6 @@ namespace QuizApp.Models.Entities
         public virtual DbSet<Challange> Challanges { get; set; }
         public virtual DbSet<FilterWord> FilterWords { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<ReferalCodeTable> ReferalCodeTables { get; set; }
     }
 }

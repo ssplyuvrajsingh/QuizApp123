@@ -340,6 +340,9 @@
     <Compile Include="Models\Entities\QuizQuestion.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entities\ReferalCodeTable.cs">
+      <DependentUpon>Quiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\RefreshToken.cs">
       <DependentUpon>Quiz.tt</DependentUpon>
     </Compile>
@@ -360,6 +363,7 @@
     <Compile Include="Models\Input\Account\CaptionModel.cs" />
     <Compile Include="Models\Input\Account\ChangePasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\FCMtokenModel .cs" />
+    <Compile Include="Models\Input\Account\FillReferalModel.cs" />
     <Compile Include="Models\Input\Account\ForgotPasswordBindingModel.cs" />
     <Compile Include="Models\Input\Account\OTPVerificationBindingModel.cs" />
     <Compile Include="Models\Input\Account\PointsRedeemModel.cs" />

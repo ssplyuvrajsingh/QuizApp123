@@ -237,20 +237,28 @@ namespace QuizApp.Models
         #region Add OTP ForgotPassword
         public bool AddOTP(ForgotPasswordBindingModel model)
         {
-            using (QuizAppEntities entities = new QuizAppEntities())
+            var mobile = entities.AspNetUsers.Where(x => x.PhoneNumber == model.PhoneNumber).FirstOrDefault();
+            if (mobile != null)
             {
-                var OTP = GeneralFunctions.GetOTP();
-                MobileOTP mobileOTP = new MobileOTP()
+                using (QuizAppEntities entities = new QuizAppEntities())
                 {
-                    PhoneNumber = model.PhoneNumber,
-                    OTP = OTP,
-                    CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
+                    var OTP = GeneralFunctions.GetOTP();
+                    MobileOTP mobileOTP = new MobileOTP()
+                    {
+                        PhoneNumber = model.PhoneNumber,
+                        OTP = OTP,
+                        CreatedDate = DateTime.UtcNow.AddHours(5.00).AddMinutes(30.00),
 
-                };
+                    };
 
-                entities.MobileOTPs.Add(mobileOTP);
-                var OtpSend = sms_api_callAsync(model.PhoneNumber, OTP.ToString());
-                return entities.SaveChanges() > 0;
+                    entities.MobileOTPs.Add(mobileOTP);
+                    var OtpSend = sms_api_callAsync(model.PhoneNumber, OTP.ToString());
+                    return entities.SaveChanges() > 0;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
         #endregion
@@ -535,8 +543,16 @@ namespace QuizApp.Models
         #region Get User Information isActive or Blocked
         public User GetUserInformation(string UserId)
         {
-            var data = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
-            return data;
+            try
+            {
+                var data = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
+                return data;
+            }
+            catch(Exception ex)
+            {
+                var data = ex.Message;
+                return null;
+            }
         }
         #endregion
 
@@ -640,6 +656,23 @@ namespace QuizApp.Models
                 res = true;
             }
             return res;
+        }
+        #endregion
+
+        #region FetchReferal
+        public string FetchReferal(string ipaddress)
+        {
+            var data = entities.ReferalCodeTables.SingleOrDefault(x=>x.IPAddress.Equals(ipaddress));
+            
+            if (data != null)
+            {
+                ReferalCodeTable referalCode = new ReferalCodeTable();
+                referalCode.IsUsed = true;
+                entities.SaveChanges();
+                var referal = data.ReferalCode;
+                return referal;
+            }
+            return null;
         }
         #endregion
     }

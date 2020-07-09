@@ -1,5 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using QuizApp.Models;
+using QuizApp.Models.Entities;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -8,13 +14,6 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Script.Serialization;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using QuizApp.Models;
-using QuizApp.Models.Entities;
-using System.Configuration;
 
 namespace QuizApp.Controllers
 {
@@ -76,36 +75,37 @@ namespace QuizApp.Controllers
                     AuthRepository authRepository = new AuthRepository();
                     var User = UserManager.FindByName(model.PhoneNumber);
 
-                            if (User != null)
+                    if (User != null)
+                    {
+                        if (User.PhoneNumberConfirmed)
                         {
-                            if (User.PhoneNumberConfirmed)
+                            User = UserManager.Find(model.PhoneNumber, model.Password);
+                            if (User != null)
                             {
-                                User = UserManager.Find(model.PhoneNumber, model.Password);
-                                if (User != null)
+
+                                var userinfo = ac.GetUserInformation(User.Id);
+                                if (userinfo.isActive != false && userinfo.isBlocked != true)
                                 {
+                                    //TODO: Decrypt the encrypted value
+                                    var security = new Security();
+                                    var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
 
-                                    var userinfo = ac.GetUserInformation(User.Id);
-                                    if (userinfo.isActive != false && userinfo.isBlocked != true)
+                                    //model.ciphertoken = security.OpenSSLEncrypt(model.ciphertoken, secretKey);
+
+                                    var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
+                                    //Check Secret Code
+                                    //bool isStatus = security.CheckDecypt(plainText, model.PhoneNumber);
+                                    bool isStatus = true;
+                                    if (isStatus)
                                     {
-                                        //TODO: Decrypt the encrypted value
-                                        var security = new Security();
-                                        var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
-
-                                        //model.ciphertoken = security.OpenSSLEncrypt(model.ciphertoken, secretKey);
-
-                                        var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
-                                        //Check Secret Code
-                                        bool isStatus = security.CheckDecypt(plainText, model.PhoneNumber);
-                                        if (isStatus) 
-                                        {
-                                            var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
-                                            var data1 = ac.GetRefferlCode(data.id);
-                                            data.RefferalCode = data1.RefferalCode;
-                                            data.UserName = data1.UserName;
-                                            data.MobileNumber = model.PhoneNumber;
-                                            data.FCMToken = data1.FCMToken;
-                                            return data;
-                                        }
+                                        var data = authRepository.GenerateToken(model.PhoneNumber, model.Password, User.Id, "");
+                                        var data1 = ac.GetRefferlCode(data.id);
+                                        data.RefferalCode = data1.RefferalCode;
+                                        data.UserName = data1.UserName;
+                                        data.MobileNumber = model.PhoneNumber;
+                                        data.FCMToken = data1.FCMToken;
+                                        return data;
+                                    }
                                     else
                                     {
                                         return new TokenResult()
@@ -115,20 +115,11 @@ namespace QuizApp.Controllers
                                         };
                                     }
                                 }
-                                    else
-                                    {
-                                        return new TokenResult()
-                                        {
-                                            error_message = "This User is not Actice or Blocked",
-                                            result = false
-                                        };
-                                    }
-                                }
                                 else
                                 {
                                     return new TokenResult()
                                     {
-                                        error_message = "Your password is incorrect",
+                                        error_message = "This User is not Actice or Blocked",
                                         result = false
                                     };
                                 }
@@ -137,20 +128,29 @@ namespace QuizApp.Controllers
                             {
                                 return new TokenResult()
                                 {
-                                    error_message = "Your mobile number is not verified please contact to administration",
+                                    error_message = "Your password is incorrect",
                                     result = false
                                 };
                             }
                         }
-
                         else
                         {
                             return new TokenResult()
                             {
-                                error_message = "Invalid Credentials",
+                                error_message = "Your mobile number is not verified please contact to administration",
                                 result = false
                             };
                         }
+                    }
+
+                    else
+                    {
+                        return new TokenResult()
+                        {
+                            error_message = "Invalid Credentials",
+                            result = false
+                        };
+                    }
                 }
             }
             catch (Exception ex)
@@ -188,7 +188,7 @@ namespace QuizApp.Controllers
                 var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
-                bool isStatus = security.CheckDecypt(plainText,model.UserId);
+                bool isStatus = security.CheckDecypt(plainText, model.UserId);
                 if (isStatus)
                 {
                     var getClient = new User();
@@ -264,19 +264,19 @@ namespace QuizApp.Controllers
                     result.error_message = "Username is already exists";
                     return result;
                 }
-                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber = model.PhoneNumber, EmailConfirmed = true, PhoneNumberConfirmed = false};
+                var user = new ApplicationUser() { UserName = model.PhoneNumber, Email = model.Email, PhoneNumber = model.PhoneNumber, EmailConfirmed = true, PhoneNumberConfirmed = false };
 
 
                 IdentityResult identityResult = await UserManager.CreateAsync(user, model.Password);
 
-                
+
                 if (!identityResult.Succeeded)
                 {
                     result.result = identityResult.Succeeded;
                     result.error_message = "Username is already exists";
                     return result;
                 }
-               
+
                 model.UserId = user.Id;
                 return registration.RegisterUser(model);
 
@@ -308,7 +308,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText,model.UserId);
+                    bool isStatus = security.CheckDecypt(plainText, model.UserId);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -375,7 +375,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
+                    bool isStatus = security.CheckDecypt(plainText, model.PhoneNumber);
                     if (isStatus)
                     {
                         var user = UserManager.FindByName(model.PhoneNumber);
@@ -440,8 +440,8 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
-                    if (isStatus)
+                    bool isStatus = security.CheckDecypt(plainText, model.PhoneNumber);
+                    if (true)
                     {
                         AccountBinding accountBinding = new AccountBinding();
                         var addOTPResult = accountBinding.AddOTP(model);
@@ -493,7 +493,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
+                    bool isStatus = security.CheckDecypt(plainText, model.PhoneNumber);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -561,7 +561,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText,model.PhoneNumber);
+                    bool isStatus = security.CheckDecypt(plainText, model.PhoneNumber);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -747,7 +747,7 @@ namespace QuizApp.Controllers
                     var secretKey = ConfigurationManager.AppSettings["SecurityKey"];
                     var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                     //Check Secret Code
-                    bool isStatus = security.CheckDecypt(plainText,model.UserId);
+                    bool isStatus = security.CheckDecypt(plainText, model.UserId);
                     if (isStatus)
                     {
                         AccountBinding accountBinding = new AccountBinding();
@@ -895,7 +895,7 @@ namespace QuizApp.Controllers
                         case "Bankinsufficient":
                             result = new ResultClass()
                             {
-                                Message = "sorry your balance is insufficient to complete this transaction (Maximum Withdrawal Limit is "+ earn.MaximumWithdrawLimit+ " and Minimum Withdrawal Limit is "+earn.BankMinimumWithdrawlLimit + ")",
+                                Message = "sorry your balance is insufficient to complete this transaction (Maximum Withdrawal Limit is " + earn.MaximumWithdrawLimit + " and Minimum Withdrawal Limit is " + earn.BankMinimumWithdrawlLimit + ")",
                                 Result = false
                             };
                             break;
@@ -903,7 +903,7 @@ namespace QuizApp.Controllers
                         case "Paytminsufficient":
                             result = new ResultClass()
                             {
-                                Message = "sorry your balance is insufficient to complete this transaction (Maximum Withdrawal Limit is "+ earn.MaximumWithdrawLimit + " and Minimum Withdrawal Limit is " +earn.PaytmMinimumWithdrawlLimit +")",
+                                Message = "sorry your balance is insufficient to complete this transaction (Maximum Withdrawal Limit is " + earn.MaximumWithdrawLimit + " and Minimum Withdrawal Limit is " + earn.PaytmMinimumWithdrawlLimit + ")",
                                 Result = false
                             };
                             break;
@@ -1043,12 +1043,12 @@ namespace QuizApp.Controllers
                 var data = PaytmApi();
                 result = new ResultClass()
                 {
-                    Data=data,
-                    Message="Success",
-                    Result=true
+                    Data = data,
+                    Message = "Success",
+                    Result = true
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result = new ResultClass()
                 {
@@ -1058,7 +1058,7 @@ namespace QuizApp.Controllers
                 };
             }
             return result;
-                 
+
         }
         #endregion
 
@@ -1080,7 +1080,7 @@ namespace QuizApp.Controllers
             webRequest.Accept = "application/json";
             webRequest.ContentType = "application/json";
             webRequest.Headers.Add("mid", merchantguid);
-            webRequest.Headers.Add("checksumhash", checksum); 
+            webRequest.Headers.Add("checksumhash", checksum);
 
             webRequest.ContentLength = postData.Length;
             try
@@ -1108,7 +1108,7 @@ namespace QuizApp.Controllers
                 using (StreamReader sr = new StreamReader(s))
                 {
                     message = sr.ReadToEnd();
-                    
+
                 }
             }
             catch (Exception ex)
@@ -1195,12 +1195,12 @@ namespace QuizApp.Controllers
         {
             try
             {
-                
-                
-                    
-                   
+
+
+
+
                 AccountBinding accountBinding = new AccountBinding();
-                        var data = accountBinding.sms_api_callAsync("8209004092","1234");
+                var data = accountBinding.sms_api_callAsync("8209004092", "1234");
                 if (data != null)
                 {
                     return new ResultClass()
@@ -1220,7 +1220,7 @@ namespace QuizApp.Controllers
                         Result = false
                     };
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -1273,7 +1273,7 @@ namespace QuizApp.Controllers
                 {
                     AccountBinding binding = new AccountBinding();
                     var res = binding.GetCaption();
-                    if(res!=null)
+                    if (res != null)
                     {
                         Result = new ResultClass()
                         {
@@ -1302,7 +1302,7 @@ namespace QuizApp.Controllers
             }
             return Result;
         }
-            #endregion
+        #endregion
 
         #region Read RSS Url
         [HttpPost]
@@ -1324,8 +1324,8 @@ namespace QuizApp.Controllers
                 else
                 {
                     RssFeedBinding rSS = new RssFeedBinding();
-                    var data = rSS.RssData(model.Url,model.PageNo);
-                    if(data != null)
+                    var data = rSS.RssData(model.Url, model.PageNo);
+                    if (data != null)
                     {
                         Result = new ResultClass()
                         {
@@ -1376,7 +1376,7 @@ namespace QuizApp.Controllers
                 else
                 {
                     RssFeedBinding rSS = new RssFeedBinding();
-                    var data = rSS.RssFilterData(model.Url,model.Title);
+                    var data = rSS.RssFilterData(model.Url, model.Title);
                     if (data != null)
                     {
                         Result = new ResultClass()
@@ -1417,13 +1417,13 @@ namespace QuizApp.Controllers
             var Result = new ResultClass();
             try
             {
-                    PaytmBinding binding = new PaytmBinding();
-                    binding.paytmJob();
-                        Result = new ResultClass()
-                        {
-                            Result = true,
-                            Message = "Data found successfully",
-                        };
+                PaytmBinding binding = new PaytmBinding();
+                binding.paytmJob();
+                Result = new ResultClass()
+                {
+                    Result = true,
+                    Message = "Data found successfully",
+                };
             }
             catch (Exception ex)
             {
@@ -1504,5 +1504,94 @@ namespace QuizApp.Controllers
             }
         }
         #endregion
+
+        #region Fill Referal
+
+        // POST api/Account/Register
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("FillReferal")]
+        public HttpResponseMessage FillReferal(string referalCode)
+        {
+            HttpResponseMessage response;
+
+            try
+            {
+                QuizAppEntities entities = new QuizAppEntities();
+                ReferalCodeTable referal = new ReferalCodeTable();
+
+                if (Request.Properties["MS_HttpContext"] is HttpContextBase ctx)
+                {
+                    var agent = HttpContext.Current.Request.UserAgent;
+                    var ip = ctx.Request.UserHostAddress;
+                    var deviceModel = HttpContext.Current.Request.Browser.MobileDeviceModel;
+                    referal.IPAddress = ip;
+                    referal.UserAgent = agent;
+                    referal.DeviceModel = deviceModel;
+                    referal.IsUsed = false;
+                    referal.ReferalCode = referalCode;
+
+                    const string url = "https://play.google.com/store/apps/details?id=com.qzguru";
+                    response = Request.CreateResponse(HttpStatusCode.Moved);
+                    response.Headers.Location = new Uri(url);
+                    return response;
+                }
+
+                response = Request.CreateResponse(HttpStatusCode.NotFound);
+                response.Content = new StringContent("MS_HttpContext key not found. Please try again!");
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response = Request.CreateResponse(HttpStatusCode.BadRequest);
+                response.Content = new StringContent(ex.Message);
+                return response;
+            }
+        }
+
+        #endregion
+
+        #region Fetch Referal Code
+
+        // POST api/Account/Register
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("FetchReferalCode")]
+
+        public ResultClass FetchReferalCode(string ipAddress)
+        {
+            try
+            {
+                AccountBinding ac = new AccountBinding();
+                var referal = ac.FetchReferal(ipAddress);
+                if (referal != null)
+                {
+                    return new ResultClass()
+                    {
+                        Data = referal,
+                        Message="Referal code found",
+                        Result=true
+                    };
+                }
+                else
+                {
+                    return new ResultClass()
+                    {
+                        Data=null,
+                        Message= "IP Address Not Valid",
+                        Result=false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                TokenResult result = new TokenResult();
+                result.result = false;
+                result.error_message = ex.Message;
+                return null;
+            }
+        }
+        #endregion
     }
+
 }

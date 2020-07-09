@@ -198,23 +198,30 @@ namespace QuizApp.Models
                 string DeviceId = Check[5];
 
                 var User = UserInfo(UserId);
-                CheckDeviceId(User, DeviceId);
-                bool AllowedUserId = false;//GetAllowedUser(User.UserID);
+                if (User != null)
+                {
+                    CheckDeviceId(User, DeviceId);
+                    bool AllowedUserId = false;//GetAllowedUser(User.UserID);
 
-                //Check First and Last Value
-                if(AllowedUserId)
-                {
-                    status = true;
-                }
-                else if (Check[0] == FirstValue && Check[4] == LastValue)
-                {
-                    if (DeviceId == User.DeviceID)
+                    //Check First and Last Value
+                    if (AllowedUserId)
                     {
                         status = true;
                     }
+                    else if (Check[0] == FirstValue && Check[4] == LastValue)
+                    {
+                        if (DeviceId == User.DeviceID)
+                        {
+                            status = true;
+                        }
+                    }
                 }
+                return status;
             }
-            return status;
+            else
+            {
+                return false;
+            }
         }
         #endregion
 
@@ -225,8 +232,12 @@ namespace QuizApp.Models
             if (info.Count() == 10)
             {
                 var data = entities.AspNetUsers.Where(x => x.PhoneNumber == info).FirstOrDefault();
+                if (data != null)
+                {
                     User = entities.Users.Where(x => x.UserID == data.Id).FirstOrDefault();
-                return User;
+                    return User;
+                }
+                return null;
             }
             else
             {

@@ -40,6 +40,7 @@
         <EntityTypeShape EntityType="QuizAppModel.FilterWord" Width="1.5" PointX="3.375" PointY="8.75" />
         <EntityTypeShape EntityType="QuizAppModel.User" Width="1.5" PointX="5.25" PointY="52" />
         <AssociationConnector Association="QuizAppModel.UserId" />
+        <EntityTypeShape EntityType="QuizAppModel.ReferalCodeTable" Width="1.5" PointX="5.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
