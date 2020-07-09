@@ -1518,23 +1518,22 @@ namespace QuizApp.Controllers
             try
             {
                 QuizAppEntities entities = new QuizAppEntities();
-                ReferalCodeTable referal = new ReferalCodeTable();
+                
 
                 if (Request.Properties["MS_HttpContext"] is HttpContextBase ctx)
                 {
                     var agent = HttpContext.Current.Request.UserAgent;
                     var ip = ctx.Request.UserHostAddress;
                     var deviceModel = HttpContext.Current.Request.Browser.MobileDeviceModel;
-                    referal.IPAddress = ip;
-                    referal.UserAgent = agent;
-                    referal.DeviceModel = deviceModel;
-                    referal.IsUsed = false;
-                    referal.ReferalCode = referalCode;
-
-                    const string url = "https://play.google.com/store/apps/details?id=com.qzguru";
-                    response = Request.CreateResponse(HttpStatusCode.Moved);
-                    response.Headers.Location = new Uri(url);
-                    return response;
+                    AccountBinding ac = new AccountBinding();
+                    var data=ac.FillReferalToDB(ip,agent,deviceModel,referalCode);
+                    if (data)
+                    {
+                        const string url = "https://play.google.com/store/apps/details?id=com.qzguru";
+                        response = Request.CreateResponse(HttpStatusCode.Moved);
+                        response.Headers.Location = new Uri(url);
+                        return response;
+                    }
                 }
 
                 response = Request.CreateResponse(HttpStatusCode.NotFound);

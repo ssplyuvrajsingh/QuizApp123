@@ -365,7 +365,7 @@ namespace QuizApp.Models
                                     username = data.Name,
                                     mobilenumber = data1.UserName,
                                     WithdrawType = model.WithdrawType,
-                                    PaytmWithdrawCharges=earningHeads.WithdrawCharges,
+                                    PaytmWithdrawCharges = earningHeads.WithdrawCharges,
                                     AccountNumber = model.AccountNumber,
                                     NameInAccount = model.NameInAccount,
                                     Bank = model.Bank,
@@ -419,7 +419,7 @@ namespace QuizApp.Models
                                 PaytmOrderId = "",
                                 PaytmResponse = "Pending"
                             };
-                           
+
                             entities.Transactions.Add(transaction);
                             entities.SaveChanges();
 
@@ -548,7 +548,7 @@ namespace QuizApp.Models
                 var data = entities.Users.Where(x => x.UserID == UserId).FirstOrDefault();
                 return data;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var data = ex.Message;
                 return null;
@@ -610,7 +610,7 @@ namespace QuizApp.Models
                 return response.EnsureSuccessStatusCode().ToString();
                 //return "Test";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var data = ex.Message;
                 return data;
@@ -622,7 +622,7 @@ namespace QuizApp.Models
         public bool CheckDeviceId(string DeviceId)
         {
             var data = entities.Users.Where(x => x.DeviceID == DeviceId).Select(x => x.DeviceID).FirstOrDefault();
-            if(data != null)
+            if (data != null)
             {
                 return true;
             }
@@ -649,7 +649,7 @@ namespace QuizApp.Models
         {
             bool res = false;
             var data = entities.Users.Where(x => x.UserID == model.UserID).FirstOrDefault();
-            if(data!=null)
+            if (data != null)
             {
                 data.FCMToken = model.FCMToken;
                 entities.SaveChanges();
@@ -662,8 +662,8 @@ namespace QuizApp.Models
         #region FetchReferal
         public string FetchReferal(string ipaddress)
         {
-            var data = entities.ReferalCodeTables.SingleOrDefault(x=>x.IPAddress.Equals(ipaddress));
-            
+            var data = entities.ReferalCodeTables.SingleOrDefault(x => x.IPAddress.Equals(ipaddress));
+
             if (data != null)
             {
                 ReferalCodeTable referalCode = new ReferalCodeTable();
@@ -674,6 +674,20 @@ namespace QuizApp.Models
             }
             return null;
         }
+        #endregion
+
+        #region FillReferal
+        public bool FillReferalToDB(string ip,string agent,string deviceModel,string referalCode)
+            {
+            ReferalCodeTable referal = new ReferalCodeTable();
+            referal.IPAddress = ip;
+            referal.UserAgent = agent;
+            referal.DeviceModel = deviceModel;
+            referal.IsUsed = false;
+            referal.ReferalCode = referalCode;
+            entities.ReferalCodeTables.Add(referal);
+            return entities.SaveChanges() > 0;
+            }
         #endregion
     }
 }
