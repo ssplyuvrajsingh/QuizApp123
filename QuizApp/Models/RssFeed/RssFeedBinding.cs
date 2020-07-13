@@ -61,18 +61,14 @@ namespace QuizApp.Models
             {
                 QuizAppEntities entities = new QuizAppEntities();
                 FilterWord filterWord = new FilterWord();
-                var filterDataList = entities.FilterWords.ToList();
-                for (int i = 0; i < filterDataList.Count; i++)
-                {
                     string temp = rssFeedOut.Description;
-                    string findString = filterDataList[i].FilterData;             //"Download Dainik Bhaskar App to read Latest Hindi News Today";
+                    string findString = "Download Dainik Bhaskar App to read Latest Hindi News Today";
                     string filteredData = "";
                     if (temp.Contains(findString))
                     {
                         filteredData = temp.Replace(findString, "");
                     }
                     rssFeedOut.Description = filteredData;
-                }
                 return rssFeedOut;
             }
             else

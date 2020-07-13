@@ -1608,6 +1608,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    userEarningExist.Level1 = actualEarning;
                                     userEarningExist.Level1Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1617,6 +1618,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level2Income / 30)), 2);
+                                    userEarningExist.Level2 = actualEarning;
                                     userEarningExist.Level2Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1626,6 +1628,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level3Income / 30)), 2);
+                                    userEarningExist.Level3 = actualEarning;
                                     userEarningExist.Level3Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1635,6 +1638,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level4Income / 30)), 2);
+                                    userEarningExist.Level4 = actualEarning;
                                     userEarningExist.Level4Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1644,6 +1648,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level5Income / 30)), 2);
+                                    userEarningExist.Level5 = actualEarning;
                                     userEarningExist.Level5Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1653,6 +1658,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level6Income / 30)), 2);
+                                    userEarningExist.Level6 = actualEarning;
                                     userEarningExist.Level6Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1662,6 +1668,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level7Income / 30)), 2);
+                                    userEarningExist.Level7 = actualEarning;
                                     userEarningExist.Level7Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1670,6 +1677,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level8Income / 30)), 2);
+                                    userEarningExist.Level8 = actualEarning;
                                     userEarningExist.Level8Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1678,6 +1686,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level9Income / 30)), 2);
+                                    userEarningExist.Level9 = actualEarning;
                                     userEarningExist.Level9Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1686,6 +1695,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level10Income / 30)), 2);
+                                    userEarningExist.Level10 = actualEarning;
                                     userEarningExist.Level10Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1699,6 +1709,7 @@ namespace QuizApp.Models
                                 {
                                     userCount = lst.ChildUsers.Count();
                                     actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    le.Level1 = actualEarning;
                                     le.Level1Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1707,7 +1718,8 @@ namespace QuizApp.Models
                                 if (lst.Level == 2)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level2Income / 30)), 2);
+                                    le.Level2 = actualEarning;
                                     le.Level2Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1716,7 +1728,8 @@ namespace QuizApp.Models
                                 if (lst.Level == 3)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level3Income / 30)), 2);
+                                    le.Level3 = actualEarning;
                                     le.Level3Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1724,7 +1737,8 @@ namespace QuizApp.Models
                                 if (lst.Level == 4)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level4Income / 30)), 2);
+                                    le.Level4 = actualEarning;
                                     le.Level4Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1732,7 +1746,8 @@ namespace QuizApp.Models
                                 if (lst.Level == 5)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level5Income / 30)), 2);
+                                    le.Level5 = actualEarning;
                                     le.Level5Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1740,7 +1755,8 @@ namespace QuizApp.Models
                                 if (lst.Level == 6)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level6Income / 30)), 2);
+                                    le.Level6 = actualEarning;
                                     le.Level6Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1748,7 +1764,8 @@ namespace QuizApp.Models
                                 if (lst.Level == 7)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level7Income / 30)), 2);
+                                    le.Level7 = actualEarning;
                                     le.Level7Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1756,7 +1773,8 @@ namespace QuizApp.Models
                                 if (lst.Level == 8)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level8Income / 30)), 2);
+                                    le.Level8 = actualEarning;
                                     le.Level8Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1764,7 +1782,8 @@ namespace QuizApp.Models
                                 if (lst.Level == 9)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level9Income / 30)), 2);
+                                    le.Level9 = actualEarning;
                                     le.Level9Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }
@@ -1772,7 +1791,8 @@ namespace QuizApp.Models
                                 if (lst.Level == 10)
                                 {
                                     userCount = lst.ChildUsers.Count();
-                                    actualEarning = Math.Round((userCount * (earningHeads.Level1Income / 30)), 2);
+                                    actualEarning = Math.Round((userCount * (earningHeads.Level10Income / 30)), 2);
+                                    le.Level10 = actualEarning;
                                     le.Level10Users = userCount;
                                     totalTransactionAmt += actualEarning;
                                 }

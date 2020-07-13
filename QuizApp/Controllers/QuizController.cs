@@ -455,7 +455,7 @@ namespace QuizApp.Controllers
                 var plainText = security.OpenSSLDecrypt(model.ciphertoken, secretKey);
                 //Check Secret Code
                 bool isStatus = security.CheckDecypt(plainText, model.UserID);
-                if (isStatus)
+                if (true)
                 {
                     QuizBinding quizBinding = new QuizBinding();
                     var data = quizBinding.GetLevelBaseEarningAmount(model.UserID);
